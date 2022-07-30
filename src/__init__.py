@@ -9,9 +9,7 @@ def main_app():
     @app.route("/")
     def home():
         
-        return jsonify({
-            "msg":"Hello world"
-        })
+        return render_template("pages/home.html")
     
     
     return app

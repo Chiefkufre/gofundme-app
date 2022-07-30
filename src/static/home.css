@@ -1,0 +1,71 @@
+*{
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+
+.container{
+
+    display: grid;
+    margin-top: 10px;
+    /* grid-template-columns: repeat(auto-fill, minmax(200px, 2fr));
+    gap: 15PX; */
+
+
+}
+
+.search-bar{
+    margin-right: 2rem;
+}
+
+.search-btn{
+    border-radius: 4rem;
+    background-color: #fff;
+    border: 2px solid #02A95C;
+    color: #02A95c;
+
+}
+
+.jumbotron{
+    margin-top: 5rem;
+    margin-bottom: 5rem;
+    box-shadow: 0px 4px 0px 0px #888888;
+    padding: 4rem;
+    /* sbackground-image: url(img/jumbo-img.jpg); */
+}
+
+.jumbotron-btn{
+
+    border-radius: 4rem;
+    background-color: #02A95c;
+}
+
+
+.navbar-brand{
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    /* font-size: 16px; */
+    color: #02A95c;
+    font-size: x-large;
+    font-weight: bold;
+}
+
+.nav-item{
+    margin-right: 4em;
+}
+
+.master-card{
+    margin-left: 4rem;
+}
+
+.group-card{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+   
+} 
+
+.cards{
+    margin: 4rem;
+}
+
