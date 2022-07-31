@@ -1,12 +1,15 @@
 from flask_wtf import FlaskForm
-from wtforms import SelectField, SubmitField, StringField,DateTimeField, BooleanField, PasswordField
+from wtforms import FileField,SelectField, SubmitField, StringField,DateTimeField, BooleanField, PasswordField
 from wtforms.validators import DataRequired, Email, URL, EqualTo, Regexp, Length
+from flask_wtf.file import FileField, FileAllowed, FileRequired
+from flask_ckeditor import CKEditorField
 
 
 class SignUpForm(FlaskForm):
     email = StringField("email address", validators=[DataRequired(), Email()])
     password = PasswordField("password", validators=[DataRequired(), Length(min=8, message="password must be more than 8 characters")])
     confirmPassword = PasswordField("confirm password", validators=[DataRequired(), EqualTo("password", message="password not match")])
+    userImage = FileField("profile Picture", validators=[FileAllowed(["jpg","png"]), FileRequired("file was empty")])
     country = StringField("country", validators=[DataRequired()])
     post_code = StringField("postcode", validators=[DataRequired()])
     first_name = StringField("first name", validators=[DataRequired()])
