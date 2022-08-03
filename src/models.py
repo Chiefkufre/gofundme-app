@@ -49,9 +49,9 @@ class User(db.Model):
 #database structure for contact messages
 class Contact(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String, nullable=false, unique=True)
+    email = db.Column(db.String, nullable=False, unique=True)
     subject = db.Column(db.String, nullable=false, unique=True)
-    message = db.Column(db.Text, nullable=false, unique=True)
+    message = db.Column(db.Text, nullable=False, unique=True)
     
     def __init__(self, email, subject, message):
         self.email = email
