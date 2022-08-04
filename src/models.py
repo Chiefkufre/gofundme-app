@@ -6,6 +6,7 @@ from flask_migrate import Migrate
 
 db = SQLAlchemy()
 
+#database helper class with some app config
 def setup_db(app):
     app.config.from_object('config.DevConfig')
     db.app = app
@@ -37,6 +38,12 @@ class User(db.Model):
     #simple helper method to update data into the database
     def update(self):
         db.session.commit()
+    
+    def rollback(self):
+        db.session.rollback()
+    
+    def close(self):
+        db.session.close
 
     #simple helper method to delete data into the database
     def delete(self):
@@ -74,6 +81,11 @@ class Contact(db.Model):
         db.session.delete(self)
         db.session.commit()
 
+    def rollback(self):
+        db.session.rollback()
+    
+    def close(self):
+        db.session.close
     
     
    
