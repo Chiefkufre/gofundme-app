@@ -34,5 +34,5 @@ class SignUpForm(FlaskForm):
 class ContactForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
     subject = StringField('Subject', validators=[DataRequired(), Length(min=10, max=100)])
-    message = CKEditorField('Message')
+    message = CKEditorField('Message',validators=[DataRequired(), Length(min=5)])
     submit = SubmitField('Submit')
