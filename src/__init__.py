@@ -6,11 +6,13 @@ from flask_bcrypt import Bcrypt
 
 
 bcrypt = Bcrypt()
+ckeditor = CKEditor()
 
 #all application configuration is handled from the models.py file
 def main_app():
     app = Flask(__name__)
     bcrypt.init_app(app)
+    ckeditor.init_app(app)
     setup_db(app)
     
    

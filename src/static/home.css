@@ -22,9 +22,14 @@
 .search-btn{
     border-radius: 4rem;
     background-color: #fff;
-    border: 2px solid #02A95C;
-    color: #02A95c;
+    border: 2px solid #000000;
+    color: #000000;
 
+}
+
+.search-btn:hover{
+    background-color: #000000;
+    color: #ffffff
 }
 
 .jumbotron{
@@ -38,7 +43,12 @@
 .jumbotron-btn{
 
     border-radius: 4rem;
-    background-color: #02A95c;
+    background-color: #000000;
+}
+
+.jumbotron-btn:hover{
+    background-color: #f3f3f3;
+    color: #02A95C
 }
 
 
@@ -68,4 +78,34 @@
 .cards{
     margin: 4rem;
 }
+
+/* form css ...starts here */
+
+#btn-msg{
+    /* margin-top: 2rem;
+    margin-bottom: 2rem; */
+    background-color: #000000;
+    color : #ffffff;
+}
+
+#btn-msg:hover{
+    color: #02A95C;
+    background-color: #f3f3f3;
+}
+
+.form{
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    margin-left: 20%;
+    margin-right: 20%;
+    
+}
+
+.form-wrapper{
+    margin-top: 10%;
+    background-color: #f3f3f3;
+}
+
+/* form css ...ends here.. */
+
 

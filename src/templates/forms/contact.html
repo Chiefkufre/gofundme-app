@@ -1,0 +1,28 @@
+{% extends 'layouts/main.html' %}
+{% block title %}<title>GoFundMe | Contact </title> {% endblock title %}
+{% block content %}
+  <div class="form-wrapper">
+    <form class="form" method="POST" action="/contact">
+      {{ form.hidden_tag() }}
+
+      <h3 class="form-heading">Send us a Message</h3>
+
+      <div class="form-group mb-3">
+        {{ form.email(class_ = 'form-control',placeholder='Email address', autofocus = true) }}
+      </div>
+
+      <div class="form-group mb-3">
+        {{ form.subject(class = 'form-control', placeholder='Subject', autofocus = true) }}
+      </div>
+
+      <div class="form-group mb-3 ">
+          {{ form.message(class_ = 'form-control', placeholder='message body', autofocus = true) }}
+        </div>
+        <div class="form-group mb-3">
+            <input type="submit" value="Send" class="btn btn-primary btn-lg btn-block" id="btn-msg">
+          </div>
+      {{ ckeditor.load() }}
+      {{ ckeditor.config(name='body') }}
+    </form>
+  </div>
+{% endblock %} 

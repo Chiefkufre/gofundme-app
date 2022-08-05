@@ -35,4 +35,4 @@ class ContactForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
     subject = StringField('Subject', validators=[DataRequired(), Length(min=10, max=100)])
     message = CKEditorField('Message',validators=[DataRequired(), Length(min=5)])
-    submit = SubmitField('Submit')
+    submit = SubmitField('Send')

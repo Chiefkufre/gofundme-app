@@ -1,8 +1,9 @@
 import email
+from tkinter.tix import Form
 
 import flask
 import validators
-from . import bcrypt
+from . import bcrypt, ckeditor
 from flask import redirect, render_template, abort, Blueprint, flash, url_for, jsonify
 from werkzeug.security import check_password_hash, generate_password_hash
 from .forms import SignUpForm, ContactForm
@@ -22,7 +23,7 @@ def home():
 def contact_us():
     form = ContactForm()
     
-    return render_template('pages/contact', contact=form)
+    return render_template('forms/contact.html', form=form)
 
 @views.post('/contact')
 def message_us():

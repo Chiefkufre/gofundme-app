@@ -11,6 +11,7 @@ class Config:
     SECRET_KEY = environ.get('SECRET_KEY')
     SESSION_COOKIE_NAME = environ.get('SESSION_COOKIE_NAME')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    CKEDITOR_PKG_TYPE = 'basic'
     STATIC_FOLDER = 'static'
     TEMPLATES_FOLDER = 'templates'
 
