@@ -24,10 +24,10 @@ class SignUpForm(FlaskForm):
     amount = IntegerField("Your starting goal", validators=[DataRequired()])
     submit = SubmitField('continue')
     
-    class SignInForm(FlaskForm):
-        email = StringField("email address", validators=[DataRequired(), Email()])
-        password = PasswordField("password", validators=[DataRequired(), Length(min=8, message="password must be more than 8 characters")])
-        submit = SubmitField("Login")
+class SignInForm(FlaskForm):
+    email = StringField("email address", validators=[DataRequired(), Email()])
+    password = PasswordField("password", validators=[DataRequired(), Length(min=8, message="password must be more than 8 characters")])
+    submit = SubmitField("Login")
     
     
     

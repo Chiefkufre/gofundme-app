@@ -8,15 +8,18 @@
       <h3 class="form-heading">Send us a Message</h3>
 
       <div class="form-group mb-3">
-        {{ form.email(class_ = 'form-control',placeholder='Email address', autofocus = true) }}
+        <label class="primary_label" for="email">Email</label>
+        {{ form.email(class_ = 'form-control',placeholder='Type Your Email ', autofocus = true) }}
       </div>
 
       <div class="form-group mb-3">
-        {{ form.subject(class = 'form-control', placeholder='Subject', autofocus = true) }}
+        <label class="primary_label" for="subject">Subject</label>
+        {{ form.subject(class = 'form-control', placeholder='Type Your Subject', autofocus = true) }}
       </div>
 
       <div class="form-group mb-3 ">
-          {{ form.message(class_ = 'form-control', placeholder='message body', autofocus = true) }}
+        <label class="primary_label" for="message">Message</label>
+          {{ form.message(class_ = 'form-control', placeholder='Enter Your Message', autofocus = true) }}
         </div>
         <div class="form-group mb-3">
             <input type="submit" value="Send" class="btn btn-primary btn-lg btn-block" id="btn-msg">

@@ -1,12 +1,15 @@
+from ast import Return
 import email
 from tkinter.tix import Form
+from unicodedata import category
 
 import flask
 import validators
 from . import bcrypt, ckeditor
 from flask import redirect, render_template, abort, Blueprint, flash, url_for, jsonify
+from flask_login import login_required, login_user, logout_user, current_user
 from werkzeug.security import check_password_hash, generate_password_hash
-from .forms import SignUpForm, ContactForm
+from .forms import SignUpForm, ContactForm, SignInForm
 from .models import User, Contact, db
 
 
@@ -52,3 +55,39 @@ def message_us():
      message.close()
             
     return render_template('pages/home.html')
+
+@views.get('/login')
+def login_form():
+    form = SignInForm()
+    
+    return render_template('forms/login.html', form=form)
+
+@views.post('/login')
+def login_user():
+    form =  SignInForm()
+    
+    try:
+        email = form.email.data
+        password = form.password.data
+        
+        user = User.query.filter_by(email=email).first()
+        
+        if user:
+            is_password_correct = check_password_hash(user.password, password)
+            
+            if is_password_correct:
+                flash('Login successful', category='success')
+                login_user(user, remember=True)
+                return redirect(url_for('views.home'))
+            else:
+                flash('Password is not correct. Please try again', category='failure')
+        else:
+            flash("Email doesn't match any account", category='failure')
+    except:
+        flash('Something is wrong. Please try again', category='failure')
+        return redirect(url_for('views.home'))
+        
+    return render_template('pages/login.html', user = current_user) 
+        
+        
+    
