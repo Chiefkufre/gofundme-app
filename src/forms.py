@@ -9,7 +9,9 @@ class SignUpForm(FlaskForm):
     email = StringField("email address", validators=[DataRequired(), Email()])
     password = PasswordField("password", validators=[DataRequired(), Length(min=8, message="password must be more than 8 characters")])
     confirm_password = PasswordField("confirm password", validators=[DataRequired(), EqualTo("password", message="password not match")])
-    userImage = FileField("profile Picture", validators=[FileAllowed(["jpg","png"]), FileRequired("file was empty")])
+    
+    # TODO: implement image field for users
+    # userImage = FileField("profile Picture", validators=[FileAllowed(["jpg","png"]), FileRequired("file was empty")])
     first_name = StringField("first name", validators=[DataRequired()])
     last_name = StringField("last name", validators=[DataRequired()])
    
