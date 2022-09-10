@@ -10,7 +10,7 @@ from flask import redirect, render_template, abort, Blueprint, flash, url_for, j
 from flask_login import login_required, login_user, logout_user, current_user
 from werkzeug.security import check_password_hash, generate_password_hash
 from .forms import SignUpForm, ContactForm, SignInForm
-from .models import User, Contact, db
+from .models import Users, Contacts, Campaigns, db
 
 
 
@@ -70,7 +70,7 @@ def login_user():
         email = form.email.data
         password = form.password.data
         
-        user = User.query.filter_by(email=email).first()
+        user = Users.query.filter_by(email=email).first()
         
         if user:
             is_password_correct = check_password_hash(user.password, password)
@@ -88,6 +88,18 @@ def login_user():
         return redirect(url_for('views.home'))
         
     return render_template('pages/login.html', user = current_user) 
-        
+
+
+                                    # email 
+                                    # password 
+                                    # confirmPassword 
+                                    # userImage 
+                                    # country
+                                    # post_code 
+                                    # first_name 
+                                    # last_name 
+                                    # about =    amount 
+                                    # submit 
+    
         
     
