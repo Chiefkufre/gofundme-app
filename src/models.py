@@ -53,9 +53,9 @@ class Campaigns(db.Model):
     country = db.Column(db.String, nullable=False, unique=False)
     post_code = db.Column(db.Integer, nullable=False)
     amount_to_raise = db.Column(db.Integer, nullable=False)
-    Campaign_owner = db.Column(db.String, nullable=False)
+    campaign_owner = db.Column(db.String, nullable=False)
     describe_campaign = db.Column(db.Text, nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey("users.id", on_delete="CASCADE") )
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id", ondelete="CASCADE") )
     
     def __init__(self, country, post_code, amount_to_raise, campaign_owner, describe_campaign):
         self.country = country
