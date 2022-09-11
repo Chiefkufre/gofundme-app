@@ -17,8 +17,10 @@ def main_app():
     
    
     from .views import views
+    from .auths import auths
     
     #register for routes 
     app.register_blueprint(views, url_prefix=("/"))
+    app.register_blueprint(auths, url_prefix=("/"))
     
     return app
