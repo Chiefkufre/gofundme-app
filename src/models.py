@@ -22,7 +22,7 @@ class Users(db.Model):
     last_name = db.Column(db.String, nullable=False, unique=True)
     email = db.Column(db.String, nullable=false, unique=True)
     password = db.Column(db.String, nullable=False)
-    campaign = db.relationship("Campaigns", backref="Artists", lazy=False, cascade="all, delete-orphan")
+    campaign = db.relationship("Campaigns", backref="Users", lazy=False, cascade="all, delete-orphan")
     
     
     

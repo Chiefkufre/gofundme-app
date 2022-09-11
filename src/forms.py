@@ -59,7 +59,7 @@ class ContactForm(FlaskForm):
 # Events
 # Faith
 # Family
-# Funeral & Memorial
+# Funeral & Memorial 
 # Medical
 # Monthly Bills
 # Newlyweds
