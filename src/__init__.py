@@ -1,4 +1,3 @@
-import bcrypt
 from flask import Flask
 from .models import setup_db
 from flask_ckeditor import CKEditor
