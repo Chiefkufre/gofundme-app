@@ -1,76 +1,34 @@
-from ast import Return
-from codecs import latin_1_decode
-import email
-from hashlib import sha256
-from tkinter.tix import Form
-from unicodedata import category
-
 import flask
 import validators
-from . import bcrypt, ckeditor
-from flask import redirect, render_template, abort, Blueprint, flash, url_for, jsonify
+
+from flask import (
+    Blueprint,
+    redirect,
+    render_template,
+    abort,
+    Blueprint,
+    flash,
+    url_for,
+    jsonify,
+)
 from flask_login import login_required, login_user, logout_user, current_user
 from werkzeug.security import check_password_hash, generate_password_hash
-from .forms import SignUpForm, ContactForm, SignInForm, CampaignForm
-from .models import Users, Contacts, Campaigns, db
+from src.forms import SignUpForm, ContactForm, SignInForm, CampaignForm
+from src.models import Users, Contacts, Campaigns
 
 
-views = Blueprint("views", __name__)
-
-
-@views.route("/")
-def home():
-    return render_template("pages/home.html")
-
-
-@views.get("/contact")
-def contact_us():
-    form = ContactForm()
-
-    return render_template("forms/contact.html", form=form)
-
-
-@views.post("/contact")
-def message_us():
-    form = ContactForm()
-
-    try:
-        message = form.message.data
-        email = form.email.data
-        subject = form.subject.data
-
-        if len(message) < 5:
-            flash(
-                "Your message length must be longer than five characters",
-                category="error",
-            )
-
-        if not validators.email(email):
-            flash("Please enter a valid email address")
-
-        elif form.validate_on_submit():
-            message = Contacts(email=email, subject=subject, message=message)
-            message.insert()
-
-    except:
-        message.rollback()
-        flash("Something went wrong.Please try again", category="error")
-        return redirect(url_for("views.message_us"))
-    finally:
-        message.close()
-
-    return render_template("pages/home.html")
+auths = Blueprint("auths", __name__)
 
 
 # user registration control center
-@views.get("/register")
+@auths.get("/register")
 def register_form():
     form = SignUpForm()
 
     return render_template("form/register.html", form=form)
 
 
-@views.post("/register")
+@auths.post("/register")
 def register_user():
     form = SignUpForm()
 
@@ -109,7 +67,7 @@ def register_user():
 
 
 # Function handles login route
-@views.get("/login")
+@auths.get("/login")
 def login_form():
     form = SignInForm()
 
@@ -117,7 +75,7 @@ def login_form():
 
 
 # function to handle posting to login route
-@views.post("/login")
+@auths.post("/login")
 def login_user():
     form = SignInForm()
 
@@ -148,7 +106,7 @@ def login_user():
 # Logout control center
 
 
-@views.route("/logout")
+@auths.route("/logout")
 @login_required
 def logout():
 

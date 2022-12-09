@@ -25,6 +25,7 @@ htmlcov/
 .coverage
 .coverage.*
 *,cover
+__pycache__
 __pycache__/config.cpython-310.pyc
 src/__pycache__/forms.cpython-310.pyc
 src/__pycache__/views.cpython-310.pyc
