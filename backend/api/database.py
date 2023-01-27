@@ -1,10 +1,8 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-from flask_ckeditor import CKEditor
 
 
 db = SQLAlchemy()
-ckeditor = CKEditor()
 
 
 
@@ -16,6 +14,6 @@ def setup_db(app):
     migrate = Migrate(app, db)
 
 def start_dependencies(app):
-    ckeditor.init_app(app)
+    pass
 
 

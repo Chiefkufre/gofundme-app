@@ -1,5 +1,4 @@
 from datetime import datetime
-from email import message
 from sqlalchemy import DateTime
 from flask_migrate import Migrate
 from api.database import db

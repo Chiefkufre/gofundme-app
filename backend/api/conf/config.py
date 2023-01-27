@@ -42,7 +42,6 @@ class Config:
     DB_TYPE = settings.DB_TYPE
     # SESSION_COOKIE_NAME = settings.SESSION_COOKIE_NAME
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    CKEDITOR_PKG_TYPE = "basic"
     STATIC_FOLDER: Path = BASE_DIR / "static"
     TEMPLATES_FOLDER: Path = BASE_DIR / "templates"
 
