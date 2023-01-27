@@ -12,7 +12,7 @@ from flask import (
 )
 from flask_login import login_required, login_user, logout_user, current_user
 from werkzeug.security import check_password_hash, generate_password_hash
-
+from api.models import User
 
 
 auths = Blueprint("auths", __name__)

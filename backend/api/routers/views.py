@@ -6,7 +6,7 @@ import validators
 
 import flask
 from flask import redirect, abort, Blueprint, flash, url_for, jsonify
-from api.models import User, Contact, Campaign
+from api.models import User, Campaign, Donation, Message
 
 
 
