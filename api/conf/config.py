@@ -11,7 +11,7 @@ from decouple import config
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-from src.conf.settings import settings
+from api.conf.settings import settings
 
 DB_TYPE = settings.DB_TYPE
 DB_NAME = settings.DB_NAME
@@ -38,7 +38,6 @@ def create_db_url(DB_TYPE):
 
 class Config:
     """class to hold application configuration."""
-
     SECRET_KEY = settings.SECRET_KEY
     DB_TYPE = settings.DB_TYPE
     # SESSION_COOKIE_NAME = settings.SESSION_COOKIE_NAME

@@ -1,32 +1,26 @@
+from datetime import datetime
 from email import message
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import false
+from sqlalchemy import DateTime
 from flask_migrate import Migrate
+from api.database import db
 
 
-db = SQLAlchemy()
-
-# database helper class with some app config
-def setup_db(app):
-    app.config.from_object("config.DevConfig")
-    db.app = app
-    db.init_app(app)
-    db.create_all()
-    migrate = Migrate(app, db)
-
-    # structure for user table
 
 
-class Users(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+# Database ORM
+
+class User(db.Model):
+    __tablename__ = 'users'
+
+    id = db.Column(db.Integer, primary_key=True, nullable=False)    
     first_name = db.Column(db.String, nullable=False, unique=True)
     last_name = db.Column(db.String, nullable=False, unique=True)
-    email = db.Column(db.String, nullable=false, unique=True)
+    email = db.Column(db.String, nullable=False, unique=True)
     password = db.Column(db.String, nullable=False)
     campaign = db.relationship(
-        "Campaigns", backref="Users", lazy=False, cascade="all, delete-orphan"
+        "Campaigns", backref="User", lazy=False, cascade="all, delete-orphan"
     )
-
+    created_at = db.Column(db.DateTime, default=datetime.now())
     # simple helper method to persist data into the database
     def insert(self):
         db.session.add(self)
@@ -49,14 +43,19 @@ class Users(db.Model):
 
 
 # Class to handle campaign details
-class Campaigns(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+class Campaign(db.Model):
+
+    __tablename__ = "campaigns"
+
+    id = db.Column(db.Integer, primary_key=True, nullable=False)
     country = db.Column(db.String, nullable=False, unique=False)
     post_code = db.Column(db.Integer, nullable=False)
     amount_to_raise = db.Column(db.Integer, nullable=False)
     campaign_owner = db.Column(db.String, nullable=False)
     describe_campaign = db.Column(db.Text, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id", ondelete="CASCADE"))
+    created_at = db.Column(DateTime, default=datetime.now())
+
 
     def __init__(
         self, country, post_code, amount_to_raise, campaign_owner, describe_campaign
@@ -88,11 +87,17 @@ class Campaigns(db.Model):
 
 
 # database structure for contact messages
-class Contacts(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+class Contact(db.Model):
+
+    __tablename__ = 'contacts'
+
+
+    id = db.Column(db.Integer, primary_key=True, nullable=False)
     email = db.Column(db.String, nullable=False, unique=True)
-    subject = db.Column(db.String, nullable=false, unique=True)
+    subject = db.Column(db.String, nullable=False, unique=True)
     message = db.Column(db.Text, nullable=False, unique=True)
+    created_at = db.Column(DateTime, default=datetime.now())
+
 
     def __init__(self, email, subject, message):
         self.email = email
