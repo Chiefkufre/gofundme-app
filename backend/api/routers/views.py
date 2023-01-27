@@ -113,8 +113,43 @@ def get_campaign_id(campaign_id):
 
 # ----------------ROuter for handling donation requests--------------
 
-#   TODO: make campaigns
+#   TODO: make donation
 #  /donations//<campaign_id>
+from sqlalchemy.orm import exc
+
+@views.post('/api/campaigns/<int:campaign_id>/donate')
+def make_donation(campaign_id):
+    data = request.get_json()
+    amount = data.get('amount')
+
+    # Validate the donation amount
+    if amount <= 0:
+        return jsonify({'error': 'Invalid donation amount'}), 400
+
+    try:
+           # Check if campaign exists
+        campaign = Campaign.query.filter_by(id=campaign_id).first()
+
+        if campaign is None:
+            return jsonify({'error': 'Campaign not found'}), 404
+        else:
+            # Create a new donation record
+            donation = Donation(amount=amount, campaign_id=campaign_id)
+            donation.insert(donation)
+
+            # update the total raised for the campaign
+            donation.increase_amount(amount)
+
+            # Return a successful response
+            return jsonify({'message': 'Donation successful'}), 201
+    except:
+        
+        donation.rollback()
+        donation.close()
+        return jsonify({'message': 'Can not make donation right now'}), 400
+    
+    
+
 
 
 #  TODO: get campaigns
@@ -122,7 +157,7 @@ def get_campaign_id(campaign_id):
 #         
 
 
-# -------------------Routers for Users Dashboard
+# -------------------Routers for Users Dashboard-----------------
 
 # TODO: Get all users
 # GET users/users/
