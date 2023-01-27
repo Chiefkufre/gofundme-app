@@ -30,7 +30,7 @@ def get_campaign(id):
 #         PUT /<campaign_id>
 #         DELETE /<campaign_id>
 #     /donations/
-#         GET /<campaign_id>
+#         GET /<campaign_id>cd back
 #         POST /<campaign_id>
 #     /users/
 #         GET /
