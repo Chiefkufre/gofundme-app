@@ -13,7 +13,7 @@ class Settings:
     SESSION_COOKIE_NAME: str = config("SESSION_COOKIE_NAME")
 
 
-    API_VERSION: str = "/api/v1"
+    API_VERSION: str = "/v1"
 
 
 settings = Settings()
