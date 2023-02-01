@@ -9,18 +9,6 @@ from api.utils.validators import  validate_title, validate_user
 
 
 views = Blueprint("views", __name__)
-
-
-    # id = db.Column(db.Integer, primary_key=True)
-    # title = db.Column(db.String(100), nullable=False)
-    # description = db.Column(db.String(500), nullable=False)
-    # goal = db.Column(db.Float, nullable=False)
-    # duration = db.Column(db.Integer, nullable=False)
-    # created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    # updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    # user_id = db.Column(db.Integer,db.ForeignKey('user.id'), nullable=False)
-    # donations = db.relationship('Donation', backref='campaign', lazy=True)
-
     
 #   TODO: create campaigns
 #         POST / campaigns
@@ -71,21 +59,21 @@ def create_campaign():
 # TODO: Get all campaign models
     #  GET /campaigns/
 
-@views.get('/campaign')
+@views.get('/campaigns')
 def getCampaign():
 
     query = Campaign.query.all()
 
-    return json.loads(query)
-     
+    return jsonify(query)
 
 # TODO: Get all campaigns by  Id
 # GET /<campaign_id>
 
-@views.get('/campaign/<int:campaign_id>')
-def get_campaign_id(campaign_id):
+@views.get('/campaigns/<int:campaign_id>')
+def get_campaign_by_id(campaign_id):
 
-    campaign = Campaign.query.filter(Campaign.id == campaign_id).first()
+    search = Campaign.query.filter(Campaign.id == campaign_id)
+    campaign = search.first()
 
     if campaign != None:
         return jsonify(
@@ -102,8 +90,55 @@ def get_campaign_id(campaign_id):
         abort(400, description="user not found")
 
 
-#  TODO: update capaigns based on id
-#  PUT /<campaign_id>
+#  TODO: update campaigns based on id
+@views.put("/api/campaigns/<int:campaign_id>")
+# @jwt_required
+def update_campaign(campaign_id):
+    # Get the campaign from the database
+    campaign = Campaign.query.get(campaign_id)
+    if not campaign:
+        return jsonify({"message": "Campaign not found"}), 404
+
+    # Validate the user is the owner of the campaign
+    # user_id = get_jwt_identity()
+    # if user_id != campaign.user_id:
+    #     return jsonify({"message": "You are not authorized to perform this action"}), 403
+
+    # Get the updated data from the request
+    data = request.get_json()
+
+    title = data.get("title")
+    goal = data.get("goal")
+    description = data.get("description")
+
+    try:
+        if not goal:
+            return jsonify({"message": "goal are required"}), 400
+        
+        validated = validate_title(title, description)
+
+        if validated:
+
+            # update
+            
+            campaign.title = title
+            campaign.goal = goal
+            campaign.description = description
+
+            # commit to db
+            campaign.update()
+
+            return jsonify({
+                "status": "success",
+                "title":  campaign.title,
+                "goal": campaign.goal,
+                "description": campaign.description
+            }), 200
+
+    except ValueError as e:
+        return jsonify({"message": str(e)}), 400
+        campaign.rollback()
+    
 
 
 # TODO: delete capaigns based on id
@@ -115,17 +150,17 @@ def get_campaign_id(campaign_id):
 
 #   TODO: make donation
 #  /donations//<campaign_id>
-from sqlalchemy.orm import exc
 
-@views.post('/api/campaigns/<int:campaign_id>/donate')
+@views.post('/campaigns/<int:campaign_id>/donate')
 def make_donation(campaign_id):
     data = request.get_json()
     amount = data.get('amount')
+    # user_id = data.get('user_id')
+
 
     # Validate the donation amount
     if amount <= 0:
         return jsonify({'error': 'Invalid donation amount'}), 400
-
     try:
            # Check if campaign exists
         campaign = Campaign.query.filter_by(id=campaign_id).first()
