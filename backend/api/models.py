@@ -55,7 +55,7 @@ class Campaign(db.Model):
     duration = db.Column(db.Integer, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    user_id = db.Column(db.Integer,db.ForeignKey('user.id'), nullable=False)
+    user_id = db.Column(db.Integer,db.ForeignKey('users.id'), nullable=False)
     donations = db.relationship('Donation', backref='campaign', lazy=True)
 
 
@@ -85,8 +85,12 @@ class Donation(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     amount = db.Column(db.Float, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    campaign_id = db.Column(db.Integer, db.ForeignKey('campaign.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    campaign_id = db.Column(db.Integer, db.ForeignKey('campaigns.id'), nullable=False)
+
+
+    def __init__(self, amount):
+        self.amount = amount
 
 
     def insert(self):
@@ -105,6 +109,9 @@ class Donation(db.Model):
     def delete(self):
         db.session.delete(self)
         db.session.commit()
+    
+    def increase_donation(self, amount):
+        return self.amount + float(amount)
 
 
 
