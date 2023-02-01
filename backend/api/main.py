@@ -20,9 +20,10 @@ def create_app_instance():
     app_version = settings.API_VERSION
 
     # registring routes
-    app.register_blueprint(auths, url_prefix='/{app_version}/auth')
-    app.register_blueprint(blog, url_prefix="/{app_version}/blog")
-    app.register_blueprint(views,url_prefix="/{app_version}/views")
+    app.register_blueprint(auths, url_prefix="/{0}/auth".format(app_version))
+    app.register_blueprint(blog, url_prefix="/{0}/blog".format(app_version))
+    app.register_blueprint(views, url_prefix="/{0}".format(app_version))
+
 
     return app
     
