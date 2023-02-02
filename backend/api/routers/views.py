@@ -9,9 +9,8 @@ from api.utils.validators import  validate_title, validate_user
 
 
 views = Blueprint("views", __name__)
-    
-#   TODO: create campaigns
-#         POST / campaigns
+
+
 @views.post("/campaigns/create")
 def create_campaign():
 
@@ -20,7 +19,10 @@ def create_campaign():
     title = data.get("title")
     goal = data.get("goal")
     description = data.get("description")
+    duration = data.get("duration")
     user_id = data.get("user_id")
+
+    
 
     if not all([title, goal, description, user_id]):
         return jsonify({"message": "Missing required fields"}), 400
@@ -28,13 +30,21 @@ def create_campaign():
     try:
          # Validate data
         validate_user(user_id)
-
+      
         validate_title(title, description)
     
         campaign = Campaign(**data)
         campaign.insert()
 
-        return jsonify({"message": "Campaign created successfully"}), 201
+        return jsonify({
+            "message": "Campaign created successfully",
+            "id": campaign.id,
+            "title": campaign.title,
+            "goal": campaign.goal,
+            "description": campaign.description,
+            "created_at": campaign.created_at
+        
+        }), 201
 
     except ValueError as e:
         return jsonify({"message": str(e)}), 400
@@ -54,20 +64,30 @@ def create_campaign():
 
    
 
-    
-
-# TODO: Get all campaign models
-    #  GET /campaigns/
-
 @views.get('/campaigns')
 def getCampaign():
 
-    query = Campaign.query.all()
+    campaigns = Campaign.query.all()
 
-    return jsonify(query)
+    campaign_list = []
 
-# TODO: Get all campaigns by  Id
-# GET /<campaign_id>
+    for campaign in campaigns:
+        campaign_data = {
+
+            "id": campaign.id,
+            "title": campaign.title,
+            "goal": campaign.goal,
+            "duration": campaign.duration,
+            "description": campaign.description,
+            "user_id": campaign.user_id,
+            "created_at": campaign.created_at
+        }
+
+        campaign_list.append(campaign_data)
+    
+    return campaign_list
+
+
 
 @views.get('/campaigns/<int:campaign_id>')
 def get_campaign_by_id(campaign_id):
@@ -78,22 +98,25 @@ def get_campaign_by_id(campaign_id):
     if campaign != None:
         return jsonify(
             {
+
                 "Status": "success",
                 "id": campaign.id,
                 "title": campaign.title,
                 "goal": campaign.goal,
                 "description": campaign.description,
-                "created_at": campaign.created_at
+                "created_at": campaign.created_at,
+                "user_id": campaign.user_id
 
             })
     else:
-        abort(400, description="user not found")
+        abort(404, description="campaign not found")
 
 
 #  TODO: update campaigns based on id
-@views.put("/api/campaigns/<int:campaign_id>")
-# @jwt_required
+@views.put("/campaigns/<int:campaign_id>/update")
 def update_campaign(campaign_id):
+
+    
     # Get the campaign from the database
     campaign = Campaign.query.get(campaign_id)
     if not campaign:
@@ -111,34 +134,41 @@ def update_campaign(campaign_id):
     goal = data.get("goal")
     description = data.get("description")
 
+    if not goal:
+        return jsonify({"message": "goal are required"}), 400
+
     try:
-        if not goal:
-            return jsonify({"message": "goal are required"}), 400
-        
-        validated = validate_title(title, description)
+        validate_title(title, description)
 
-        if validated:
+        # update
+        campaign.title = title
+     
+        campaign.goal = goal
+        campaign.description = description
 
-            # update
-            
-            campaign.title = title
-            campaign.goal = goal
-            campaign.description = description
+        # commit to db
+        campaign.update()
 
-            # commit to db
-            campaign.update()
-
-            return jsonify({
-                "status": "success",
-                "title":  campaign.title,
-                "goal": campaign.goal,
-                "description": campaign.description
-            }), 200
+        return jsonify({
+            "status": "success",
+            "title":  campaign.title,
+            "goal": campaign.goal,
+            "description": campaign.description
+        }), 200
 
     except ValueError as e:
         return jsonify({"message": str(e)}), 400
         campaign.rollback()
-    
+
+
+    return jsonify(
+        {
+            "status": "success",
+            "title":  campaign.title,
+            "goal": campaign.goal,
+            "description": campaign.description
+        
+        }), 200
 
 
 # TODO: delete capaigns based on id
@@ -193,9 +223,26 @@ def make_donation(campaign_id):
 
 
 # -------------------Routers for Users Dashboard-----------------
+@views.get('/users')
+def get_users():
 
-# TODO: Get all users
-# GET users/users/
+    user_list = []
+    users = User.query.all()
+
+    for user in users:
+
+        user_data = {}
+
+        user_data["id"] = user.id,
+        user_data["name"] = user.name
+        user_data["email"]= user.email,
+        user_data["bio"]= user.bio
+
+        user_list.append(user_data)
+    
+    return user_list
+
+
 
 # TODO: get users by id
 # GET users/<user_id>
