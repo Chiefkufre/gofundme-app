@@ -171,8 +171,35 @@ def update_campaign(campaign_id):
         }), 200
 
 
-# TODO: delete capaigns based on id
-#  DELETE /<campaign_id>
+@views.delete("campaigns/<int:campaign_id>/delete")
+def delete_campaign(campaign_id):
+
+    campaign =  Campaign.query.filter(Campaign.id == campaign_id).first()
+
+    if campaign == None:
+        return jsonify({
+            "message": "Campaign not found"
+        }), 404
+    
+    # TODO: check user identity
+    try:
+        campaign.delete()
+        return jsonify({
+            "status": "success",
+            "message": "Campaign deleted successfully"
+
+        }), 200
+    
+    except:
+        campaign.rollback()
+    
+    return jsonify({
+
+        "id": campaign.id,
+        "title": campaign.title
+    })
+
+
 
 
 
