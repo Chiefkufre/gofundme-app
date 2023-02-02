@@ -55,18 +55,18 @@ def register_user():
         new_user = User(**data)
         new_user.insert()
         
-        return jsonify({"message": "User created successfully"}), 201
+        return jsonify({
+            "message": "User created successfully",
+            "id": new_user.id,
+            "name": new_user.name,
+            "email": new_user.email,
+            "bio": new_user.bio
+            }), 201
 
     except ValueError as e:
         return jsonify({"message": str(e)}), 400
         campaign.rollback()
 
-    return jsonify({
-        "id": user.id,
-        "name": user.name,
-        "email": user.email,
-        "bio": user.bio
-    })
 
 
 # function to handle posting to login route
