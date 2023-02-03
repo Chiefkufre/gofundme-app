@@ -61,15 +61,11 @@ class AlterColumnTest(AutogenFixtureTest, TestBase):
         m1 = MetaData()
         m2 = MetaData()
 
-        Table(
-            "a", m1, Column("x", Integer, server_default="5", primary_key=pk)
-        )
+        Table("a", m1, Column("x", Integer, server_default="5", primary_key=pk))
         Table(
             "a",
             m2,
-            Column(
-                "x", Integer, server_default="5", comment="new", primary_key=pk
-            ),
+            Column("x", Integer, server_default="5", comment="new", primary_key=pk),
         )
 
         alter_col = self._assert_alter_col(m1, m2, pk)
@@ -134,9 +130,7 @@ class AutoincrementTest(AutogenFixtureTest, TestBase):
         m1 = MetaData()
         m2 = MetaData()
 
-        Table(
-            "a", m1, Column("x", Integer, primary_key=True, autoincrement=True)
-        )
+        Table("a", m1, Column("x", Integer, primary_key=True, autoincrement=True))
         Table(
             "a",
             m2,

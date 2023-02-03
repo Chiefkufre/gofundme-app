@@ -28,7 +28,7 @@ def register_user():
     :param  id: user id-auto-regenerated
     :param  name : new user name
     :type name: str
-    :param email: new user email 
+    :param email: new user email
     :type email: str
     :param password: new user password
     :type password: str
@@ -41,39 +41,43 @@ def register_user():
 
     data = request.get_json()
 
-    email = data['email']
-    name = data['name']
-    password = data['password']
-    bio = data['bio']
+    email = data["email"]
+    name = data["name"]
+    password = data["password"]
+    bio = data["bio"]
 
     try:
         if not all([email, name, bio, password]):
             return jsonify({"message": "Missing required fields"}), 400
-        
+
         validate_email(email)
 
         new_user = User(**data)
         new_user.insert()
-        
-        return jsonify({
-            "message": "User created successfully",
-            "id": new_user.id,
-            "name": new_user.name,
-            "email": new_user.email,
-            "bio": new_user.bio
-            }), 201
+
+        return (
+            jsonify(
+                {
+                    "message": "User created successfully",
+                    "id": new_user.id,
+                    "name": new_user.name,
+                    "email": new_user.email,
+                    "bio": new_user.bio,
+                }
+            ),
+            201,
+        )
 
     except ValueError as e:
         return jsonify({"message": str(e)}), 400
         campaign.rollback()
 
 
-
 # function to handle posting to login route
 @auths.post("/login")
 def login_user():
-   
-    return 
+
+    return
 
 
 # Logout control center
@@ -84,4 +88,4 @@ def login_user():
 def logout():
 
     logout_user()
-    return 
+    return

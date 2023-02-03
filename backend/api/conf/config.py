@@ -38,6 +38,7 @@ def create_db_url(DB_TYPE):
 
 class Config:
     """class to hold application configuration."""
+
     SECRET_KEY = settings.SECRET_KEY
     DB_TYPE = settings.DB_TYPE
     # SESSION_COOKIE_NAME = settings.SESSION_COOKIE_NAME

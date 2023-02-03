@@ -133,18 +133,12 @@ class MakoCssLexer(DelegatingLexer):
         super().__init__(CssLexer, MakoLexer, **options)
 
 
-pygments_html_formatter = HtmlFormatter(
-    cssclass="syntax-highlighted", linenos=True
-)
+pygments_html_formatter = HtmlFormatter(cssclass="syntax-highlighted", linenos=True)
 
 
 def syntax_highlight(filename="", language=None):
     mako_lexer = MakoLexer()
     python_lexer = Python3Lexer()
     if filename.startswith("memory:") or language == "mako":
-        return lambda string: highlight(
-            string, mako_lexer, pygments_html_formatter
-        )
-    return lambda string: highlight(
-        string, python_lexer, pygments_html_formatter
-    )
+        return lambda string: highlight(string, mako_lexer, pygments_html_formatter)
+    return lambda string: highlight(string, python_lexer, pygments_html_formatter)

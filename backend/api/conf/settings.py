@@ -12,7 +12,6 @@ class Settings:
     SECRET_KEY: str = config("SECRET_KEY")
     SESSION_COOKIE_NAME: str = config("SESSION_COOKIE_NAME")
 
-
     API_VERSION: str = "/v1"
 
 

@@ -16,7 +16,6 @@ def create_app_instance():
     with app.app_context():
         setup_db(app)
 
-
     app_version = settings.API_VERSION
 
     # registring routes
@@ -24,7 +23,4 @@ def create_app_instance():
     app.register_blueprint(blog, url_prefix="/{0}/blog".format(app_version))
     app.register_blueprint(views, url_prefix="/{0}".format(app_version))
 
-
     return app
-    
-
