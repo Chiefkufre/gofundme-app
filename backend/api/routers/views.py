@@ -104,6 +104,7 @@ def get_campaign_by_id(campaign_id):
                 "title": campaign.title,
                 "goal": campaign.goal,
                 "description": campaign.description,
+                # "donations":type(campaign.donations),
                 "created_at": campaign.created_at,
                 "user_id": campaign.user_id
 
@@ -210,23 +211,36 @@ def make_donation(campaign_id):
            # Check if campaign exists
         campaign = Campaign.query.filter_by(id=campaign_id).first()
 
+        print("campaign", campaign)
+
+
         if campaign is None:
             return jsonify({'error': 'Campaign not found'}), 404
-        else:
-            # Create a new donation record
-            donation = Donation(amount=amount, campaign_id=campaign_id)
-            donation.insert(donation)
-
-            # update the total raised for the campaign
-            donation.increase_amount(amount)
-
-            # Return a successful response
-            return jsonify({'message': 'Donation successful'}), 201
-    except:
         
-        donation.rollback()
-        donation.close()
-        return jsonify({'message': 'Can not make donation right now'}), 400
+
+        query  = Donation.query.filter_by(id=campaign.id).first()
+
+        print(query)
+
+        campaign_id = campaign.id
+
+        print("campaign_id", campaign_id)
+        # Create a new donation record
+        donation = Donation(amount=amount, user_id=campaign.user_id, campaign_id=campaign.id)
+
+        print(type(donation))
+
+        donation.insert()
+
+        
+
+        # Return a successful response
+        return jsonify({'message': 'Donation successful'}), 201
+    except:
+        pass
+    #     # donation.rollback()
+    #     # donation.close()
+    #     return jsonify({'message': 'Can not make donation right now'}), 400
     
     
 
@@ -283,10 +297,6 @@ def retrive_user_by_id(user_id):
     }), 200
 
 
-
-# TODO: update users by id
-# PUT users/<user_id>
-
 @views.put('users/<int:user_id>/update')
 def update_user(user_id):
     
@@ -298,6 +308,7 @@ def update_user(user_id):
             "message": "user not found"
         }), 404
     
+    # TODO: check user identity
 
     data = request.get_json()
 
@@ -327,8 +338,29 @@ def update_user(user_id):
         })
     
 
+@views.delete('users/<int:user_id>/delete')
+def delete_user(user_id):
+    
+    user = User.query.filter(User.id == user_id).first()
 
+    if not user:
+        return jsonify({
+            "message": "user not found"
+        }), 404
 
-# TODO: delete users by id
-#   DELETE users/<user_id>
+    try:
+        
+        # TODO: check for user identity
+        user.delete()
 
+        return jsonify({
+
+            "status": "success",
+            "message": "user deleted successfully",
+    }), 200
+    
+    except:
+        user.rollback()
+        return jsonify({
+            "message": "Can not delete user, please try again."
+        })
