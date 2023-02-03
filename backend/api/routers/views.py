@@ -10,7 +10,7 @@ from api.utils.validators import  validate_title, validate_user
 
 views = Blueprint("views", __name__)
 
-
+# Create campaign endpoint
 @views.post("/campaigns/create")
 def create_campaign():
 
@@ -31,6 +31,11 @@ def create_campaign():
          # Validate data
         validate_user(user_id)
       
+        """
+        Validate_title: validate title and description
+
+        rtype: len()
+        """
         validate_title(title, description)
     
         campaign = Campaign(**data)
@@ -63,24 +68,39 @@ def create_campaign():
         })
 
    
-
+# Endpoint to get all campaign objects
 @views.get('/campaigns')
 def getCampaign():
 
-    campaigns = Campaign.query.all()
+    campaigns = Campaign.query.filter(Campaign.isActive==True).all()
 
     campaign_list = []
 
     for campaign in campaigns:
+
+        campaign_donation = campaign.donations
+        
+        donations = []
+
+        """
+        Iteration to grab donation made
+        
+        """
+        for donation in campaign.donations:
+            donations.append(donation.amount)
+
+
         campaign_data = {
 
             "id": campaign.id,
             "title": campaign.title,
             "goal": campaign.goal,
+            "amt_raised": sum(donations),
             "duration": campaign.duration,
             "description": campaign.description,
             "user_id": campaign.user_id,
-            "created_at": campaign.created_at
+            "created_at": campaign.created_at,
+            "isActive": campaign.isActive
         }
 
         campaign_list.append(campaign_data)
@@ -88,7 +108,7 @@ def getCampaign():
     return campaign_list
 
 
-
+# Endpoint to get campaign by id
 @views.get('/campaigns/<int:campaign_id>')
 def get_campaign_by_id(campaign_id):
 
@@ -96,6 +116,15 @@ def get_campaign_by_id(campaign_id):
     campaign = search.first()
 
     if campaign != None:
+
+        """
+        Iteration to grab donation made
+        
+        """
+        for donation in campaign.donations:
+            donations =  []
+            donations.append(donation.amount)
+
         return jsonify(
             {
 
@@ -104,15 +133,17 @@ def get_campaign_by_id(campaign_id):
                 "title": campaign.title,
                 "goal": campaign.goal,
                 "description": campaign.description,
-                # "donations":type(campaign.donations),
+                "amt_raised": sum(donations),
                 "created_at": campaign.created_at,
-                "user_id": campaign.user_id
+                "user_id": campaign.user_id,
+                 "isActive": campaign.isActive
 
             })
     else:
         abort(404, description="campaign not found")
 
 
+# Endpoint to update campaign
 @views.put("/campaigns/<int:campaign_id>/update")
 def update_campaign(campaign_id):
 
@@ -162,6 +193,7 @@ def update_campaign(campaign_id):
         
 
 
+#  Endpoint to delete campaign
 
 @views.delete("/campaigns/<int:campaign_id>/delete")
 def delete_campaign(campaign_id):
@@ -197,6 +229,8 @@ def delete_campaign(campaign_id):
 
 # ----------------ROuter for handling donation requests--------------
 
+# Endpoint to make donation
+
 @views.post('/campaigns/<int:campaign_id>/donate')
 def make_donation(campaign_id):
     data = request.get_json()
@@ -218,17 +252,14 @@ def make_donation(campaign_id):
             return jsonify({'error': 'Campaign not found'}), 404
         
 
-        query  = Donation.query.filter_by(id=campaign.id).first()
-
-        print(query)
-
         campaign_id = campaign.id
 
-        print("campaign_id", campaign_id)
+
+        # TODO: implement user_id here. For the donation, user_id shouldnt be campaign.user_id
+
         # Create a new donation record
         donation = Donation(amount=amount, user_id=campaign.user_id, campaign_id=campaign.id)
 
-        print(type(donation))
 
         donation.insert()
 
@@ -237,10 +268,9 @@ def make_donation(campaign_id):
         # Return a successful response
         return jsonify({'message': 'Donation successful'}), 201
     except:
-        pass
-    #     # donation.rollback()
-    #     # donation.close()
-    #     return jsonify({'message': 'Can not make donation right now'}), 400
+        donation.rollback()
+        donation.close()
+        return jsonify({'message': 'Can not make donation right now'}), 400
     
     
 
@@ -248,7 +278,63 @@ def make_donation(campaign_id):
 
 #  TODO: get campaigns
 #         GET /donations/<campaign_id>
-#         
+
+@views.get("donations/<int:campaign_id>/")
+def get_donations_by_campaign(campaign_id):
+
+    
+    search = Campaign.query.filter(Campaign.id == campaign_id)
+    campaign = search.first()
+
+    if campaign is None:
+        return jsonify({
+            "message": "Campaign not found"
+        })
+    
+    
+    donate = Donation.query.filter(Donation.campaign_id == campaign.id).first()
+
+    if donate is not None:
+        campaign_donation = campaign.donations
+
+        for donation in campaign.donations:
+
+            donations = []
+
+            user = User.query.filter(User.id == donation.user_id).first()
+
+            """
+            id 
+            amount 
+            created_at 
+            user_id 
+            campaign_id
+
+            """
+            if len(donations) == 0:
+                donations = []
+            
+            donations.append({
+                "id": donation.id or None,
+                "amount": donation.amount or None,
+                "Donor": user.name or None,
+                "time": donation.created_at or None
+            })
+        
+            
+        return jsonify(
+            {   "campaign_id": campaign.id,
+                "campaign_name": campaign.title,
+                "description": campaign.description,
+                "donations": donations
+            }
+        )
+    
+    else:
+        return jsonify({
+            "message": "No donation for this campaign yet"
+        })
+
 
 
 # -------------------Routers for Users Dashboard-----------------
