@@ -1,5 +1,5 @@
 from datetime import datetime
-from sqlalchemy import DateTime
+from sqlalchemy import DateTime, Boolean
 from flask_migrate import Migrate
 from api.database import db
 
@@ -21,7 +21,7 @@ class User(db.Model):
     password = db.Column(db.String(200), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    status = db.Column(db.String(20), default="pending")
+    user_status = db.Column(db.String(20), default="pending")
     campaigns = db.relationship('Campaign', backref='user', lazy=True)
     donations = db.relationship('Donation', backref='user', lazy=True)
 
@@ -57,7 +57,7 @@ class Campaign(db.Model):
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     user_id = db.Column(db.Integer,db.ForeignKey('users.id'), nullable=False)
     donations = db.relationship('Donation', backref='campaign', lazy=True)
-
+    isActive = db.Column(Boolean, default=True)
 
     def insert(self):
         db.session.add(self)
@@ -89,8 +89,8 @@ class Donation(db.Model):
     campaign_id = db.Column(db.Integer, db.ForeignKey('campaigns.id'), nullable=False)
 
 
-    def __init__(self, amount):
-        self.amount = amount
+    # def __init__(self, amount):
+    #     self.amount = amount
 
 
     def insert(self):
