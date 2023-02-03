@@ -112,7 +112,6 @@ def get_campaign_by_id(campaign_id):
         abort(404, description="campaign not found")
 
 
-#  TODO: update campaigns based on id
 @views.put("/campaigns/<int:campaign_id>/update")
 def update_campaign(campaign_id):
 
@@ -157,21 +156,13 @@ def update_campaign(campaign_id):
         }), 200
 
     except ValueError as e:
-        return jsonify({"message": str(e)}), 400
         campaign.rollback()
-
-
-    return jsonify(
-        {
-            "status": "success",
-            "title":  campaign.title,
-            "goal": campaign.goal,
-            "description": campaign.description
+        return jsonify({"message": str(e)}), 400
         
-        }), 200
 
 
-@views.delete("campaigns/<int:campaign_id>/delete")
+
+@views.delete("/campaigns/<int:campaign_id>/delete")
 def delete_campaign(campaign_id):
 
     campaign =  Campaign.query.filter(Campaign.id == campaign_id).first()
@@ -204,9 +195,6 @@ def delete_campaign(campaign_id):
 
 
 # ----------------ROuter for handling donation requests--------------
-
-#   TODO: make donation
-#  /donations//<campaign_id>
 
 @views.post('/campaigns/<int:campaign_id>/donate')
 def make_donation(campaign_id):
@@ -271,12 +259,75 @@ def get_users():
 
 
 
-# TODO: get users by id
-# GET users/<user_id>
+@views.get("users/<int:user_id>")
+def retrive_user_by_id(user_id):
+    
+    query = User.query.filter(User.id == user_id)
+
+    user = query.first()
+
+    if user is None:
+        return  jsonify(
+            {
+                "message": "User not found"
+            }
+        ), 404
+    
+
+    return jsonify({
+        "status": "success",
+        "user_id": user.id,
+        "name": user.name,
+        "user_email": user.email,
+        "user_bio": user.bio
+    }), 200
+
 
 
 # TODO: update users by id
 # PUT users/<user_id>
+
+@views.put('users/<int:user_id>/update')
+def update_user(user_id):
+    
+
+    user = User.query.filter(User.id == user_id).first()
+
+    if not user:
+        return jsonify({
+            "message": "user not found"
+        }), 404
+    
+
+    data = request.get_json()
+
+    name = data["name"]
+    bio = data["bio"]
+
+    try:
+        user.name = name
+        user.bio = bio
+
+        user.update()
+
+        return jsonify({
+
+            "status": "success",
+            "message": "user detail updated successfully",
+            "user_id": user.id,
+            "name": user.name,
+            "user_email": user.email,
+            "user_bio": user.bio
+    }), 200
+    
+    except:
+        user.rollback()
+        return jsonify({
+            "message": "Can not update user details, please try again."
+        })
+    
+
+
 
 # TODO: delete users by id
 #   DELETE users/<user_id>
