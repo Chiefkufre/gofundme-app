@@ -6,6 +6,7 @@ from api.conf.settings import settings
 from api.auth.auths import auths
 from api.routers.views import views
 from api.blog.blog import blog
+from api.routers.search import search
 
 
 def create_app_instance():
@@ -22,5 +23,6 @@ def create_app_instance():
     app.register_blueprint(auths, url_prefix="/{0}/auth".format(app_version))
     app.register_blueprint(blog, url_prefix="/{0}/blog".format(app_version))
     app.register_blueprint(views, url_prefix="/{0}".format(app_version))
-
+    app.register_blueprint(search, url_format="/{0}".format(app_version))
+    
     return app

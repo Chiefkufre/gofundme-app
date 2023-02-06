@@ -12,9 +12,23 @@ search = Blueprint("search", __name__)
 
 
 
-@search.post("/search/<str:q>")
+@search.get("/search/<q>")
 def search_app(q):
+    data = request.args.get("q")
 
-    data = request.args_json()
+    # print(data)
 
+    # query = data.replace(" ", "").lower()
 
+    campaigns = Campaign.query.filter(or_(Campaign.title.ilike("%" + query + "%"), Campaign.description.ilike("%" + query + "%"))).all()
+
+    results = []
+    for campaign in campaigns:
+        results.append({
+            "id": campaign.id,
+            "title": campaign.title,
+            "description": campaign.description,
+            "goal": campaign.goal,
+            "duration": campaign.duration
+        })
+    return {"results": results}
