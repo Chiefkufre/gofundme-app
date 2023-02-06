@@ -47,7 +47,8 @@ def create_campaign():
                     "title": campaign.title,
                     "goal": campaign.goal,
                     "description": campaign.description,
-                    "created_at": campaign.created_at,
+                    "created_at": campaign.created_at.strftime("%Y-%m-%d")
+                    
                 }
             ),
             201,
@@ -64,7 +65,7 @@ def create_campaign():
             "title": campaign.title,
             "goal": campaign.goal,
             "description": campaign.description,
-            "created_at": campaign.created_at,
+            "created_at": campaign.created_at.strftime("%Y-%m-%d")
         }
     )
 
@@ -98,7 +99,7 @@ def getCampaign():
             "duration": campaign.duration,
             "description": campaign.description,
             "user_id": campaign.user_id,
-            "created_at": campaign.created_at,
+            "created_at": campaign.created_at.strftime("%Y-%m-%d"),
             "isActive": campaign.isActive,
         }
 
@@ -132,7 +133,7 @@ def get_campaign_by_id(campaign_id):
                 "goal": campaign.goal,
                 "description": campaign.description,
                 "amt_raised": sum(donations),
-                "created_at": campaign.created_at,
+                "created_at": campaign.created_at.strftime("%Y-%m-%d"),
                 "user_id": campaign.user_id,
                 "isActive": campaign.isActive,
             }
@@ -379,7 +380,7 @@ def get_donations_by_campaign(campaign_id):
                     "id": donation.id or None,
                     "amount": donation.amount or None,
                     "Donor": user.name or None,
-                    "time": donation.created_at or None,
+                    "time": donation.created_at.strftime("%Y-%m-%d"),
                 }
             )
 
