@@ -1,14 +1,15 @@
 from flask import Flask
-from .database import setup_db
-from api.conf.config import Config, DevConfig, ProdConfig
-from api.conf.settings import settings
 
 from api.auth.auths import auths
-from api.routers.views import views
 from api.blog.blog import blog
+from api.conf.config import Config, DevConfig, ProdConfig
+from api.conf.settings import settings
+from api.database import setup_db
 from api.routers.search import search
+from api.routers.views import views
 
 
+# start application instance
 def create_app_instance():
     app = Flask(__name__)
     app.config.from_object(DevConfig)
