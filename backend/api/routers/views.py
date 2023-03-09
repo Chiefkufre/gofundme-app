@@ -10,6 +10,7 @@ from api.utils.validators import validate_title, validate_user
 
 views = Blueprint("views", __name__)
 
+
 # Create campaign endpoint
 @views.post("/campaigns/create")
 def create_campaign():
