@@ -3,16 +3,16 @@
   <head>
     <title> GofundMe Clone API</title>
     
-    <link rel="stylesheet" href="/api/static/css/index.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+
+    
   </head>
   <body>
     <header>
       <h1>Welcome to GofundMe Clone API</h1>
       <nav>
         <ul>
-          <li><a href="{{ url_for('index') }}">Home</a></li>
-          <li><a href="{{ url_for('about') }}">About</a></li>
-          <li><a href="{{ url_for('contact') }}">Contact</a></li>
+         
         </ul>
       </nav>
     </header>
