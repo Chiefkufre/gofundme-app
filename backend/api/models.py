@@ -62,6 +62,18 @@ class Campaign(db.Model):
     donations = db.relationship("Donation", backref="campaign", lazy=True)
     isActive = db.Column(Boolean, default=True)
 
+    def serialize(self):
+        return {
+            'id': self.id,
+            'title': self.title,
+            'goal': self.goal,
+            'duration': self.duration,
+            'description': self.description,
+            'user_id': self.user_id,
+            'created_at': self.created_at.strftime('%Y-%m-%d'),
+            'isActive': self.isActive
+        }
+
     def insert(self):
         db.session.add(self)
         db.session.commit()
@@ -94,6 +106,15 @@ class Donation(db.Model):
 
     # def __init__(self, amount):
     #     self.amount = amount
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'title': self.amount,
+            'user_id': self.user_id,
+            'campaign_id': self.user_id,
+            'created_at': self.created_at.strftime('%Y-%m-%d'),
+        }
 
     def insert(self):
 
