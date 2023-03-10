@@ -1,7 +1,7 @@
 # application pagination class
 
 from math import ceil
-from flask import url_for
+from flask import request, url_for
 
 def paginate(query, page=1, per_page=10):
     total = query.count()

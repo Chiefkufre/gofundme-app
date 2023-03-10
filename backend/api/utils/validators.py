@@ -24,3 +24,15 @@ def validate_email(email):
     user = User.query.filter(User.email == email).first()
     if user:
         raise ValueError("Email is already registered to another account")
+
+
+
+def validate_title_onUpdate(title, description):
+
+    if len(description) < 20:
+        raise ValueError("Description must be at least 20 characters long")
+
+    elif len(title) < 10:
+        raise ValueError("Title must be at least 10 characters long")
+    else:
+       pass

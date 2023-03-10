@@ -5,7 +5,8 @@ import validators
 import flask
 from flask import redirect, abort, Blueprint, flash, url_for, request, jsonify
 from api.models import User, Campaign, Donation, Message
-from api.utils.validators import validate_title, validate_user
+from api.utils.general import paginate
+from api.utils.validators import validate_title, validate_user, validate_title_onUpdate
 
 
 views = Blueprint("views", __name__)
@@ -75,7 +76,11 @@ def create_campaign():
 @views.get("/campaigns")
 def getCampaign():
 
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 1, type=int)
+
     campaigns = Campaign.query.filter(Campaign.isActive == True).all()
+    
 
     campaign_list = []
 
@@ -106,7 +111,7 @@ def getCampaign():
 
         campaign_list.append(campaign_data)
 
-    return campaign_list
+    return jsonify(campaign_list)
 
 
 # Endpoint to get campaign by id
@@ -176,7 +181,7 @@ def update_campaign(campaign_id):
         return jsonify({"message": "goal are required"}), 400
 
     try:
-        validate_title(title, description)
+        validate_title_onUpdate(title, description)
 
         # update
         campaign.title = title
@@ -191,9 +196,7 @@ def update_campaign(campaign_id):
             jsonify(
                 {
                     "status": "success",
-                    "title": campaign.title,
-                    "goal": campaign.goal,
-                    "description": campaign.description,
+                    "message": "Campaign updated successfully"
                 }
             ),
             200,
