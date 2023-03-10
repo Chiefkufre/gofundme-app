@@ -24,6 +24,7 @@ class User(db.Model):
     user_status = db.Column(db.String(20), default="pending")
     campaigns = db.relationship("Campaign", backref="user", lazy=True)
     donations = db.relationship("Donation", backref="user", lazy=True)
+    is_active = db.Column(Boolean, default=True)
 
     def insert(self):
         db.session.add(self)
