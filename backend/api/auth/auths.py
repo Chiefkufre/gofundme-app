@@ -47,12 +47,25 @@ def register_user():
     bio = data["bio"]
 
     try:
-        if not all([email, name, bio, password]):
-            return jsonify({"message": "Missing required fields"}), 400
+        if not email:
+            return jsonify({"message": "Email is required"}), 400
+        if not name:
+            return jsonify({"message": "Name is required"}), 400
+        if not bio:
+            return jsonify({"message": "Bio is required"}), 400
+        if not password:
+            return jsonify({"message": "Password is required"}), 400
 
         validate_email(email)
+        
 
-        new_user = User(**data)
+        salt = os.urandom(16)
+        hashed_password = generate_password_hash(password, salt=salt)
+
+        new_password = generate_password_hash(password)
+        
+        new_user = User(email=email, password=new_password, name=name, bio=bio)
+
         new_user.insert()
 
         return (
@@ -76,6 +89,16 @@ def register_user():
 # function to handle posting to login route
 @auths.post("/login")
 def login_user():
+    
+    data = request.get_json()
+
+    email  = data["email"]
+    password = data["password"]
+
+    user = User.query.filter(User.email == email).first()
+
+    check_password = check_password_hash(user.password, password)
+
 
     return
 
