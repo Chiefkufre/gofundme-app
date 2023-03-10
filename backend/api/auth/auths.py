@@ -1,5 +1,6 @@
 import flask
 import validators
+import os
 
 from flask import (
     Blueprint,
@@ -12,7 +13,7 @@ from flask import (
     jsonify,
 )
 from flask_login import login_required, login_user, logout_user, current_user
-from werkzeug.security import check_password_hash, generate_password_hash
+from werkzeug.security import check_password_hash, generate_password_hash, gen_salt
 from api.models import User
 from api.utils.validators import validate_email
 
@@ -57,10 +58,9 @@ def register_user():
             return jsonify({"message": "Password is required"}), 400
 
         validate_email(email)
-        
 
-        salt = os.urandom(16)
-        hashed_password = generate_password_hash(password, salt=salt)
+
+        hashed_password = generate_password_hash(password)
 
         new_password = generate_password_hash(password)
         
@@ -88,7 +88,7 @@ def register_user():
 
 # function to handle posting to login route
 @auths.post("/login")
-def login_user():
+def signin_user():
     
     data = request.get_json()
 
@@ -96,12 +96,19 @@ def login_user():
     password = data["password"]
 
     user = User.query.filter(User.email == email).first()
-
+    print(user.password)
     check_password = check_password_hash(user.password, password)
 
+    if check_password:
+        login_user(user, remember=True)
+        return redirect(url_for("index.home")), 200
 
-    return
-
+    else:
+        return jsonify(
+           { 
+            "message": "incorrect login detaila"
+           }
+        ), 403
 
 # Logout control center
 
