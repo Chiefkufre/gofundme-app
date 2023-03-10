@@ -19,6 +19,9 @@ build/
 .idea/
 docs/_build/
 .vscode
+*.vscode
+.ipynb_checkpoints
+.ipynb
 
 # Coverage reports
 htmlcov/

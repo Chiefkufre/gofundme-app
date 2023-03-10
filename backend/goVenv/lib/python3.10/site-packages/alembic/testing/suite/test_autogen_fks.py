@@ -488,12 +488,8 @@ class IncludeHooksTest(AutogenFixtureTest, TestBase):
             Column("x", Integer),
             Column("y", Integer),
         )
-        t1.append_constraint(
-            ForeignKeyConstraint([t1.c.x], [ref.c.id], name="fk1")
-        )
-        t1.append_constraint(
-            ForeignKeyConstraint([t1.c.y], [ref.c.id], name="fk2")
-        )
+        t1.append_constraint(ForeignKeyConstraint([t1.c.x], [ref.c.id], name="fk1"))
+        t1.append_constraint(ForeignKeyConstraint([t1.c.y], [ref.c.id], name="fk2"))
 
         ref = Table(
             "ref",
@@ -577,12 +573,8 @@ class IncludeHooksTest(AutogenFixtureTest, TestBase):
             Column("x", Integer),
             Column("y", Integer),
         )
-        t2.append_constraint(
-            ForeignKeyConstraint([t2.c.x], [ref.c.id], name="fk1")
-        )
-        t2.append_constraint(
-            ForeignKeyConstraint([t2.c.y], [ref.c.id], name="fk2")
-        )
+        t2.append_constraint(ForeignKeyConstraint([t2.c.x], [ref.c.id], name="fk1"))
+        t2.append_constraint(ForeignKeyConstraint([t2.c.y], [ref.c.id], name="fk2"))
 
         def include_object(object_, name, type_, reflected, compare_to):
             return not (
@@ -594,9 +586,7 @@ class IncludeHooksTest(AutogenFixtureTest, TestBase):
 
         diffs = self._fixture(m1, m2, object_filters=include_object)
 
-        self._assert_fk_diff(
-            diffs[0], "add_fk", "t", ["y"], "ref", ["id"], name="fk2"
-        )
+        self._assert_fk_diff(diffs[0], "add_fk", "t", ["y"], "ref", ["id"], name="fk2")
         eq_(len(diffs), 1)
 
     @combinations(("object",), ("name",))
@@ -623,12 +613,8 @@ class IncludeHooksTest(AutogenFixtureTest, TestBase):
             Column("y", Integer),
             Column("z", Integer),
         )
-        t1.append_constraint(
-            ForeignKeyConstraint([t1.c.x], [r1a.c.a], name="fk1")
-        )
-        t1.append_constraint(
-            ForeignKeyConstraint([t1.c.y], [r1a.c.a], name="fk2")
-        )
+        t1.append_constraint(ForeignKeyConstraint([t1.c.x], [r1a.c.a], name="fk1"))
+        t1.append_constraint(ForeignKeyConstraint([t1.c.y], [r1a.c.a], name="fk2"))
 
         Table(
             "ref_a",
@@ -649,14 +635,10 @@ class IncludeHooksTest(AutogenFixtureTest, TestBase):
             Column("z", Integer),
         )
         t2.append_constraint(
-            ForeignKeyConstraint(
-                [t2.c.x, t2.c.z], [r2b.c.a, r2b.c.b], name="fk1"
-            )
+            ForeignKeyConstraint([t2.c.x, t2.c.z], [r2b.c.a, r2b.c.b], name="fk1")
         )
         t2.append_constraint(
-            ForeignKeyConstraint(
-                [t2.c.y, t2.c.z], [r2b.c.a, r2b.c.b], name="fk2"
-            )
+            ForeignKeyConstraint([t2.c.y, t2.c.z], [r2b.c.a, r2b.c.b], name="fk2")
         )
 
         if hook_type == "object":
@@ -805,9 +787,7 @@ class AutogenerateFKOptionsTest(AutogenFixtureTest, TestBase):
 
     def test_nochange_ondelete(self):
         """test case sensitivity"""
-        diffs = self._fk_opts_fixture(
-            {"ondelete": "caSCAde"}, {"ondelete": "CasCade"}
-        )
+        diffs = self._fk_opts_fixture({"ondelete": "caSCAde"}, {"ondelete": "CasCade"})
         eq_(diffs, [])
 
     @config.requirements.fk_onupdate_is_reflected
@@ -863,9 +843,7 @@ class AutogenerateFKOptionsTest(AutogenFixtureTest, TestBase):
     @config.requirements.fk_onupdate
     def test_nochange_onupdate(self):
         """test case sensitivity"""
-        diffs = self._fk_opts_fixture(
-            {"onupdate": "caSCAde"}, {"onupdate": "CasCade"}
-        )
+        diffs = self._fk_opts_fixture({"onupdate": "caSCAde"}, {"onupdate": "CasCade"})
         eq_(diffs, [])
 
     @config.requirements.fk_ondelete_restrict
@@ -910,9 +888,7 @@ class AutogenerateFKOptionsTest(AutogenFixtureTest, TestBase):
 
         # note that this is impossible to detect if we change
         # from RESTRICT to NO ACTION on MySQL.
-        diffs = self._fk_opts_fixture(
-            {"ondelete": "restrict"}, {"ondelete": "cascade"}
-        )
+        diffs = self._fk_opts_fixture({"ondelete": "restrict"}, {"ondelete": "cascade"})
         self._assert_fk_diff(
             diffs[0],
             "remove_fk",
@@ -942,9 +918,7 @@ class AutogenerateFKOptionsTest(AutogenFixtureTest, TestBase):
 
         # note that this is impossible to detect if we change
         # from RESTRICT to NO ACTION on MySQL.
-        diffs = self._fk_opts_fixture(
-            {"onupdate": "restrict"}, {"onupdate": "cascade"}
-        )
+        diffs = self._fk_opts_fixture({"onupdate": "restrict"}, {"onupdate": "cascade"})
         self._assert_fk_diff(
             diffs[0],
             "remove_fk",

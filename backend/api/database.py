@@ -5,7 +5,6 @@ from flask_migrate import Migrate
 db = SQLAlchemy()
 
 
-
 # database helper class with some app config
 def setup_db(app):
     db.app = app
@@ -13,7 +12,6 @@ def setup_db(app):
     db.create_all()
     migrate = Migrate(app, db)
 
+
 def start_dependencies(app):
     pass
-
-
