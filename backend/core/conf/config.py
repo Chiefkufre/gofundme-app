@@ -10,8 +10,7 @@ from decouple import config
 # Use this to build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-from flask_assets import Environment, Bundle
-from core.utils.assets import bundles
+
 
 from core.conf.settings import settings
 
