@@ -1,4 +1,4 @@
-from api.main import create_app_instance
+from core.main import create_app_instance
 
 app = create_app_instance()
 
