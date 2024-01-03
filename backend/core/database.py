@@ -5,7 +5,7 @@ from flask_migrate import Migrate
 db = SQLAlchemy()
 
 
-# database helper class with some app config
+# database helper class for database initialization
 def setup_db(app):
     db.app = app
     db.init_app(app)

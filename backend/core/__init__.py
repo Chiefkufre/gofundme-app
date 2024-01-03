@@ -1,1 +1,1 @@
-from .util import assets
+from core.utils import assets

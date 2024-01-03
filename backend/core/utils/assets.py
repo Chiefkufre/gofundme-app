@@ -1,6 +1,4 @@
-from flask.ext.assets import Bundle, Environment
-from core.main import create_app_instance
-
+from flask_assets import Environment, Bundle
 
 bundles = {
 
@@ -44,7 +42,8 @@ bundles = {
     
 }
 
-assets = Environment(create_app_instance)
 
-assets.register(bundles)
-
+def configure_assets(app):
+    assets = Environment(app)
+    assets.register(bundles)
+    return assets

@@ -1,5 +1,7 @@
 from flask import Flask
 
+from core.utils.assets import configure_assets
+
 from core.blog.blog import blog
 from core.conf.config import Config, DevConfig, ProdConfig
 from core.conf.settings import settings
@@ -20,7 +22,7 @@ def create_app_instance():
     # registring app_context
     with app.app_context():
         setup_db(app)
-
+        configure_assets(app)
     app_version = settings.API_VERSION
 
     # registring routes
