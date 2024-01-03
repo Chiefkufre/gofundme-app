@@ -3,7 +3,7 @@ import json
 import validators
 
 import flask
-from flask import redirect, abort, Blueprint, flash, url_for, request, jsonify
+from flask import redirect, abort, Blueprint, flash, url_for, request, jsonify, render_template
 from core.models import User, Campaign, Donation, Message
 from core.utils.general import paginate
 from core.utils.validators import validate_title, validate_user, validate_title_onUpdate
@@ -15,7 +15,6 @@ views = Blueprint("views", __name__)
 # Create campaign endpoint
 @views.post("/campaigns/create")
 def create_campaign():
-
     data = request.get_json()
 
     title = data.get("title")
@@ -30,35 +29,27 @@ def create_campaign():
     try:
         # Validate data
         validate_user(user_id)
-
-        """
-        Validate_title: validate title and description
-
-        rtype: len()
-        """
         validate_title(title, description)
 
         campaign = Campaign(**data)
         campaign.insert()
 
-        return (
-            jsonify(
-                {
-                    "message": "Campaign created successfully",
-                    "id": campaign.id,
-                    "title": campaign.title,
-                    "goal": campaign.goal,
-                    "description": campaign.description,
-                    "created_at": campaign.created_at.strftime("%Y-%m-%d")
-                    
-                }
-            ),
-            201,
-        )
+        response_data = {
+            "message": "Campaign created successfully",
+            "id": campaign.id,
+            "title": campaign.title,
+            "goal": campaign.goal,
+            "description": campaign.description,
+            "created_at": campaign.created_at.strftime("%Y-%m-%d")
+        }
+
+        if request.accept_mimetypes.best_match(['application/json', 'text/html']) == 'application/json':
+            return jsonify(response_data), 201
+        else:
+            return render_template('user/campaigns.html', data=response_data), 201
 
     except ValueError as e:
         return jsonify({"message": str(e)}), 400
-        campaign.rollback()
 
     return jsonify(
         {
@@ -74,34 +65,23 @@ def create_campaign():
 
 # Endpoint to get all campaign objects
 @views.get("/campaigns")
-def getCampaign():
-
+def get_campaign():
     page = request.args.get('page', 1, type=int)
     per_page = request.args.get('per_page', 1, type=int)
 
     campaigns = Campaign.query.filter(Campaign.isActive == True).all()
-    
 
     campaign_list = []
 
     for campaign in campaigns:
-
-        campaign_donation = campaign.donations
-
-        donations = []
-
-        """
-        Iteration to grab donation made
-        
-        """
-        for donation in campaign.donations:
-            donations.append(donation.amount)
+        donations = [donation.amount for donation in campaign.donations]
+        total_amount_raised = sum(donations)
 
         campaign_data = {
             "id": campaign.id,
             "title": campaign.title,
             "goal": campaign.goal,
-            "amt_raised": sum(donations),
+            "amt_raised": total_amount_raised,
             "duration": campaign.duration,
             "description": campaign.description,
             "user_id": campaign.user_id,
@@ -111,41 +91,42 @@ def getCampaign():
 
         campaign_list.append(campaign_data)
 
-    return jsonify(campaign_list)
+    response_data = {"campaigns": campaign_list}
+
+    if request.accept_mimetypes.best_match(['application/json', 'text/html']) == 'application/json':
+        return jsonify(response_data)
+    else:
+        return render_template("front/listing.html", data=response_data)
+
 
 
 # Endpoint to get campaign by id
 @views.get("/campaigns/<int:campaign_id>")
 def get_campaign_by_id(campaign_id):
+    campaign = Campaign.query.get(campaign_id)
 
-    search = Campaign.query.filter(Campaign.id == campaign_id)
-    campaign = search.first()
+    if campaign is not None:
+        donations = [donation.amount for donation in campaign.donations]
+        total_amount_raised = sum(donations)
 
-    if campaign != None:
+        response_data = {
+            "Status": "success",
+            "id": campaign.id,
+            "title": campaign.title,
+            "goal": campaign.goal,
+            "description": campaign.description,
+            "amt_raised": total_amount_raised,
+            "created_at": campaign.created_at.strftime("%Y-%m-%d"),
+            "user_id": campaign.user_id,
+            "isActive": campaign.isActive,
+        }
 
-        """
-        Iteration to grab donation made
-
-        """
-        for donation in campaign.donations:
-            donations = []
-            donations.append(donation.amount)
-
-        return jsonify(
-            {
-                "Status": "success",
-                "id": campaign.id,
-                "title": campaign.title,
-                "goal": campaign.goal,
-                "description": campaign.description,
-                "amt_raised": sum(donations),
-                "created_at": campaign.created_at.strftime("%Y-%m-%d"),
-                "user_id": campaign.user_id,
-                "isActive": campaign.isActive,
-            }
-        )
+        if request.accept_mimetypes.best_match(['application/json', 'text/html']) == 'application/json':
+            return jsonify(response_data)
+        else:
+            return render_template('campaign_detail.html', data=response_data)
     else:
-        abort(404, description="campaign not found")
+        abort(404, description="Campaign not found")
 
 
 # Endpoint to update campaign

@@ -7,4 +7,4 @@ index = Blueprint('index', __name__)
 # home view
 @index.get("/")
 def home():
-    return render_template("api/index.html")
+    return render_template("api/api.html")
