@@ -26,6 +26,15 @@ class User(db.Model):
     donations = db.relationship("Donation", backref="user", lazy=True)
     is_active = db.Column(Boolean, default=True)
 
+
+    fields = ["id","name", "email", "bio", "profile_picture", 
+              "password", "created_at", "updated_at", "user_status",
+                "campaigns", "donatins", "is_active"]  
+    @classmethod
+    def get_fields(cls):
+        # Retrieve the list of fields from the class attribute
+        return cls.fields
+    
     def insert(self):
         db.session.add(self)
         db.session.commit()
@@ -75,6 +84,15 @@ class Campaign(db.Model):
             'isActive': self.isActive
         }
 
+    fields = ['id', 'title', 'goal', 'duration', 'description', 
+              'user_id', 'created_at','isActive'
+            ]  
+    
+    @classmethod
+    def get_fields(cls):
+        # Retrieve the list of fields from the class attribute
+        return cls.fields
+
     def insert(self):
         db.session.add(self)
         db.session.commit()
@@ -116,7 +134,16 @@ class Donation(db.Model):
             'campaign_id': self.user_id,
             'created_at': self.created_at.strftime('%Y-%m-%d'),
         }
-
+    
+    fields = ['id', 'title', 
+              'user_id', 'campaign_id', 
+            ]  
+    
+    @classmethod
+    def get_fields(cls):
+        # Retrieve the list of fields from the class attribute
+        return cls.fields
+    
     def insert(self):
 
         db.session.add(self)
@@ -152,6 +179,15 @@ class Message(db.Model):
         self.email = email
         self.subject = subject
         self.message = message
+    
+    fields = ['id', 'email', 
+              'subject', 'message', 'created_at',
+            ]  
+    
+    @classmethod
+    def get_fields(cls):
+        # Retrieve the list of fields from the class attribute
+        return cls.fields
 
     # simple helper method to persist data into the database
     def insert(self):
