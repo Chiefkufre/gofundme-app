@@ -27,7 +27,7 @@ def validate_email(email):
 
 
 
-def validate_title_onUpdate(title, description):
+def validate_title_on_update(title, description):
 
     if len(description) < 20:
         raise ValueError("Description must be at least 20 characters long")
