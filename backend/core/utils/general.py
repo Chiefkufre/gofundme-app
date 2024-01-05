@@ -29,9 +29,11 @@ def paginate(query, page=1, per_page=10):
 def format_response(response_data, status_code=200, template_name=None):
     if request.is_json:
         return jsonify(response_data), status_code
-    else:
+    elif template_name:
         return render_template(template_name + '.html', data=response_data), status_code
-   
+    else:
+        # For form requests without a template, return a simple HTTP response
+       return response_data, status_code
     
 
 
