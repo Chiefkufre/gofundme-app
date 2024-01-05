@@ -13,21 +13,29 @@ from core.utils.validators import validate_title, validate_user, validate_title_
 campaigns = Blueprint("campaigns", __name__)
 
 # Content negotiation logic
-@campaigns.before_request
-def content_negotiation():
-    if request.accept_mimetypes.best_match(['application/json', 'text/html']) == 'application/json':
-        request.is_json = True
-    else:
-        request.is_json = False
+# @campaigns.before_request
+# def content_negotiation():
+#     # Set request.is_json based on the content type in the Accept header
+#     request.is_json = request.accept_mimetypes.best_match(['application/json', 'text/html']) == 'application/json'
+
+#     # Check if the request's content type is JSON or form-urlencoded
+#     if not request.is_json:
+#         request.is_json = request.content_type == 'application/x-www-form-urlencoded'
+
+
 
 
 class ItemAPI(MethodView):
     init_every_request = False
 
-    def __init__(self, model, template_name):
+    def __init__(self, model):
         self.model = model
         self.validator = generate_validator(model)
-        self.template_name = template_name
+        self.template_name = None  # Initialize to None
+
+    def dispatch_request(self, *args, **kwargs):
+        self.template_name = kwargs.get('template_name', None)
+        return super().dispatch_request(*args, **kwargs)
 
     def update_item(self, item, data):
         try:
@@ -38,6 +46,17 @@ class ItemAPI(MethodView):
             item.rollback()
             # TODO: Add logging logic here
             return False, f"Failed to update {item} details. {str(e)}"
+        
+    def delete_item(self, item, response_data, template_name):
+        try:
+            item.delete()
+            response_data['message'] = f"Successfully deleted {item} details"
+            return format_response(response_data, status_code=204, template_name=template_name)
+        except Exception as e:
+            item.rollback()
+            # TODO: Add logging logic here
+            response_data['message'] = f"Failed to delete {item} details. {str(e)}"
+            return format_response(response_data, status_code=500, template_name=template_name)
 
 
     def _get_item(self, id):
@@ -45,7 +64,7 @@ class ItemAPI(MethodView):
 
     def get(self, id):
         item = self._get_item(id)
-
+        print(item)
         # Retrieve fields dynamically
         fields = self.model.get_fields()
 
@@ -70,7 +89,7 @@ class ItemAPI(MethodView):
 
         if request.is_json:
             # Handle JSON request
-            errors = self.validator.validate_json_request(self, request.json)
+            errors = self.validator.validate_json_request(request.json)
 
             if errors:
                 return jsonify(errors), 400
@@ -82,144 +101,144 @@ class ItemAPI(MethodView):
         
         else:
             # Handle form request
-            errors = self.validator.validate_form(self, request.form)
+            errors = self.validator.validate_form_request(request.form)
 
             if errors:
-                return jsonify(errors), 400
-
+                response_data['message'] = f"Failed to create {self.model.__name__}. {str(errors)}"
+                status_code = 400
             if "title" in request.form and "description" in request.form:
                 validate_title_on_update(request.form['title'], request.form['description'])
 
-            success, message = self.update_item(item, request.json)
+            success, message = self.update_item(item, request.form)
             template_name = self.template_name
             
         response_data['message'] = message
         return format_response(response_data, status_code=500, template_name=template_name) if not success else format_response(response_data, template_name=template_name)
     
 
-# Create campaign endpoint
-@campaigns.post("/campaigns/create")
-def create_campaign():
-    data = request.get_json()
+    def delete(self, id):
+        item = self._get_item(id)
 
-    title = data.get("title")
-    goal = data.get("goal")
-    description = data.get("description")
-    duration = data.get("duration")
-    user_id = data.get("user_id")
+        response_data = {}
+        template_name = self.template_name
 
-    if not all([title, goal, description, user_id]):
-        return jsonify({"message": "Missing required fields"}), 400
+        if item:
+            return self.delete_item(item, response_data, template_name)
 
-    try:
-        # Validate data
-        validate_user(user_id)
-        validate_title(title, description)
 
-        campaign = Campaign(**data)
-        campaign.insert()
+class GroupAPI(MethodView):
+    init_every_request = False
 
-        response_data = {
-            "message": "Campaign created successfully",
-            "id": campaign.id,
-            "title": campaign.title,
-            "goal": campaign.goal,
-            "description": campaign.description,
-            "created_at": campaign.created_at.strftime("%Y-%m-%d")
-        }
+    def __init__(self, model, template_name=None):
+        self.model = model
+        self.validator = generate_validator(model, create=True)
+        self.template_name = None  # Initialize to None
 
-        if request.accept_mimetypes.best_match(['application/json', 'text/html']) == 'application/json':
-            return jsonify(response_data), 201
+    
+    def dispatch_request(self, *args, **kwargs):
+        self.template_name = kwargs.get('template_name', None)
+        return super().dispatch_request(*args, **kwargs)
+    
+    def create_item(self, data, is_json):
+        response_data = {}
+
+        # Validate JSON or form request
+        errors = self.validator.validate_json_request(data) if is_json else self.validator.validate_form_request(data)
+
+        if errors:
+            # Include form validation errors in the message
+            error_message = f"Failed to create {self.model.__name__}. Please check the form for errors:\n"
+            error_message += "\n".join(errors.values())
+            response_data['message'] = error_message
+            status_code = 400  # Bad Request
         else:
-            return render_template('user/campaigns.html', data=response_data), 201
+            # No form errors, proceed with creating the item
+            if "title" in data and "description" in data:
+                validation_error = validate_title_on_update(data['title'], data['description'])
+                if validation_error:
+                    response_data["message"] = validation_error
+                    status_code = 400
 
-    except ValueError as e:
-        return jsonify({"message": str(e)}), 400
+            try:
+                item = self.model(**data)
+                item.insert()
+                response_data['message'] = f"{self.model.__name__} created successfully"
+                status_code = 201  # Created
+            except Exception as e:
+                # Handle specific exceptions or log the error
+                response_data['message'] = f"Failed to create {self.model.__name__}. {str(e)}"
+                status_code = 500  # Internal Server Error
 
-    return jsonify(
-        {
-            "Status": "success",
-            "id": campaign.id,
-            "title": campaign.title,
-            "goal": campaign.goal,
-            "description": campaign.description,
-            "created_at": campaign.created_at.strftime("%Y-%m-%d")
-        }
-    )
+        return response_data, status_code
 
-
-# Endpoint to get all campaign objects
-@campaigns.get("/campaigns")
-def get_campaign():
-    page = request.args.get('page', 1, type=int)
-    per_page = request.args.get('per_page', 1, type=int)
-
-    campaigns = Campaign.query.filter(Campaign.isActive == True).all()
-
-    campaign_list = []
-
-    for campaign in campaigns:
-        donations = [donation.amount for donation in campaign.donations]
-        total_amount_raised = sum(donations)
-
-        campaign_data = {
-            "id": campaign.id,
-            "title": campaign.title,
-            "goal": campaign.goal,
-            "amt_raised": total_amount_raised,
-            "duration": campaign.duration,
-            "description": campaign.description,
-            "user_id": campaign.user_id,
-            "created_at": campaign.created_at.strftime("%Y-%m-%d"),
-            "isActive": campaign.isActive,
-        }
-
-        campaign_list.append(campaign_data)
-
-    response_data = {"campaigns": campaign_list}
-
-    if request.accept_mimetypes.best_match(['application/json', 'text/html']) == 'application/json':
-        return jsonify(response_data)
-    else:
-        return render_template("front/listing.html", data=response_data)
-
-
-
-
-
-#  Endpoint to delete campaign
-@campaigns.delete("/campaigns/<int:campaign_id>/delete")
-def delete_campaign(campaign_id):
-    """""delete campaign
     
-    Keyword arguments:
-    argument -- campaign_id
-    Return: campaign_id, campaign_title
-    """
-    
+    def get(self):
+        # Retrieve the page and per_page values from the request arguments
+        page = request.args.get('page', default=1, type=int)
+        per_page = request.args.get('per_page', default=10, type=int)
 
-    campaign = Campaign.query.filter(Campaign.id == campaign_id).first()
+        # Paginate the query
+        pagination_data = paginate(
+                                self.model.query.filter_by(is_active=True),
+                                page=page, 
+                                per_page=per_page
+                                )
 
-    if campaign == None:
-        return jsonify({"message": "Campaign not found"}), 404
+        # Construct a response data dictionary
+        response_data = {
+            'items': pagination_data['items'],
+            'pagination': {
+                'page': pagination_data['page'],
+                'per_page': pagination_data['per_page'],
+                'total_pages': pagination_data['pages'],
+                'total_items': pagination_data['total'],
+                'prev_url': pagination_data['prev_url'],
+                'next_url': pagination_data['next_url'],
+            }
+        }
 
-    # TODO: check user identity
-    try:
-        campaign.delete()
-        return (
-            jsonify({"status": "success", "message": "Campaign deleted successfully"}),
-            200,
-        )
+        # Use the format_response function to handle content negotiation
+        return format_response(response_data, template_name=self.template_name)
 
-    except:
-        campaign.rollback()
+  
 
-    return jsonify({"id": campaign.id, "title": campaign.title})
+    def post(self):
+        if request.is_json:
+            response_data, status_code = self.create_item(request.json, is_json=True)
+        else:
+            response_data, status_code = self.create_item(request.form, is_json=False)
 
-
+        return format_response(response_data, status_code=status_code, template_name=self.template_name)
 
 
-# ----------------Router for handling donation requests--------------
+
+
+# Define your routes and template names
+routes = [
+    {"url": "/campaigns/create", "template": "create.html", "methods": [ "POST",]},
+    {"url": "/campaigns/", "template": "front/listing.html", "methods": ["GET"]},
+    {"url": "/campaigns/<int:id>", "template": "front/single_listing.html", "methods": ["GET", "PATCH", "DELETE"]},
+
+    {"url": "/users/", "template": "user/dashboard.html", "methods": ["GET"]},
+    {"url": "/users/<int:id>", "template": "profile.html", "methods": ["GET", "DELETE", "PATCH"]},
+]
+
+
+
+# Register API routes
+def register_api(app, model, name, routes):
+    group = GroupAPI.as_view(f"{name}-group", model=model)
+    item = ItemAPI.as_view(f"{name}-item", model=model)
+
+    for route in routes:
+        if "id" in route["url"]:
+            app.add_url_rule(route["url"], view_func=item, methods=route["methods"])
+        else:
+            app.add_url_rule(route["url"], view_func=group, methods=route["methods"])
+
+# Example usage (assuming `app` is the Flask app instance)
+register_api(campaigns, Campaign, "campaigns", routes[0:3])  # Register routes for campaigns
+register_api(campaigns, User, "users", routes[3:])  # Register routes for users
 
 # Endpoint to make donation
 
@@ -321,78 +340,10 @@ def get_donations_by_campaign(campaign_id):
         return jsonify({"message": "No donation for this campaign yet"})
 
 
-# -------------------Routers for Users Dashboard-----------------
-@campaigns.get("/users")
-def get_users():
 
-    user_list = []
-    users = User.query.all()
-
-    for user in users:
-
-        user_data = {}
-
-        user_data["id"] = (user.id,)
-        user_data["name"] = user.name
-        user_data["email"] = (user.email,)
-        user_data["bio"] = user.bio
-
-        user_list.append(user_data)
-
-    return user_list
-
-
-
-    query = User.query.filter(User.id == user_id)
-
-    user = query.first()
-
-    if user is None:
-        return jsonify({"message": "User not found"}), 404
-
-    return (
-        jsonify(
-            {
-                "status": "success",
-                "user_id": user.id,
-                "name": user.name,
-                "user_email": user.email,
-                "user_bio": user.bio,
-            }
-        ),
-        200,
-    )
 
 
    
-
-@campaigns.delete("users/<int:user_id>/delete")
-def delete_user(user_id):
-
-    user = User.query.filter(User.id == user_id).first()
-
-    if not user:
-        return jsonify({"message": "user not found"}), 404
-
-    try:
-
-        # TODO: check for user identity
-        user.delete()
-
-        return (
-            jsonify(
-                {
-                    "status": "success",
-                    "message": "user deleted successfully",
-                }
-            ),
-            200,
-        )
-
-    except:
-        user.rollback()
-        return jsonify({"message": "Can not delete user, please try again."})
-
 
 """Update"""
 # "/campaigns/<int:campaign_id>/update" - campaign
@@ -401,3 +352,11 @@ def delete_user(user_id):
 
 """Get"""
 # users/<int:user_id>" -user
+
+# DELETE
+# "/campaigns/<int:campaign_id>/delete"
+# "users/<int:user_id>/delete"
+
+# GROUP API
+#  /campaigns/ - get
+# "/users"
