@@ -1,7 +1,7 @@
 from core.models import User, Campaign, Donation, Message
 
 
-class Validator:
+class PlatformValidator:
     def __init__(self, model=None, create=False):
         self.model = model
         self.create = create
