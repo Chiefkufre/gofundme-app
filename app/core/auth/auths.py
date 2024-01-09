@@ -15,12 +15,11 @@ from flask import (
 from flask_login import login_required, login_user, logout_user, current_user
 from werkzeug.security import check_password_hash, generate_password_hash, gen_salt
 from core.models import User
-from core.utils.validators import validate_email
-
+from core.utils.validators import PlatformValidator
 
 auths = Blueprint("auths", __name__)
 
-
+validators = PlatformValidator(User)
 @auths.post("/register")
 def register_user():
 
@@ -57,7 +56,7 @@ def register_user():
         if not password:
             return jsonify({"message": "Password is required"}), 400
 
-        validate_email(email)
+        validators.validate_email(email)
 
 
         hashed_password = generate_password_hash(password)

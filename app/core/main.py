@@ -4,10 +4,10 @@ from core.utils.assets import configure_assets
 
 from core.conf.config import Config, DevConfig, ProdConfig
 from core.conf.settings import settings
-from core.database import setup_db
-from core.web.routes.index import index
-from core.web.routes.search import search
-from core.web.routes.campaign import campaigns
+from core.database.database import setup_db
+from core.web.controllers.index import index
+from core.web.controllers.search import search
+from core.web.controllers.campaign import views
 
 
 from core.auth.auths import auths
@@ -25,7 +25,7 @@ def create_app_instance():
     app_version = settings.API_VERSION
 
     # registring routes
-    app.register_blueprint(campaigns, url_prefix="/")
+    app.register_blueprint(views, url_prefix="/")
     app.register_blueprint(index, url_prefix="/{0}/api".format(app_version))
     app.register_blueprint(auths, url_prefix="/{0}/auth".format(app_version))
     app.register_blueprint(search, url_format="/{0}".format(app_version))

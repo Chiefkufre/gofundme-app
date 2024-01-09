@@ -1,5 +1,6 @@
 from flask_assets import Environment, Bundle
 
+
 bundles = {
 
     'api_js': Bundle(

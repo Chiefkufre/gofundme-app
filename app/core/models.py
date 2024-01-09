@@ -1,17 +1,24 @@
 from datetime import datetime
 from sqlalchemy import DateTime, Boolean
 from flask_migrate import Migrate
-from core.database import db
+from core.database.database import db
 
 
 # Database ORM
 
 class UpdateFromDataMixin:
     def update_from_data(self, data):
-        # Update model attributes from data (JSON or form data)
-        for key, value in data.items():
-            if hasattr(self, key):
-                setattr(self, key, value)
+            # Update model attributes from data (JSON or form data)
+            for key, value in data.items():
+                if hasattr(self, key):
+                    if key == 'created_at':
+                        # Convert 'created_at' to datetime before setting
+                        value = datetime.strptime(value, '%Y-%m-%d')
+                    setattr(self, key, value)
+
+            # Commit changes after updating all attributes
+            db.session.commit()
+
     
     def update_from_request(self, request_data):
         # Delegate to the generic update method
@@ -102,13 +109,14 @@ class Campaign(db.Model, UpdateFromDataMixin):
             'goal': self.goal,
             'duration': self.duration,
             'description': self.description,
-            'user_id': self.user_id,
+            'donations':[donate.serialize() for donate in self.donations],
+            'created_by': self.user_id,
             'created_at': self.created_at.strftime('%Y-%m-%d'),
-            'isActive': self.is_active
+            'is_active': self.is_active
         }
 
     fields = ['id', 'title', 'goal', 'duration', 'description', 
-              'user_id', 
+              'user_id', "donations", "created_at", "is_active"
             ]  
     
     @classmethod
@@ -152,13 +160,13 @@ class Donation(db.Model, UpdateFromDataMixin):
     def serialize(self):
         return {
             'id': self.id,
-            'title': self.amount,
+            'amount': self.amount,
             'user_id': self.user_id,
-            'campaign_id': self.user_id,
+            'campaign_id': self.campaign_id,
             'created_at': self.created_at.strftime('%Y-%m-%d'),
         }
     
-    fields = ['id', 'title', 
+    fields = ['id', 'amount', 
               'user_id', 'campaign_id', 
             ]  
     

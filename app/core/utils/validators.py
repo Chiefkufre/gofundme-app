@@ -2,9 +2,9 @@ from core.models import User, Campaign, Donation, Message
 
 
 class PlatformValidator:
-    def __init__(self, model=None, create=False):
+    def __init__(self, model=None, is_create=True):
         self.model = model
-        self.create = create
+        self.create = is_create
 
     def validate_title(self, title, description):
         """Validates title length, uniqueness (for creation), and description length."""
@@ -27,9 +27,6 @@ class PlatformValidator:
         if User.query.filter(User.email == email).first():
             raise ValueError("Email is already registered to another account")
 
-    def validate_title_on_update(self, title, description):
-        """Validates title and description lengths for updates."""
-        self.validate_title(title, description)  # Reuse title validation logic
 
     def validate_json_request(self, data):
         """Validates required fields in a JSON request."""

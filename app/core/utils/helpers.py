@@ -33,29 +33,42 @@ def _get_item(model, id):
     return model.query.get_or_404(id)
 
 def get_item_data(model, id) -> dict:
-    """Retrieves item data based on id
+    """Retrieves item data based on id, including total donations if applicable.
 
     Args:
         model: The model to retrieve data from.
-        id: the specific item identity.
+        id: The specific item identity.
 
     Returns:
-        A dictionary containing the specified item and their fields.
+        A dictionary containing the specified item and their fields,
+        including total_donations if the model has a donations field.
     """
-    # Grab the item. This will alway return an item or not
-    item = _get_item(model, id)
 
-    # Retrieve item fields dynamically
+    item = _get_item(model, id)
     fields = model.get_fields()
 
     if 'donations' in fields:
-        total_donations = sum(getattr(item, 'donations', []))
-        return {'total_donations': total_donations}
+        donation_details = [
+            {
+                'amount': donation.amount,
+                'name': donation.user.name,
+                'time': donation.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+            } for donation in item.donations
+        ]
+        total_donations = sum(donation.amount for donation in item.donations)  # Calculate total donations
+        data = {
+            "all_donations": donation_details,
+            'total_donations': total_donations,
+            **{field: getattr(item, field) for field in fields if field != 'donations'}  # Exclude 'donations'
+        }
     else:
-        return {field: getattr(item, field) for field in fields}
+        data = {field: getattr(item, field) for field in fields}
+
+    return data
 
 
-def get(model, state) -> dict:
+
+def handle_get_request(model, state) -> dict:
 
     """Retrieves items based on state
 
@@ -134,15 +147,15 @@ def handle_patch_request(data, id, model, is_json=True):
     status_code = 500
 
     try:
-        with model.atomic():
+       
             
-            errors = validate_item_data(model, data, is_json, is_create=False)
-            if errors:
-                status_code = 400  # Bad Request
-                response_data['message'] = errors
-                return response_data, status_code
-            
-        item.update_from_request(**data)
+        errors = validate_item_data(model, data, is_json, is_create=False)
+        if errors:
+            status_code = 400  # Bad Request
+            response_data['message'] = errors
+            return response_data, status_code
+        
+        item.update_from_request(data)
         status_code = 204
         response_data["message"] = f"Successfully updated campaign."
         response_data['item'] = item.serialize()
@@ -156,7 +169,7 @@ def handle_patch_request(data, id, model, is_json=True):
  
 
 
-def delete_item(id, model):
+def delete_item(model, id):
     """Deletes an item and handles potential errors gracefully.
 
     Args:
@@ -166,9 +179,10 @@ def delete_item(id, model):
     Returns:
         A tuple containing the modified response data and HTTP status code.
     """
-    item  = _get_item(id, model)
+    item  = _get_item(model, id)
 
     response_data = {}
+    response_data["item"] = item.serialize()
     status_code = 500
 
     try:
