@@ -7,7 +7,7 @@ from flask import redirect, abort, Blueprint, flash, url_for, request, jsonify, 
 from flask.views import MethodView
 from core.models import User, Campaign, Donation, Message
 from core.utils.general import paginate
-from core.utils.helpers import handle_get_request, handle_create_request, handle_patch_request, get_item_data, delete_item
+from core.utils.helpers import handle_get_request, handle_create_request, handle_patch_request, get_item_data, delete_item, _clean_data
 
 
 views = Blueprint("views", __name__)
@@ -21,7 +21,8 @@ def retrieve_campaign():
 @views.post("/campaigns/create")
 def create_campaign():
     json_data = request.get_json()
-    response_data, status_code = handle_create_request(Campaign, json_data, is_json=True)
+    _clData = _clean_data(json_data)
+    response_data, status_code = handle_create_request(Campaign, _clData, is_json=True)
     return response_data, status_code
 
 @views.get('/campaigns/<int:id>/')
