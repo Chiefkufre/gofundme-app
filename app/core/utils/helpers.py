@@ -173,11 +173,11 @@ def delete_item(model, id):
     """Deletes an item and handles potential errors gracefully.
 
     Args:
-        item: The item to be deleted.
-        response_data: A dictionary to store response information.
+        mode;: The model where the item reside.
+        id: id of the item to be deleted.
 
     Returns:
-        A tuple containing the modified response data and HTTP status code.
+        A dictionary and status code when successful.
     """
     item  = _get_item(model, id)
 
@@ -197,3 +197,19 @@ def delete_item(model, id):
         status_code = 204
     
     return response_data, status_code
+
+def _clean_data(data: dict) -> dict:
+    """"Clean requested data before passing submit
+    
+    Args:
+        data: request data information
+    
+    returns:
+        cleaned data in python dictionary
+    """
+    clean_data = {}
+    for key, item in data.items():
+        clean_data[key] = item.strip().lower()
+        pass
+
+    return clean_data
