@@ -24,7 +24,29 @@ class UpdateFromDataMixin:
         # Delegate to the generic update method
         self.update_from_data(request_data)
 
-class User(db.Model, UpdateFromDataMixin):
+class PerformCRUD:
+        
+    def insert(self):
+        db.session.add(self)
+        db.session.commit()
+
+    # simple helper method to update data into the database
+    def update(self):
+        db.session.commit()
+
+    def rollback(self):
+        db.session.rollback()
+
+    def close(self):
+        db.session.close()
+
+    # simple helper method to delete data into the database
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+
+
+class User(db.Model, UpdateFromDataMixin, PerformCRUD):
 
     __tablename__ = "users"
 
@@ -64,28 +86,9 @@ class User(db.Model, UpdateFromDataMixin):
     def get_fields(cls):
         # Retrieve the list of fields from the class attribute
         return cls.fields
-    
-    def insert(self):
-        db.session.add(self)
-        db.session.commit()
-
-    # simple helper method to update data into the database
-    def update(self):
-        db.session.commit()
-
-    def rollback(self):
-        db.session.rollback()
-
-    def close(self):
-        db.session.close()
-
-    # simple helper method to delete data into the database
-    def delete(self):
-        db.session.delete(self)
-        db.session.commit()
 
 
-class Campaign(db.Model, UpdateFromDataMixin):
+class Campaign(db.Model, UpdateFromDataMixin, PerformCRUD):
 
     __tablename__ = "campaigns"
 
@@ -117,34 +120,23 @@ class Campaign(db.Model, UpdateFromDataMixin):
 
     fields = ['id', 'title', 'goal', 'duration', 'description', 
               'user_id', "donations", "created_at", "is_active"
-            ]  
+            ] 
+
+    required =  [ 'title', 'goal', 'duration', 'description', 
+              'user_id',
+            ] 
     
     @classmethod
     def get_fields(cls):
         # Retrieve the list of fields from the class attribute
         return cls.fields
-
-    def insert(self):
-        db.session.add(self)
-        db.session.commit()
-
-    # simple helper method to update data into the database
-    def update(self):
-        db.session.commit()
-
-    def rollback(self):
-        db.session.rollback()
-
-    def close(self):
-        db.session.close()
-
-    # simple helper method to delete data into the database
-    def delete(self):
-        db.session.delete(self)
-        db.session.commit()
+    
+    @classmethod
+    def required_fields(cls):
+        return cls.required
 
 
-class Donation(db.Model, UpdateFromDataMixin):
+class Donation(db.Model, UpdateFromDataMixin, PerformCRUD):
 
     __tablename__ = "donations"
 
@@ -174,29 +166,13 @@ class Donation(db.Model, UpdateFromDataMixin):
     def get_fields(cls):
         # Retrieve the list of fields from the class attribute
         return cls.fields
-    
-    def insert(self):
-
-        db.session.add(self)
-        db.session.commit()
-
-    def rollback(self):
-        db.session.rollback()
-
-    def close(self):
-        db.session.close()
-
-    # simple helper method to delete data into the database
-    def delete(self):
-        db.session.delete(self)
-        db.session.commit()
 
     def increase_donation(self, amount):
         return self.amount + float(amount)
 
 
 # database structure for contact messages
-class Message(db.Model):
+class Message(db.Model, PerformCRUD):
 
     __tablename__ = "messages"
 
@@ -220,22 +196,3 @@ class Message(db.Model):
         # Retrieve the list of fields from the class attribute
         return cls.fields
 
-    # simple helper method to persist data into the database
-    def insert(self):
-        db.session.add(self)
-        db.session.commit()
-
-    # simple helper method to update data into the database
-    def update(self):
-        db.session.commit()
-
-    # simple helper method to delete data into the database
-    def delete(self):
-        db.session.delete(self)
-        db.session.commit()
-
-    def rollback(self):
-        db.session.rollback()
-
-    def close(self):
-        db.session.close()

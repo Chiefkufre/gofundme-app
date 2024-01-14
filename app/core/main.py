@@ -5,13 +5,16 @@ from core.utils.assets import configure_assets
 from core.conf.config import Config, DevConfig, ProdConfig
 from core.conf.settings import settings
 from core.database.database import setup_db
-from core.web.controllers.index import index
-from core.web.controllers.search import search
-from core.web.controllers.campaign import views
+
+from core.api.APIControllers.routers import api
+from core.api.APIControllers.index import index
+from core.web.WebControllers.search import search
+from core.web.WebControllers.campaign import views
 
 
 from core.auth.auths import auths
 
+APP_VERSION = settings.API_VERSION
 
 # start application instance
 def create_app_instance():
@@ -22,12 +25,13 @@ def create_app_instance():
     with app.app_context():
         setup_db(app)
         configure_assets(app)
-    app_version = settings.API_VERSION
+
 
     # registring routes
     app.register_blueprint(views, url_prefix="/")
-    app.register_blueprint(index, url_prefix="/{0}/api".format(app_version))
-    app.register_blueprint(auths, url_prefix="/{0}/auth".format(app_version))
-    app.register_blueprint(search, url_format="/{0}".format(app_version))
+    app.register_blueprint(api, url_prefix="/api/{0}".format(APP_VERSION))
+    app.register_blueprint(index, url_prefix="/api/{0}".format(APP_VERSION))
+    app.register_blueprint(auths, url_prefix="/{0}/auth".format(APP_VERSION))
+    app.register_blueprint(search, url_format="/{0}".format(APP_VERSION))
     
     return app

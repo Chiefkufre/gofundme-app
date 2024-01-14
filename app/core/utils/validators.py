@@ -31,7 +31,7 @@ class PlatformValidator:
     def validate_json_request(self, data):
         """Validates required fields in a JSON request."""
         errors = {}
-        for field in self.model_fields:
+        for field in self.required_fields:
             if field not in data:
                 errors[field] = f"Field '{field}' is required."
         return errors
@@ -39,7 +39,7 @@ class PlatformValidator:
     def validate_form_request(self, form_data):
         """Validates required fields in a form request."""
         errors = {}
-        for field in self.model_fields:
+        for field in self.required_fields:
             if field not in form_data:
                 errors[field] = f"Field '{field}' is required in the form."
         return errors
@@ -47,6 +47,11 @@ class PlatformValidator:
     @property
     def model_fields(self):
         return getattr(self.model, 'get_fields', lambda: [])()
+    
+    @property
+    def required_fields(self):
+        return getattr(self.model, 'required_fields', lambda: [])()
+
 
 
 

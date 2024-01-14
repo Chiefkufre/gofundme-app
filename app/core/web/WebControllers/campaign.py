@@ -32,13 +32,13 @@ def get_campaign_by_id(id:int) -> dict:
 @views.delete('/campaigns/<int:id>/')
 def delete_campaign_by_id(id:int) -> tuple:
     item = delete_item(Campaign, id)
-    return item
+    return jsonify(item)
 
 @views.patch('/campaigns/<int:id>/')
 def update_campaign(id:int) -> tuple:
     data = request.get_json()
     item = handle_patch_request(data, id, Campaign)
-    return item
+    return jsonify(item)
 
 
 
