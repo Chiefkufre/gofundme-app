@@ -11,7 +11,6 @@ from decouple import config
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-
 from core.conf.settings import settings
 
 DB_TYPE = settings.DB_TYPE
@@ -24,7 +23,6 @@ MYSQL_DRIVER = settings.MYSQL_DRIVER
 
 
 def create_db_url(DB_TYPE):
-
     if DB_TYPE == "postgresql":
         DATABASE_URI = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}"
     # :{DB_PORT}/

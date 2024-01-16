@@ -6,26 +6,26 @@ from core.database.database import db
 
 # Database ORM
 
+
 class UpdateFromDataMixin:
     def update_from_data(self, data):
-            # Update model attributes from data (JSON or form data)
-            for key, value in data.items():
-                if hasattr(self, key):
-                    if key == 'created_at':
-                        # Convert 'created_at' to datetime before setting
-                        value = datetime.strptime(value, '%Y-%m-%d')
-                    setattr(self, key, value)
+        # Update model attributes from data (JSON or form data)
+        for key, value in data.items():
+            if hasattr(self, key):
+                if key == "created_at":
+                    # Convert 'created_at' to datetime before setting
+                    value = datetime.strptime(value, "%Y-%m-%d")
+                setattr(self, key, value)
 
-            # Commit changes after updating all attributes
-            db.session.commit()
+        # Commit changes after updating all attributes
+        db.session.commit()
 
-    
     def update_from_request(self, request_data):
         # Delegate to the generic update method
         self.update_from_data(request_data)
 
+
 class PerformCRUD:
-        
     def insert(self):
         db.session.add(self)
         db.session.commit()
@@ -47,7 +47,6 @@ class PerformCRUD:
 
 
 class User(db.Model, UpdateFromDataMixin, PerformCRUD):
-
     __tablename__ = "users"
 
     id = db.Column(db.Integer, primary_key=True)
@@ -67,21 +66,32 @@ class User(db.Model, UpdateFromDataMixin, PerformCRUD):
 
     def serialize(self):
         return {
-            'id': self.id,
-            'name': self.name,
-            'email': self.email,
-            'bio': self.bio,
-            'profile_picture': self.profile_picture,
-            'campaigns': [camp.serialize() for camp in self.campaigns],
-            'donations':[donate.serialize() for donate in self.donations],
-            'created_at': self.created_at.strftime('%Y-%m-%d'),
-            'isActive': self.is_active
+            "id": self.id,
+            "name": self.name,
+            "email": self.email,
+            "bio": self.bio,
+            "profile_picture": self.profile_picture,
+            "campaigns": [camp.serialize() for camp in self.campaigns],
+            "donations": [donate.serialize() for donate in self.donations],
+            "created_at": self.created_at.strftime("%Y-%m-%d"),
+            "isActive": self.is_active,
         }
 
+    fields = [
+        "id",
+        "name",
+        "email",
+        "bio",
+        "profile_picture",
+        "password",
+        "created_at",
+        "updated_at",
+        "user_status",
+        "campaigns",
+        "donations",
+        "is_active",
+    ]
 
-    fields = ["id","name", "email", "bio", "profile_picture", 
-              "password", "created_at", "updated_at", "user_status",
-                "campaigns", "donations", "is_active"]  
     @classmethod
     def get_fields(cls):
         # Retrieve the list of fields from the class attribute
@@ -89,7 +99,6 @@ class User(db.Model, UpdateFromDataMixin, PerformCRUD):
 
 
 class Campaign(db.Model, UpdateFromDataMixin, PerformCRUD):
-
     __tablename__ = "campaigns"
 
     id = db.Column(db.Integer, primary_key=True)
@@ -103,41 +112,52 @@ class Campaign(db.Model, UpdateFromDataMixin, PerformCRUD):
     )
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     donations = db.relationship("Donation", backref="campaign", lazy=True)
-    is_active = db.Column(Boolean, default=True)
+    is_active = db.Column(Boolean, default=False)
 
     def serialize(self):
         return {
-            'id': self.id,
-            'title': self.title,
-            'goal': self.goal,
-            'duration': self.duration,
-            'description': self.description,
-            'donations':[donate.serialize() for donate in self.donations],
-            'created_by': self.user_id,
-            'created_at': self.created_at.strftime('%Y-%m-%d'),
-            'is_active': self.is_active
+            "id": self.id,
+            "title": self.title,
+            "goal": self.goal,
+            "duration": self.duration,
+            "description": self.description,
+            "donations": [donate.serialize() for donate in self.donations],
+            "created_by": self.user_id,
+            "created_at": self.created_at.strftime("%Y-%m-%d"),
+            "is_active": self.is_active,
         }
 
-    fields = ['id', 'title', 'goal', 'duration', 'description', 
-              'user_id', "donations", "created_at", "is_active"
-            ] 
+    fields = [
+        "id",
+        "title",
+        "goal",
+        "duration",
+        "description",
+        "user_id",
+        "donations",
+        "created_at",
+        "is_active",
+    ]
 
-    required =  [ 'title', 'goal', 'duration', 'description', 
-              'user_id',
-            ] 
-    
+    required = [
+        "title",
+        "goal",
+        "duration",
+        "description",
+        "user_id",
+    ]
+
     @classmethod
     def get_fields(cls):
         # Retrieve the list of fields from the class attribute
         return cls.fields
-    
+
     @classmethod
     def required_fields(cls):
         return cls.required
 
 
 class Donation(db.Model, UpdateFromDataMixin, PerformCRUD):
-
     __tablename__ = "donations"
 
     id = db.Column(db.Integer, primary_key=True)
@@ -151,17 +171,20 @@ class Donation(db.Model, UpdateFromDataMixin, PerformCRUD):
 
     def serialize(self):
         return {
-            'id': self.id,
-            'amount': self.amount,
-            'user_id': self.user_id,
-            'campaign_id': self.campaign_id,
-            'created_at': self.created_at.strftime('%Y-%m-%d'),
+            "id": self.id,
+            "amount": self.amount,
+            "user_id": self.user_id,
+            "campaign_id": self.campaign_id,
+            "created_at": self.created_at.strftime("%Y-%m-%d"),
         }
-    
-    fields = ['id', 'amount', 
-              'user_id', 'campaign_id', 
-            ]  
-    
+
+    fields = [
+        "id",
+        "amount",
+        "user_id",
+        "campaign_id",
+    ]
+
     @classmethod
     def get_fields(cls):
         # Retrieve the list of fields from the class attribute
@@ -173,7 +196,6 @@ class Donation(db.Model, UpdateFromDataMixin, PerformCRUD):
 
 # database structure for contact messages
 class Message(db.Model, PerformCRUD):
-
     __tablename__ = "messages"
 
     id = db.Column(db.Integer, primary_key=True, nullable=False)
@@ -186,13 +208,16 @@ class Message(db.Model, PerformCRUD):
         self.email = email
         self.subject = subject
         self.message = message
-    
-    fields = ['id', 'email', 
-              'subject', 'message', 'created_at',
-            ]  
-    
+
+    fields = [
+        "id",
+        "email",
+        "subject",
+        "message",
+        "created_at",
+    ]
+
     @classmethod
     def get_fields(cls):
         # Retrieve the list of fields from the class attribute
         return cls.fields
-

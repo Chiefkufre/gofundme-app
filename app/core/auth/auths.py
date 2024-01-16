@@ -20,9 +20,10 @@ from core.utils.validators import PlatformValidator
 auths = Blueprint("auths", __name__)
 
 validators = PlatformValidator(User)
+
+
 @auths.post("/register")
 def register_user():
-
     """Register new User
 
     :param  id: user id-auto-regenerated
@@ -58,11 +59,10 @@ def register_user():
 
         validators.validate_email(email)
 
-
         hashed_password = generate_password_hash(password)
 
         new_password = generate_password_hash(password)
-        
+
         new_user = User(email=email, password=new_password, name=name, bio=bio)
 
         new_user.insert()
@@ -88,10 +88,9 @@ def register_user():
 # function to handle posting to login route
 @auths.post("/login")
 def signin_user():
-    
     data = request.get_json()
 
-    email  = data["email"]
+    email = data["email"]
     password = data["password"]
 
     user = User.query.filter(User.email == email).first()
@@ -103,11 +102,8 @@ def signin_user():
         return redirect(url_for("index.home")), 200
 
     else:
-        return jsonify(
-           { 
-            "message": "incorrect login detaila"
-           }
-        ), 403
+        return jsonify({"message": "incorrect login detaila"}), 403
+
 
 # Logout control center
 
@@ -115,6 +111,5 @@ def signin_user():
 @auths.route("/logout")
 @login_required
 def logout():
-
     logout_user()
     return
