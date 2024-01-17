@@ -3,10 +3,10 @@ from wtforms import StringField, TextAreaField, FloatField, IntegerField, Boolea
 from wtforms.validators import DataRequired, Length, Email, EqualTo
 
 class CampaignForm(FlaskForm):
-    title = StringField('Title', validators=[DataRequired(), Length(max=100)])
-    description = TextAreaField('Description', validators=[DataRequired(), Length(max=500)])
-    goal = FloatField('Goal', validators=[DataRequired()])
-    duration = IntegerField('Duration', validators=[DataRequired()])
+    title = StringField('title', validators=[DataRequired(), Length(max=100)])
+    description = TextAreaField('description', validators=[DataRequired(), Length(max=1000)])
+    goal = FloatField('goal', validators=[DataRequired()])
+    duration = IntegerField('duration', validators=[DataRequired()])
     is_active = BooleanField('False')
     submit = SubmitField('Create Campaign')
 

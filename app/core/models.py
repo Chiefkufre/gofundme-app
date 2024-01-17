@@ -52,7 +52,7 @@ class User(db.Model, UpdateFromDataMixin, PerformCRUD):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
     email = db.Column(db.String(50), unique=True, nullable=False)
-    bio = db.Column(db.String(50), unique=False)
+    bio = db.Column(db.String(500), unique=False)
     profile_picture = db.Column(db.String(255))
     password = db.Column(db.String(200), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
@@ -63,6 +63,7 @@ class User(db.Model, UpdateFromDataMixin, PerformCRUD):
     campaigns = db.relationship("Campaign", backref="user", lazy=True)
     donations = db.relationship("Donation", backref="user", lazy=True)
     is_active = db.Column(Boolean, default=True)
+    email_verify = db.Column(Boolean, default=False)
 
     def serialize(self):
         return {
@@ -103,7 +104,7 @@ class Campaign(db.Model, UpdateFromDataMixin, PerformCRUD):
 
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
-    description = db.Column(db.String(500), nullable=False)
+    description = db.Column(db.String(1000), nullable=False)
     goal = db.Column(db.Float, nullable=False)
     duration = db.Column(db.Integer, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
@@ -113,6 +114,12 @@ class Campaign(db.Model, UpdateFromDataMixin, PerformCRUD):
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     donations = db.relationship("Donation", backref="campaign", lazy=True)
     is_active = db.Column(Boolean, default=False)
+
+    def activate(self):
+        """Activates the campaign if the user's email is verified."""
+        if self.user.email_verify:
+            self.is_active = True
+            db.session.commit()
 
     def serialize(self):
         return {

@@ -57,8 +57,8 @@ def create_campaign():
             print(e)
     else:
         print("wahala")
-        print(request.method)
-        print(form.validate_on_submit())
+        print(form.validate())
+        print(dict(request.form))
     return render_template(
             "user/create.html", form=form
         )

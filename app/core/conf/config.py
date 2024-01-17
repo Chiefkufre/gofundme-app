@@ -34,6 +34,18 @@ def create_db_url(DB_TYPE):
 
     return DATABASE_URI
 
+def set_result_backend(db_type):
+        
+        result_backend = "";
+        if db_type == 'postgres':
+             result_backend = 'db+postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}'
+        elif db_type == 'mysql':
+             result_backend ='db+mysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}'
+        else:
+             result_backend ='sqlite:///celery_results.db'
+    
+        return result_backend
+
 
 class Config:
     """class to hold application configuration."""
@@ -60,3 +72,10 @@ class DevConfig(Config):
     FLASK_ENV = "development"
     DEBUG = True
     TESTING = True
+
+class CeleryConfig():
+
+    broker_url='redis://localhost:6379/0',
+    result_backend = set_result_backend(DB_TYPE),
+    include=['proj.tasks']
+    result_expires=3600
