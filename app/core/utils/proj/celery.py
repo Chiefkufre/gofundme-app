@@ -1,10 +1,15 @@
 from celery import Celery
-from core.conf.config import CeleryConfig
+
+celery = Celery("proj",
+             
+          broker_url='redis://localhost:6379/',
+          result_backend = 'redis://localhost',
+            include=['core.utils.proj.tasks'],
+          result_expires=3600
+             
+             )
 
 
-app = Celery()
-
-app.config_from_object(CeleryConfig)
 
 if __name__ == '__main__':
-    app.start()
+    celery.start()

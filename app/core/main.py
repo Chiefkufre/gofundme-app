@@ -2,9 +2,10 @@ from flask import Flask, g
 
 from core.utils.assets import configure_assets
 
-from core.conf.config import Config, DevConfig, ProdConfig
+from core.conf.config import Config, DevConfig, ProdConfig, CeleryConfig
 from core.conf.settings import settings
 from core.database.database import setup_db
+from core.utils.proj.celery import celery
 
 from core.api.APIControllers.routers import api
 from core.api.APIControllers.index import index
@@ -22,6 +23,7 @@ def create_app_instance():
     app = Flask(__name__)
     app.config.from_object(DevConfig)
 
+
     # registring app_context
     with app.app_context():
         setup_db(app)
@@ -30,7 +32,7 @@ def create_app_instance():
     @app.before_request
     def before_request():
         g.user_id = "1"
-        
+
     # registring routes
     app.register_blueprint(views, url_prefix="/")
     app.register_blueprint(api, url_prefix="/api/{0}".format(APP_VERSION))

@@ -12,8 +12,8 @@ from flask import (
     jsonify,
     render_template,
 )
-from flask.views import MethodView
 from core.models import User, Campaign, Donation, Message
+from core.utils.proj.tasks import activate_campaign
 from core.utils.general import paginate
 from core.utils.helpers import (
     handle_get_request,
@@ -31,7 +31,7 @@ api = Blueprint("api", __name__)
 @api.get("/campaigns/")
 def retrieve_campaign():
     response_data = handle_get_request(Campaign, True)
-    return response_data
+    return jsonify(response_data)
 
 
 @api.post("/campaigns/create")
@@ -45,6 +45,11 @@ def create_campaign():
 @api.get("/campaigns/<int:id>/")
 def get_campaign_by_id(id: int) -> dict:
     item = get_item_data(Campaign, id)
+    # if item:
+    #     result = activate_campaign.delay(id)
+    #     print(result.id)
+    #     print(result.get())
+    #     print(result.result())
     return jsonify(item)
 
 
@@ -59,3 +64,8 @@ def update_campaign(id: int) -> tuple:
     data = request.get_json()
     item = handle_patch_request(data, id, Campaign)
     return jsonify(item)
+
+@api.get("/users/")
+def retrieve_users():
+    response_data = handle_get_request(User, True)
+    return jsonify(response_data)

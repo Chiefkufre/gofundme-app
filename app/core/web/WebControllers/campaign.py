@@ -35,6 +35,7 @@ def retrieve_campaign():
     return render_template("front/listing.html", data=response_data)
 
 
+
 @views.get("/campaigns/create")
 def get_campaign_view():
      form = CampaignForm()

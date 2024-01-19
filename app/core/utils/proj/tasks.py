@@ -1,8 +1,8 @@
 from core.models import Campaign, User
 from core.database.database import db
-from core.utils.proj.celery import app
+from .celery import celery
 
-@app.task
+@celery.task
 def activate_campaign(campaign_id) -> bool:
     """This method will activate campaign
     
@@ -14,7 +14,7 @@ def activate_campaign(campaign_id) -> bool:
     campaign.activate() 
 
 
-@app.task
+@celery.task
 def verify_email(state, user_id) -> bool:
     """This function will verify email address
 

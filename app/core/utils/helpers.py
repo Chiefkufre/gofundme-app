@@ -95,20 +95,7 @@ def handle_get_request(model, state) -> dict:
         model.query.filter_by(is_active=state), page=page, per_page=per_page
     )
 
-    # Construct a response data dictionary
-    response_data = {
-        "items": pagination_data["items"],
-        "pagination": {
-            "page": pagination_data["page"],
-            "per_page": pagination_data["per_page"],
-            "total_pages": pagination_data["pages"],
-            "total_items": pagination_data["total"],
-            "prev_url": pagination_data["prev_url"],
-            "next_url": pagination_data["next_url"],
-        },
-    }
-
-    return response_data
+    return {"data": pagination_data["items"], "pagination": pagination_data["pagination"]}
 
 
 def handle_create_request(model, data, is_json) -> dict:

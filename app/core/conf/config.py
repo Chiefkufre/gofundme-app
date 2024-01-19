@@ -75,7 +75,7 @@ class DevConfig(Config):
 
 class CeleryConfig():
 
-    broker_url='redis://localhost:6379/0',
+    broker_url='redis://localhost:6379/',
     result_backend = set_result_backend(DB_TYPE),
     include=['proj.tasks']
     result_expires=3600
