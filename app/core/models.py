@@ -113,13 +113,20 @@ class Campaign(db.Model, UpdateFromDataMixin, PerformCRUD):
     )
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     donations = db.relationship("Donation", backref="campaign", lazy=True)
+    is_publish = db.Column(Boolean, default=False)
     is_active = db.Column(Boolean, default=False)
 
-    def activate(self):
+    def publish(self, state):
+        if state != self.publish:
+            self.is_publish = state
+            db.session.commit
+        return self.is_publish
+
+    def activate(self, status):
         """Activates the campaign if the user's email is verified."""
         if self.user.email_verify:
-            self.is_active = True
-            db.session.commit()
+            self.is_active = status
+        db.session.commit()
 
     def serialize(self):
         return {
@@ -132,6 +139,7 @@ class Campaign(db.Model, UpdateFromDataMixin, PerformCRUD):
             "created_by": self.user_id,
             "created_at": self.created_at.strftime("%Y-%m-%d"),
             "is_active": self.is_active,
+            "publish": self.is_publish
         }
 
     fields = [
@@ -144,6 +152,7 @@ class Campaign(db.Model, UpdateFromDataMixin, PerformCRUD):
         "donations",
         "created_at",
         "is_active",
+        "is_publish"
     ]
 
     required = [
