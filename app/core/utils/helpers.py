@@ -1,4 +1,6 @@
-from flask import jsonify, request
+from flask import jsonify, request, current_app
+from flask_mail import Message
+
 from core.utils.general import paginate
 from core.utils.validators import PlatformValidator
 from core.utils.general import paginate
@@ -64,7 +66,7 @@ def get_item_data(model, id) -> dict:
             donation.amount for donation in item.donations
         )  # Calculate total donations
         data = {
-            "all_donations": donation_details,
+            "donations": donation_details,
             "total_donations": total_donations,
             **{
                 field: getattr(item, field) for field in fields if field != "donations"
@@ -76,7 +78,7 @@ def get_item_data(model, id) -> dict:
     return data
 
 
-def handle_get_request(model, state) -> dict:
+def handle_get_request(model, status, state) -> dict:
     """Retrieves items based on state
 
     Args:
@@ -92,9 +94,13 @@ def handle_get_request(model, state) -> dict:
 
     # Paginate the query
     pagination_data = paginate(
-        model.query.filter_by(is_active=state), page=page, per_page=per_page
+        model.query.filter_by(is_active=status, is_publish=state).all(), page=page, per_page=per_page
     )
+    email = Message('Hello', sender = 'yourId@gmail.com', recipients = ['testpractical2000@gmail.com'])
+    email.body = "This is the email body"
+    success = current_app.extensions['mail'].send(email)
 
+    print(success)
     return {"data": pagination_data["items"], "pagination": pagination_data["pagination"]}
 
 
