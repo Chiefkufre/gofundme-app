@@ -3,15 +3,17 @@ from core.database.database import db
 from .celery import celery
 
 @celery.task
-def activate_campaign(campaign_id) -> bool:
+def activate_campaign(campaign_id, state) -> bool:
     """This method will activate campaign
     
     return
         bool - True | False
     """
-
+    print("calling task.........")
     campaign = Campaign.query.get_or_404(campaign_id)
-    campaign.activate() 
+    campaign.activate(state)
+    print(".....done.........")
+    return campaign.is_active 
 
 
 @celery.task

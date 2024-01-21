@@ -1,4 +1,5 @@
 from flask import Flask, g
+from flask_mail import Mail
 
 from core.utils.assets import configure_assets
 
@@ -27,6 +28,7 @@ def create_app_instance():
     # registring app_context
     with app.app_context():
         setup_db(app)
+        mail = Mail(app)
         configure_assets(app)
 
     @app.before_request

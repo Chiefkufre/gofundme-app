@@ -19,6 +19,7 @@ from core.utils.helpers import (
     handle_get_request,
     handle_create_request,
     handle_patch_request,
+    _get_item,
     get_item_data,
     delete_item,
     _clean_data,
@@ -30,7 +31,7 @@ api = Blueprint("api", __name__)
 
 @api.get("/campaigns/")
 def retrieve_campaign():
-    response_data = handle_get_request(Campaign, True)
+    response_data = handle_get_request(Campaign, True, True)
     return jsonify(response_data)
 
 
@@ -45,13 +46,23 @@ def create_campaign():
 @api.get("/campaigns/<int:id>/")
 def get_campaign_by_id(id: int) -> dict:
     item = get_item_data(Campaign, id)
-    # if item:
-    #     result = activate_campaign.delay(id)
-    #     print(result.id)
-    #     print(result.get())
-    #     print(result.result())
     return jsonify(item)
 
+@api.post("/campaigns/<int:id>/status")
+def toggle_campaign_status(id):
+    status = request.get_json()['status']
+    item = _get_item(Campaign, id)
+    if item:
+        item.activate(status)
+    return jsonify(item.serialize())
+
+@api.post("/campaigns/<int:id>/publish")
+def publish_campaign(id):
+    status = request.get_json()['is_publish']
+    item = _get_item(Campaign, id)
+    if item:
+        item.publish(status)
+    return jsonify(item.serialize())
 
 @api.delete("/campaigns/<int:id>/")
 def delete_campaign_by_id(id: int) -> tuple:

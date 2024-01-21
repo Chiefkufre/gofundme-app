@@ -20,6 +20,7 @@ from core.utils.helpers import (
     handle_get_request,
     handle_create_request,
     handle_patch_request,
+    _get_item,
     get_item_data,
     delete_item,
     _clean_data,
@@ -29,9 +30,10 @@ from core.web.Forms.forms import CampaignForm
 views = Blueprint("views", __name__)
 
 
+
 @views.get("/campaigns/")
-def retrieve_campaign():
-    response_data = handle_get_request(Campaign, True)
+def listing():
+    response_data = handle_get_request(Campaign, True, True)
     return render_template("front/listing.html", data=response_data)
 
 
@@ -69,22 +71,31 @@ def create_campaign():
 @views.get("/campaigns/<int:id>/")
 def get_campaign_by_id(id: int) -> dict:
     item = get_item_data(Campaign, id)
+    print(item)
     return render_template("front/single_listing.html", data=item)
 
 
 @views.delete("/campaigns/<int:id>/")
-def delete_campaign_by_id(id: int) -> tuple:
+def delete_campaign_by_id(id: int):
     item = delete_item(Campaign, id)
     return redirect(url_for("views.retrieve_campaign"))
 
 
 @views.patch("/campaigns/<int:id>/")
-def update_campaign(id: int) -> tuple:
+def update_campaign(id: int):
     data = request.get_json()
     item = handle_patch_request(data, id, Campaign)
-    return redirect(url_for("views.retrieve_campaign"))
+    return redirect(url_for("views.listing"))
 
 
+@views.post("/campaigns/<int:id>/status")
+def toggle_status(id):
+    status = request.form['status']
+    item = _get_item(Campaign, id)
+    if item:
+        item.activate(status)
+    
+    return redirect(url_for('get_campaign_by_id'))
 
 
 

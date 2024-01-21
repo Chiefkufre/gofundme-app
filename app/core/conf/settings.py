@@ -12,6 +12,13 @@ class Settings:
     SECRET_KEY: str = config("SECRET_KEY")
     SESSION_COOKIE_NAME: str = config("SESSION_COOKIE_NAME")
 
+    MAIL_SERVER : str = config("MAIL_SERVER")
+    MAIL_PORT : str = config("MAIL_PORT")
+    MAIL_USERNAME : str = config("MAIL_USERNAME")
+    MAIL_PASSWORD : str = config("MAIL_PASSWORD")
+    MAIL_USE_TLS : bool = config("MAIL_USE_TLS")
+    MAIL_USE_SSL : bool = config("MAIL_USE_SSL")
+
     API_VERSION: str = config("API_VERSION")
 
 

@@ -25,7 +25,7 @@ def upgrade():
                existing_nullable=False)
 
     with op.batch_alter_table('users', schema=None) as batch_op:
-        batch_op.add_column(sa.Column('email_verify', sa.Boolean(), nullable=True))
+        batch_op.add_column(sa.Column('email_verify', sa.Boolean(), nullable=True, server_default="true"))
         batch_op.alter_column('bio',
                existing_type=sa.VARCHAR(length=50),
                type_=sa.String(length=500),
