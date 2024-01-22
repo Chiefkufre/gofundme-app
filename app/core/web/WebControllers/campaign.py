@@ -2,7 +2,6 @@ import json
 
 import validators
 
-import flask
 from flask import (
     redirect,
     abort,
@@ -10,7 +9,6 @@ from flask import (
     flash,
     url_for,
     request,
-    jsonify,
     render_template,
     g,
 )
@@ -42,36 +40,36 @@ def listing():
 def get_campaign_view():
      form = CampaignForm()
      return render_template(
-        "user/create.html", form=form
-    )
+        "user/create.html", form=form)
+
 
 @views.post("/campaigns/create")
 def create_campaign():
-    form = CampaignForm()
-
-    if request.method == 'POST' and form.validate_on_submit():
+    if request.method == 'POST':
         try:
-            data = dict(request.form)
+            data = request.form
             _clData = _clean_data(data)
             _clData['user_id'] = g.user_id
             response_data, status_code = handle_create_request(Campaign, _clData, is_json=False)
-            print(response_data)
+            if status_code == 201:
+                return response_data
+            else:
+                # Handle other status codes
+                flash("Error creating campaign", "error")
         except Exception as e:
-            print(e)
+            # Log the error for debugging
+            # app.logger.error(f"Error creating campaign: {str(e)}")
+            flash("Unable to create campaign", "error")
     else:
-        print("wahala")
-        print(form.validate())
-        print(dict(request.form))
-    return render_template(
-            "user/create.html", form=form
-        )
+        return "Invalid request method", 405
+    return render_template('user/create.html')    
    
+
 
 
 @views.get("/campaigns/<int:id>/")
 def get_campaign_by_id(id: int) -> dict:
     item = get_item_data(Campaign, id)
-    print(item)
     return render_template("front/single_listing.html", data=item)
 
 
@@ -99,18 +97,6 @@ def toggle_status(id):
 
 
 
-"""Update"""
-# "/campaigns/<int:campaign_id>/update" - campaign
-# "users/<int:user_id>/update" - user
-#  "/campaigns/<int:campaign_id>/activate" - activate campaign
 
-"""Get"""
-# users/<int:user_id>" -user
 
-# DELETE
-# "/campaigns/<int:campaign_id>/delete"
-# "users/<int:user_id>/delete"
 
-# GROUP API
-#  /campaigns/ - get
-# "/users"
