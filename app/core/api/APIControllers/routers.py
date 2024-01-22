@@ -31,7 +31,7 @@ api = Blueprint("api", __name__)
 
 @api.get("/campaigns/")
 def retrieve_campaign():
-    response_data = handle_get_request(Campaign, True, True)
+    response_data = handle_get_request(Campaign, False)
     return jsonify(response_data)
 
 
@@ -78,5 +78,5 @@ def update_campaign(id: int) -> tuple:
 
 @api.get("/users/")
 def retrieve_users():
-    response_data = handle_get_request(User, True)
+    response_data = handle_get_request(User, True, True)
     return jsonify(response_data)

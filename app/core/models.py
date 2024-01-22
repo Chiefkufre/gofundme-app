@@ -117,7 +117,7 @@ class Campaign(db.Model, UpdateFromDataMixin, PerformCRUD):
     is_active = db.Column(Boolean, default=False)
 
     def publish(self, state):
-        if state != self.publish:
+        if state != self.is_publish:
             self.is_publish = state
             db.session.commit
         return self.is_publish
@@ -139,7 +139,7 @@ class Campaign(db.Model, UpdateFromDataMixin, PerformCRUD):
             "created_by": self.user_id,
             "created_at": self.created_at.strftime("%Y-%m-%d"),
             "is_active": self.is_active,
-            "publish": self.is_publish
+            "is_publish": self.is_publish
         }
 
     fields = [

@@ -78,7 +78,7 @@ def get_item_data(model, id) -> dict:
     return data
 
 
-def handle_get_request(model, status, state) -> dict:
+def handle_get_request(model, status) -> dict:
     """Retrieves items based on state
 
     Args:
@@ -94,7 +94,7 @@ def handle_get_request(model, status, state) -> dict:
 
     # Paginate the query
     pagination_data = paginate(
-        model.query.filter_by(is_active=status, is_publish=state).all(), page=page, per_page=per_page
+        model.query.filter_by(is_active=status), page=page, per_page=per_page
     )
     email = Message('Hello', sender = 'yourId@gmail.com', recipients = ['testpractical2000@gmail.com'])
     email.body = "This is the email body"

@@ -2,43 +2,70 @@
 <html>
 <head>
     <title>Create a Campaign</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
 </head>
-<body>
+<body class="col">
     <h1>Create a New Campaign</h1>
-    <form method="post">
-        {{ form.hidden_tag() }}  <div>
-            {{ form.title.label }} {{ form.title }}
-            {% for error in form.title.errors %}
-                <span class="error">{{ error }}</span>
-            {% endfor %}
-        </div>
+     <form action="POST" id="myForm">
 
-        <div>
-            {{ form.description.label }} {{ form.description }}
-            {% for error in form.description.errors %}
-                <span class="error">{{ error }}</span>
-            {% endfor %}
+        <div id="message">Taaaaaaaa</div>
+    <div class="row">
+        <div class="col-8 mb-3">
+            <input type="text" name="title" id="title" class="form-control" placeholder="title">
         </div>
-
-        <div>
-            {{ form.goal.label }} {{ form.goal }}
-            {% for error in form.goal.errors %}
-                <span class="error">{{ error }}</span>
-            {% endfor %}
+        <div class="col-8 mb-3" >
+            <input type="text" name="description" id="description" class="form-control" placeholder="description">
         </div>
-
-        <div>
-            {{ form.duration.label }} {{ form.duration }}
-            {% for error in form.duration.errors %}
-                <span class="error">{{ error }}</span>
-            {% endfor %}
+        <div class="col-8 mb-3">
+            <input type="number" name="goal" id="goal" class="form-control" placeholder="goal">
         </div>
-
-        <div>
-            {{ form.is_active }} {{ form.is_active.label }}
+        <div class="col-8 mb-3">
+            <input type="number" name="duration" id="duration" class="form-control" placeholder="duration">
         </div>
+        <div class="col-8 mb-3">
+            <input type="number" name="user_id" id="user_id" class="form-control" placeholder="user_id">
+        </div>
+        <div class="col-6 mb-3">
+            <button type="button" class="btn btn-primary" onclick="submitForm()">Submit</button>
+        </div>
+    </div>
+     </form>
 
-        <button type="submit">{{ form.submit.label }}</button>
-    </form>
+     <script>
+
+        var message = document.getElementById('message');
+        const submitForm = () => {
+            // Get form data
+            url = "http://127.0.0.1:5000/campaigns/create"
+            const formData = new FormData(document.getElementById('myForm'));
+        
+            // Fetch API
+            fetch(url, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json(); // or response.text() depending on your server response
+            })
+            .then(data => {
+                // Handle the response data
+                console.log(data.message);
+                message.textContent = `Success: ${data.message}`;
+                window.location.href = `http://127.0.0.1:5000/campaigns/${data.item['id']}`;
+
+            })
+            .catch(error => {
+                console.log('Error:', error);
+            });
+        }
+        
+        </script>
 </body>
 </html>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+
