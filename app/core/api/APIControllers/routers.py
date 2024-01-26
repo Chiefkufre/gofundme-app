@@ -10,6 +10,8 @@ from flask import (
     jsonify,
     current_app
 )
+from core.auth.jwt import jwt
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from core.models import User, Campaign, Donation, Message
 from core.utils.proj.tasks import activate_campaign
 from core.utils.general import paginate
@@ -28,6 +30,7 @@ api = Blueprint("api", __name__)
 
 # ////////////////////////////// Campaigns Routes /////////////////////////////////////// 
 @api.get("/campaigns/")
+@jwt_required()
 def retrieve_campaign():
     """Return all campaign in db
 
@@ -55,6 +58,7 @@ def create_campaign():
 
 
 @api.get("/campaigns/<int:id>/")
+@jwt_required()
 def get_campaign_by_id(id) -> dict:
     item = get_item_data(Campaign, id)
     return jsonify(item)
