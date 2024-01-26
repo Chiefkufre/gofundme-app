@@ -1,6 +1,10 @@
 """Flask configuration."""
 from pathlib import Path
 
+import logging
+from logging.handlers import RotatingFileHandler
+
+
 # from dotenv import load_dotenv
 from decouple import config
 
@@ -20,6 +24,7 @@ DB_PASSWORD = settings.DB_PASSWORD
 DB_HOST = settings.DB_HOST
 DB_PORT = settings.DB_PORT
 MYSQL_DRIVER = settings.MYSQL_DRIVER
+
 
 
 def create_db_url(DB_TYPE):
@@ -46,6 +51,27 @@ def set_result_backend(db_type):
     
         return result_backend
 
+
+
+class Logger:
+    LOG_LEVEL = logging.DEBUG
+
+    @staticmethod
+    def init_app(app):
+        app.logger.setLevel(Logger.LOG_LEVEL)
+
+        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+
+        console_handler = logging.StreamHandler()
+        console_handler.setLevel(Logger.LOG_LEVEL)
+        console_handler.setFormatter(formatter)
+        app.logger.addHandler(console_handler)
+
+        file_handler = RotatingFileHandler('app.log', maxBytes=10240, backupCount=5)
+        file_handler.setLevel(Logger.LOG_LEVEL)
+        file_handler.setFormatter(formatter)
+        app.logger.addHandler(file_handler)
+
 class MailConfig:
      MAIL_SERVER = settings.MAIL_SERVER
      MAIL_PORT = settings.MAIL_PORT
@@ -56,7 +82,6 @@ class MailConfig:
 
 class Config(MailConfig):
     """class to hold application configuration."""
-
     SECRET_KEY = settings.SECRET_KEY
     DB_TYPE = settings.DB_TYPE
     # SESSION_COOKIE_NAME = settings.SESSION_COOKIE_NAME
