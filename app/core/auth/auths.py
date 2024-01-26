@@ -4,6 +4,7 @@ import os
 
 from flask import (
     Blueprint,
+    current_app,
     redirect,
     abort,
     Blueprint,
@@ -45,19 +46,29 @@ def register_user():
     if validate_error:
         return validate_error
     
-    # Validate Email uniqueness
-    request_email = request.get_json()['email'];
-    email_error = validators.validate_email(request_email)
-    
     
     try:
 
+         # Validate Email uniqueness
+        request_email = request.get_json()['email'];
+        email_error = validators.validate_email(request_email)
+        if email_error:
+            return email_error;
 
+        # Regenerate hasg password
+        hashed_password = generate_password_hash(request.get_json['password'])
 
-        hashed_password = generate_password_hash(password)
+        # delete original password from request
+        if 'password' in request.get_json():
+            del request.get_json()['password']
 
-        new_user = User(email=email, password=hashed_password, name=name, bio=bio)
+        # Add hash_password
+        request.get_json()['password'] = hashed_password
 
+        #create user
+        new_user = User(**request.get_json())
+
+        # bind to db
         new_user.insert()
 
         return (
@@ -74,8 +85,9 @@ def register_user():
         )
 
     except ValueError as e:
+        current_app.logger.critical("Fail to create User {0}".format(str(e)))
         return jsonify({"message": str(e)}), 400
-        campaign.rollback()
+        User.rollback()
 
 
 # function to handle posting to login route
