@@ -93,10 +93,16 @@ class User(db.Model, UpdateFromDataMixin, PerformCRUD):
         "is_active",
     ]
 
+
     @classmethod
     def get_fields(cls):
         # Retrieve the list of fields from the class attribute
         return cls.fields
+
+    
+    def get_id(self):
+        # Retrieve the list of fields from the class attribute
+        return self.id
 
 
 class Campaign(db.Model, UpdateFromDataMixin, PerformCRUD):
