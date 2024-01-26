@@ -57,7 +57,7 @@ def get_item_data(model, id) -> dict:
         donation_details = [
             {
                 "amount": donation.amount,
-                "name": donation.user.name,
+                "name": donation.user.name or None,
                 "time": donation.created_at.strftime("%Y-%m-%d %H:%M:%S"),
             }
             for donation in item.donations
@@ -100,7 +100,6 @@ def handle_get_request(model, status) -> dict:
     email.body = "This is the email body"
     success = current_app.extensions['mail'].send(email)
 
-    print(success)
     return {"data": pagination_data["items"], "pagination": pagination_data["pagination"]}
 
 
@@ -113,6 +112,7 @@ def handle_create_request(model, data, is_json) -> dict:
         # Return error response
         status_code = 400  # Bad Request
         response_data["message"] = errors
+        current_app.logger.critical("Error on create - {0}".format(errors))
         return response_data, status_code
     try:
         item = model(**data)
@@ -124,6 +124,7 @@ def handle_create_request(model, data, is_json) -> dict:
         # Handle specific exceptions or log the error
         response_data["message"] = f"Failed to create {model.__name__}. {str(e)}"
         status_code = 500  # Internal Server Error
+        current_app.logger.critical("Error on create | Exception - {0}".format(e))
     return response_data, status_code
 
 
@@ -149,6 +150,7 @@ def handle_patch_request(data, id, model, is_json=True):
         if errors:
             status_code = 400  # Bad Request
             response_data["message"] = errors
+            current_app.logger.critical("Error on patch | - {0}".format(errors))
             return response_data, status_code
 
         item.update_from_request(data)
@@ -157,10 +159,9 @@ def handle_patch_request(data, id, model, is_json=True):
         response_data["item"] = item.serialize()
     except Exception as e:
         item.rollback()
-        # TODO: Add logging logic here
         success = False
+        current_app.logger.critical("Error on patch | Exception - {0}".format(e))
         response_data["message"] = f"Failed to update campaign details. {str(e)}"
-
     return response_data, status_code
 
 
@@ -182,15 +183,15 @@ def delete_item(model, id):
 
     try:
         item.delete()
-        response_data["message"] = "Campaign deleted successfully"
+        response_data["message"] = f"{model.__name__} deleted successfully"
         response_data["item"] = item.serialize()
         status_code = 204
 
     except Exception as e:
         item.rollback()
-        response_data["message"] = "Failed to delete campaign. Please try again."
+        response_data["message"] = f"Failed to delete {model.__name__}. Please try again."
         status_code = 204
-
+        current_app.logger.info("Error on delete | Exception - {0}".format(e))
     return response_data, status_code
 
 

@@ -1,6 +1,5 @@
 import json
-
-import validators
+import logging
 
 from flask import (
     redirect,
@@ -11,6 +10,7 @@ from flask import (
     request,
     render_template,
     g,
+    jsonify
 )
 from core.models import User, Campaign
 from core.utils.general import paginate
@@ -31,7 +31,7 @@ views = Blueprint("views", __name__)
 
 @views.get("/campaigns/")
 def listing():
-    response_data = handle_get_request(Campaign, True, True)
+    response_data = handle_get_request(Campaign, True)
     return render_template("front/listing.html", data=response_data)
 
 
@@ -92,11 +92,13 @@ def toggle_status(id):
     item = _get_item(Campaign, id)
     if item:
         item.activate(status)
-    
+        logging.info(f"Campaign is now {status}")
     return redirect(url_for('get_campaign_by_id'))
 
 
 
 
-
+@views.errorhandler(404)
+def page_not_found():
+    return render_template('error/404.html');
 

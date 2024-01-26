@@ -40,30 +40,23 @@ def register_user():
     :rtype: JSON object
     """
 
-    data = request.get_json()
-
-    email = data["email"]
-    name = data["name"]
-    password = data["password"]
-    bio = data["bio"]
-
+    # Validate if required data are passed
+    validate_error = validators.validate_json_request(request.get_json())
+    if validate_error:
+        return validate_error
+    
+    # Validate Email uniqueness
+    request_email = request.get_json()['email'];
+    email_error = validators.validate_email(request_email)
+    
+    
     try:
-        if not email:
-            return jsonify({"message": "Email is required"}), 400
-        if not name:
-            return jsonify({"message": "Name is required"}), 400
-        if not bio:
-            return jsonify({"message": "Bio is required"}), 400
-        if not password:
-            return jsonify({"message": "Password is required"}), 400
 
-        validators.validate_email(email)
+
 
         hashed_password = generate_password_hash(password)
 
-        new_password = generate_password_hash(password)
-
-        new_user = User(email=email, password=new_password, name=name, bio=bio)
+        new_user = User(email=email, password=hashed_password, name=name, bio=bio)
 
         new_user.insert()
 

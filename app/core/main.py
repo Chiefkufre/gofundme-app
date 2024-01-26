@@ -3,7 +3,7 @@ from flask_mail import Mail
 
 from core.utils.assets import configure_assets
 
-from core.conf.config import Config, DevConfig, ProdConfig, CeleryConfig
+from core.conf.config import Logger, Config, DevConfig, ProdConfig, CeleryConfig
 from core.conf.settings import settings
 from core.database.database import setup_db
 from core.utils.proj.celery import celery
@@ -21,7 +21,9 @@ APP_VERSION = settings.API_VERSION
 
 # start application instance
 def create_app_instance():
+    
     app = Flask(__name__)
+    Logger.init_app(app)
     app.config.from_object(DevConfig)
 
 

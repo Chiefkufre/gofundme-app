@@ -27,13 +27,13 @@ class PlatformValidator:
         if User.query.filter(User.email == email).first():
             raise ValueError("Email is already registered to another account")
 
-    def validate_json_request(self, data):
+    def validate_json_request(self, json_data):
         """Validates required fields in a JSON request."""
         errors = {}
         for field in self.required_fields:
-            if field not in data:
+            if field not in json_data:
                 errors[field] = f"Field '{field}' is required."
-        return errors
+            return errors
 
     def validate_form_request(self, form_data):
         """Validates required fields in a form request."""
@@ -41,7 +41,7 @@ class PlatformValidator:
         for field in self.required_fields:
             if field not in form_data:
                 errors[field] = f"Field '{field}' is required in the form."
-        return errors
+            return errors
 
     @property
     def model_fields(self):

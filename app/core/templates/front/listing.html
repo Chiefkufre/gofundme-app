@@ -1,36 +1,19 @@
+<!-- listing.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Campaign Listing</title>
 </head>
 <body>
-    <h1>Campaign Listing</h1>
+    <div id="campaignList"></div>
 
-    <ul>
-        {% for campaign in data.data %}
-            <li>
-                <h2>{{ campaign.title }}</h2>
-                <p>{{ campaign.description }}</p>
-                <p>{{campaign.donations[0]}}</p>
-                <!-- Add more details as needed -->
-            </li>
-        {% endfor %}
-    </ul>
 
-    <div>
-        <!-- Pagination Links -->
-        {% if data.pagination.prev_url %}
-            <a href="{{ data.pagination.prev_url }}">Previous</a>
-        {% endif %}
-        
-        Page {{ data.pagination.page }} of {{ data.pagination.pages }}
-        
-        {% if data.pagination.next_url %}
-            <a href="{{ data.pagination.next_url }}">Next</a>
-        {% endif %}
-    </div>
+
+    {% assets "request_js" %}
+    <script src="{{ ASSET_URL }}"></script>
+
+{% endassets %}
 </body>
 </html>

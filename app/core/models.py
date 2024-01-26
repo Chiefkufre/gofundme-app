@@ -179,7 +179,7 @@ class Donation(db.Model, UpdateFromDataMixin, PerformCRUD):
     id = db.Column(db.Integer, primary_key=True)
     amount = db.Column(db.Float, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), default=0)
     campaign_id = db.Column(db.Integer, db.ForeignKey("campaigns.id"), nullable=False)
 
     # def __init__(self, amount):
@@ -201,10 +201,25 @@ class Donation(db.Model, UpdateFromDataMixin, PerformCRUD):
         "campaign_id",
     ]
 
+    required = [
+        "amount",
+        "campaign_id",
+    ]
+
+    def anonymous_donor(self):
+        if self.user_id == 0:
+            self.user.name = "anonymous";
+            db.session.commit()
+        return self.user_id
+
     @classmethod
     def get_fields(cls):
         # Retrieve the list of fields from the class attribute
         return cls.fields
+
+    @classmethod
+    def required_fields(cls):
+        return cls.required
 
     def increase_donation(self, amount):
         return self.amount + float(amount)
