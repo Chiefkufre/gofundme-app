@@ -92,6 +92,8 @@ class Config(MailConfig):
     SQLALCHEMY_DATABASE_URI = create_db_url(DB_TYPE)
     # f"postgresql://kufre:password@localhost/gofundme"
     #
+    JWT_SECRET_KEY = settings.JWT_SECRET_KEY
+    JWT_TOKEN_LOCATION =  ['cookies']
 
 
 class ProdConfig(Config):

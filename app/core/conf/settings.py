@@ -10,6 +10,7 @@ class Settings:
     DB_PORT: int = config("DB_PORT", cast=int)
     MYSQL_DRIVER: str = config("MYSQL_DRIVER")
     SECRET_KEY: str = config("SECRET_KEY")
+    JWT_SECRET_KEY = config("JWT_SECRET_KEY")
     SESSION_COOKIE_NAME: str = config("SESSION_COOKIE_NAME")
 
     MAIL_SERVER : str = config("MAIL_SERVER")

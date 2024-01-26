@@ -14,6 +14,7 @@ from flask import (
     jsonify,
 )
 from flask_login import login_required, login_user, logout_user, current_user
+from flask_jwt_extended import create_access_token, set_access_cookies, jwt_required, get_jwt_identity
 from werkzeug.security import check_password_hash, generate_password_hash, gen_salt
 from core.models import User
 from core.utils.validators import PlatformValidator
@@ -45,27 +46,25 @@ def register_user():
     validate_error = validators.validate_json_request(request.get_json())
     if validate_error:
         return validate_error
-    
-    
-    try:
 
-         # Validate Email uniqueness
-        request_email = request.get_json()['email'];
+    try:
+        # Validate Email uniqueness
+        request_email = request.get_json()["email"]
         email_error = validators.validate_email(request_email)
         if email_error:
-            return email_error;
+            return email_error
 
         # Regenerate hasg password
-        hashed_password = generate_password_hash(request.get_json['password'])
+        hashed_password = generate_password_hash(request.get_json["password"])
 
         # delete original password from request
-        if 'password' in request.get_json():
-            del request.get_json()['password']
+        if "password" in request.get_json():
+            del request.get_json()["password"]
 
         # Add hash_password
-        request.get_json()['password'] = hashed_password
+        request.get_json()["password"] = hashed_password
 
-        #create user
+        # create user
         new_user = User(**request.get_json())
 
         # bind to db
@@ -99,20 +98,38 @@ def signin_user():
     password = data["password"]
 
     user = User.query.filter(User.email == email).first()
-    print(user.password)
     check_password = check_password_hash(user.password, password)
 
-    if check_password:
+    if user and check_password_hash(user.password, password):
+        # Login the user using Flask-Login (
         login_user(user, remember=True)
-        return redirect(url_for("index.home")), 200
+
+        # Create and return the access token in the headers
+        access_token = create_access_token(identity=user.serialize())
+        response = redirect(url_for("index.home"))
+        set_access_cookies(response, access_token)
+        return response, 200
 
     else:
         return jsonify({"message": "incorrect login detaila"}), 403
 
 
+@auths.route('/refresh_token', methods=['POST'])
+@jwt_required(refresh=True)
+def refresh():
+    """
+    Refresh the lifetime of the access token by returning a new one
+    """
+    current_user = get_jwt_identity()
+    # Create a new access token
+    new_access_token = create_access_token(identity=current_user)
+    # Set the new access token in the response cookies
+    response = jsonify(access_token=new_access_token)
+    set_access_cookies(response, new_access_token)
+    return response, 200
+
+
 # Logout control center
-
-
 @auths.route("/logout")
 @login_required
 def logout():
