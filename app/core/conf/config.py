@@ -3,7 +3,7 @@ from pathlib import Path
 
 import logging
 from logging.handlers import RotatingFileHandler
-
+from datetime import timedelta
 
 # from dotenv import load_dotenv
 from decouple import config
@@ -94,6 +94,8 @@ class Config(MailConfig):
     #
     JWT_SECRET_KEY = settings.JWT_SECRET_KEY
     JWT_TOKEN_LOCATION =  ['cookies']
+    JWT_COOKIE_SECURE = False
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=1)
 
 
 class ProdConfig(Config):
