@@ -11,6 +11,7 @@ from flask import (
     current_app
 )
 from core.auth.jwt import jwt
+from flask_login import login_required
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from core.models import User, Campaign, Donation, Message
 from core.utils.proj.tasks import activate_campaign
@@ -30,7 +31,6 @@ api = Blueprint("api", __name__)
 
 # ////////////////////////////// Campaigns Routes /////////////////////////////////////// 
 @api.get("/campaigns/")
-@jwt_required()
 def retrieve_campaign():
     """Return all campaign in db
 
@@ -43,6 +43,8 @@ def retrieve_campaign():
 
 
 @api.post("/campaigns/create")
+@login_required
+@jwt_required()
 def create_campaign():
     """Create a single unit of campaign in db
 
@@ -60,10 +62,15 @@ def create_campaign():
 @api.get("/campaigns/<int:id>/")
 @jwt_required()
 def get_campaign_by_id(id) -> dict:
+    identity = get_jwt_identity()
     item = get_item_data(Campaign, id)
+    if identity['id'] != item['user_id']:
+        item = {"msg": "You have not created any campaign yet"}
     return jsonify(item)
 
 @api.post("/campaigns/<int:id>/status")
+@login_required
+@jwt_required()
 def toggle_campaign_status(id):
     status = request.get_json()['status']
     item = _get_item(Campaign, id)
@@ -73,11 +80,14 @@ def toggle_campaign_status(id):
     return jsonify(item.serialize())
 
 @api.post("/campaigns/<int:id>/publish")
+@login_required
+@jwt_required()
 def publish_campaign(id):
     status = request.get_json()['is_publish']
     message = '';
     item = _get_item(Campaign, id)
     if item:
+
         current_status = item.publish(status)
         if current_status == True:
             message = "Campaign has been publish"
@@ -93,12 +103,16 @@ def publish_campaign(id):
 
 
 @api.patch("/campaigns/<int:id>/")
+@login_required
+@jwt_required()
 def update_campaign(id: int) -> tuple:
     data = request.get_json()
     item = handle_patch_request(data, id, Campaign)
     return jsonify(item)
 
 @api.delete("/campaigns/<int:id>/")
+@login_required
+@jwt_required()
 def delete_campaign_by_id(id: int) -> tuple:
     item = delete_item(Campaign, id)
     current_app.logger.info(f" Campaign - {item.serialize()['title']} has been deleted")
@@ -173,6 +187,8 @@ def get_donations_from_campaign(campaign_id):
 
 
 @api.delete('/campaigns/donation/<int:id>/delete')
+@login_required
+@jwt_required()
 def delete_donation(id):
     item = delete_item(Donation, id);
     return jsonify(item)
@@ -180,6 +196,9 @@ def delete_donation(id):
 # /////////////////////////////////////// Users Route /////////////////////
 
 @api.get("/users/")
+@login_required
+@jwt_required()
 def retrieve_users():
-    response_data = handle_get_request(User, True, True)
+    
+    response_data = handle_get_request(User, True)
     return jsonify(response_data)
