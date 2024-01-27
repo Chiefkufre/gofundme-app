@@ -1,4 +1,4 @@
-from abc import ABC, abstractmethod 
+from abc import ABC, abstractmethod
 import requests
 
 
@@ -11,6 +11,7 @@ class PaymentGateway(ABC):
     def charge(self, amount, currency, description):
         pass
 
+
 class PaypalGateway(PaymentGateway):
     def __init__(self, client_id, secret):
         # Initialize Paypal client with credentials
@@ -20,6 +21,7 @@ class PaypalGateway(PaymentGateway):
         # Send payment request to Paypal API
         # Parse response and return success/failure
         pass
+
 
 class FlutterwaveGateway(PaymentGateway):
     def __init__(self, api_key, secret_key):
@@ -31,6 +33,7 @@ class FlutterwaveGateway(PaymentGateway):
         # Parse response and return success/failure
         pass
 
+
 class StripeGateway(PaymentGateway):
     def __init__(self, api_key):
         # Initialize Stripe API client with credentials
@@ -41,6 +44,7 @@ class StripeGateway(PaymentGateway):
         # Parse response and return success/failure
         pass
 
+
 class BitcoinGateway(PaymentGateway):
     def __init__(self, address):
         # Initialize Bitcoin wallet/payment processor with address
@@ -50,6 +54,7 @@ class BitcoinGateway(PaymentGateway):
         # Create Bitcoin transaction and attempt to send payment
         # Parse response and return success/failure
         pass
+
 
 def process_payment(gateway, amount, currency, description, campaign_id, user_id=None):
     try:

@@ -65,6 +65,19 @@ class User(db.Model, UpdateFromDataMixin, PerformCRUD):
     is_active = db.Column(Boolean, default=True)
     email_verify = db.Column(Boolean, default=False)
 
+    def is_authenticated(self):
+        return self.email_verify
+
+    def is_active(self):
+        return self.is_active
+
+    def is_anonymous(self):
+        return False
+
+    def get_id(self):
+        # Retrieve the list of fields from the class attribute
+        return self.id
+
     def serialize(self):
         return {
             "id": self.id,
@@ -93,16 +106,10 @@ class User(db.Model, UpdateFromDataMixin, PerformCRUD):
         "is_active",
     ]
 
-
     @classmethod
     def get_fields(cls):
         # Retrieve the list of fields from the class attribute
         return cls.fields
-
-    
-    def get_id(self):
-        # Retrieve the list of fields from the class attribute
-        return self.id
 
 
 class Campaign(db.Model, UpdateFromDataMixin, PerformCRUD):
@@ -145,7 +152,7 @@ class Campaign(db.Model, UpdateFromDataMixin, PerformCRUD):
             "created_by": self.user_id,
             "created_at": self.created_at.strftime("%Y-%m-%d"),
             "is_active": self.is_active,
-            "is_publish": self.is_publish
+            "is_publish": self.is_publish,
         }
 
     fields = [
@@ -158,7 +165,7 @@ class Campaign(db.Model, UpdateFromDataMixin, PerformCRUD):
         "donations",
         "created_at",
         "is_active",
-        "is_publish"
+        "is_publish",
     ]
 
     required = [
@@ -214,7 +221,7 @@ class Donation(db.Model, UpdateFromDataMixin, PerformCRUD):
 
     def anonymous_donor(self):
         if self.user_id == 0:
-            self.user.name = "anonymous";
+            self.user.name = "anonymous"
             db.session.commit()
         return self.user_id
 

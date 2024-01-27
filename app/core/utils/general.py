@@ -28,8 +28,5 @@ def paginate(query, page=1, per_page=10):
             "per_page": per_page,
             "prev_url": prev_url,
             "next_url": next_url,
-        }
+        },
     }
-
-
-

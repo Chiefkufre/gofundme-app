@@ -10,7 +10,7 @@ from flask import (
     request,
     render_template,
     g,
-    jsonify
+    jsonify,
 )
 from core.models import User, Campaign
 from core.utils.general import paginate
@@ -28,29 +28,28 @@ from core.web.Forms.forms import CampaignForm
 views = Blueprint("views", __name__)
 
 
-
 @views.get("/campaigns/")
 def listing():
     response_data = handle_get_request(Campaign, True)
     return render_template("front/listing.html", data=response_data)
 
 
-
 @views.get("/campaigns/create")
 def get_campaign_view():
-     form = CampaignForm()
-     return render_template(
-        "user/create.html", form=form)
+    form = CampaignForm()
+    return render_template("user/create.html", form=form)
 
 
 @views.post("/campaigns/create")
 def create_campaign():
-    if request.method == 'POST':
+    if request.method == "POST":
         try:
             data = request.form
             _clData = _clean_data(data)
-            _clData['user_id'] = g.user_id
-            response_data, status_code = handle_create_request(Campaign, _clData, is_json=False)
+            _clData["user_id"] = g.user_id
+            response_data, status_code = handle_create_request(
+                Campaign, _clData, is_json=False
+            )
             if status_code == 201:
                 return response_data
             else:
@@ -62,9 +61,7 @@ def create_campaign():
             flash("Unable to create campaign", "error")
     else:
         return "Invalid request method", 405
-    return render_template('user/create.html')    
-   
-
+    return render_template("user/create.html")
 
 
 @views.get("/campaigns/<int:id>/")
@@ -88,17 +85,14 @@ def update_campaign(id: int):
 
 @views.post("/campaigns/<int:id>/status")
 def toggle_status(id):
-    status = request.form['status']
+    status = request.form["status"]
     item = _get_item(Campaign, id)
     if item:
         item.activate(status)
         logging.info(f"Campaign is now {status}")
-    return redirect(url_for('get_campaign_by_id'))
-
-
+    return redirect(url_for("get_campaign_by_id"))
 
 
 @views.errorhandler(404)
 def page_not_found():
-    return render_template('error/404.html');
-
+    return render_template("error/404.html")

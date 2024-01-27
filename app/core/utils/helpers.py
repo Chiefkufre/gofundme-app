@@ -96,11 +96,16 @@ def handle_get_request(model, status) -> dict:
     pagination_data = paginate(
         model.query.filter_by(is_active=status), page=page, per_page=per_page
     )
-    email = Message('Hello', sender = 'yourId@gmail.com', recipients = ['testpractical2000@gmail.com'])
+    email = Message(
+        "Hello", sender="yourId@gmail.com", recipients=["testpractical2000@gmail.com"]
+    )
     email.body = "This is the email body"
-    success = current_app.extensions['mail'].send(email)
+    success = current_app.extensions["mail"].send(email)
 
-    return {"data": pagination_data["items"], "pagination": pagination_data["pagination"]}
+    return {
+        "data": pagination_data["items"],
+        "pagination": pagination_data["pagination"],
+    }
 
 
 def handle_create_request(model, data, is_json) -> dict:
@@ -189,7 +194,9 @@ def delete_item(model, id):
 
     except Exception as e:
         item.rollback()
-        response_data["message"] = f"Failed to delete {model.__name__}. Please try again."
+        response_data[
+            "message"
+        ] = f"Failed to delete {model.__name__}. Please try again."
         status_code = 204
         current_app.logger.info("Error on delete | Exception - {0}".format(e))
     return response_data, status_code

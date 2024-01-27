@@ -14,7 +14,9 @@ bundles = {
     "dashboard_css": Bundle(
         "css/common.css", "css/dashbord.css", output="gen/dashboard.css"
     ),
-    'request_js': Bundle("js/fetchRequest.js", "js/postRequest.js", output="gen/request.js")
+    "request_js": Bundle(
+        "js/fetchRequest.js", "js/postRequest.js", output="gen/request.js"
+    ),
 }
 
 

@@ -26,7 +26,6 @@ DB_PORT = settings.DB_PORT
 MYSQL_DRIVER = settings.MYSQL_DRIVER
 
 
-
 def create_db_url(DB_TYPE):
     if DB_TYPE == "postgresql":
         DATABASE_URI = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}"
@@ -39,18 +38,21 @@ def create_db_url(DB_TYPE):
 
     return DATABASE_URI
 
-def set_result_backend(db_type):
-        
-        result_backend = "";
-        if db_type == 'postgres':
-             result_backend = 'db+postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}'
-        elif db_type == 'mysql':
-             result_backend ='db+mysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}'
-        else:
-             result_backend ='sqlite:///celery_results.db'
-    
-        return result_backend
 
+def set_result_backend(db_type):
+    result_backend = ""
+    if db_type == "postgres":
+        result_backend = (
+            "db+postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+        )
+    elif db_type == "mysql":
+        result_backend = (
+            "db+mysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+        )
+    else:
+        result_backend = "sqlite:///celery_results.db"
+
+    return result_backend
 
 
 class Logger:
@@ -60,28 +62,33 @@ class Logger:
     def init_app(app):
         app.logger.setLevel(Logger.LOG_LEVEL)
 
-        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        formatter = logging.Formatter(
+            "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+        )
 
         console_handler = logging.StreamHandler()
         console_handler.setLevel(Logger.LOG_LEVEL)
         console_handler.setFormatter(formatter)
         app.logger.addHandler(console_handler)
 
-        file_handler = RotatingFileHandler('app.log', maxBytes=10240, backupCount=5)
+        file_handler = RotatingFileHandler("app.log", maxBytes=10240, backupCount=5)
         file_handler.setLevel(Logger.LOG_LEVEL)
         file_handler.setFormatter(formatter)
         app.logger.addHandler(file_handler)
 
+
 class MailConfig:
-     MAIL_SERVER = settings.MAIL_SERVER
-     MAIL_PORT = settings.MAIL_PORT
-     MAIL_USERNAME = settings.MAIL_USERNAME
-     MAIL_PASSWORD = settings.MAIL_PASSWORD
-     MAIL_USE_TLS = settings.MAIL_USE_TLS
-     MAIL_USE_SSL = settings.MAIL_USE_SSL
+    MAIL_SERVER = settings.MAIL_SERVER
+    MAIL_PORT = settings.MAIL_PORT
+    MAIL_USERNAME = settings.MAIL_USERNAME
+    MAIL_PASSWORD = settings.MAIL_PASSWORD
+    MAIL_USE_TLS = settings.MAIL_USE_TLS
+    MAIL_USE_SSL = settings.MAIL_USE_SSL
+
 
 class Config(MailConfig):
     """class to hold application configuration."""
+
     SECRET_KEY = settings.SECRET_KEY
     DB_TYPE = settings.DB_TYPE
     # SESSION_COOKIE_NAME = settings.SESSION_COOKIE_NAME
@@ -93,7 +100,7 @@ class Config(MailConfig):
     # f"postgresql://kufre:password@localhost/gofundme"
     #
     JWT_SECRET_KEY = settings.JWT_SECRET_KEY
-    JWT_TOKEN_LOCATION =  ['cookies']
+    JWT_TOKEN_LOCATION = ["cookies"]
     JWT_COOKIE_SECURE = False
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=1)
 
@@ -109,9 +116,9 @@ class DevConfig(Config):
     DEBUG = True
     TESTING = True
 
-class CeleryConfig():
 
-    broker_url='redis://localhost:6379/',
-    result_backend = set_result_backend(DB_TYPE),
-    include=['proj.tasks']
-    result_expires=3600
+class CeleryConfig:
+    broker_url = ("redis://localhost:6379/",)
+    result_backend = (set_result_backend(DB_TYPE),)
+    include = ["proj.tasks"]
+    result_expires = 3600

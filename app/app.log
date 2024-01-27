@@ -1,3 +1,4 @@
 2024-01-25 15:49:28,048 - core.main - DEBUG - Campaign False
 2024-01-25 15:54:19,700 - core.main - DEBUG - man girls and or  to man is now publish
 2024-01-25 15:55:17,743 - core.main - DEBUG -  Campaign - man girls and or  to man is now unpublish
+2024-01-27 01:36:43,341 - core.main - CRITICAL - Fail to create User Email is already registered to another account

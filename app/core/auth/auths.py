@@ -15,7 +15,14 @@ from flask import (
     jsonify,
 )
 from flask_login import login_required, login_user, logout_user, current_user
-from flask_jwt_extended import create_access_token, set_access_cookies, jwt_required, get_jwt_identity, unset_jwt_cookies, get_jwt
+from flask_jwt_extended import (
+    create_access_token,
+    set_access_cookies,
+    jwt_required,
+    get_jwt_identity,
+    unset_jwt_cookies,
+    get_jwt,
+)
 from werkzeug.security import check_password_hash, generate_password_hash, gen_salt
 from core.models import User
 from core.utils.validators import PlatformValidator
@@ -61,11 +68,11 @@ def register_user():
         # delete original password from request
         if "password" in request.get_json() and "email" in request.get_json():
             del request.get_json()["password"]
-            del request.get_json()['email']
+            del request.get_json()["email"]
 
         # Add hash_password
         request.get_json()["password"] = hashed_password
-        request.get_json()['email'] = request_email.lower()
+        request.get_json()["email"] = request_email.lower()
         # create user
         new_user = User(**request.get_json())
 
@@ -102,12 +109,9 @@ def signin_user():
     user = User.query.filter(User.email == email).first()
 
     if user and check_password_hash(user.password, password):
-        # Login the user using Flask-Login 
+        # Login the user using Flask-Login
         login_user(user, remember=True)
-        identity = {
-            "id" : user.id,
-            "email" : user.email
-        }
+        identity = {"id": user.id, "email": user.email}
         # Create and return the access token in the headers
         access_token = create_access_token(identity=identity)
         response = redirect(url_for("index.home"))
@@ -116,6 +120,7 @@ def signin_user():
 
     else:
         return jsonify({"message": "incorrect login detaila"}), 403
+
 
 # Logout control center
 @auths.get("/logout")
@@ -126,13 +131,14 @@ def logout():
     unset_jwt_cookies(response)
     return response
 
+
 @auths.route("/refresh_token", methods=["POST"])
 @jwt_required(refresh=True)
 def refresh():
     identity = get_jwt_identity()
     access_token = create_access_token(identity=identity)
-    return jsonify(msg = "token refresh",
-            access_token=access_token)
+    return jsonify(msg="token refresh", access_token=access_token)
+
 
 # Refresh access token every 30 minutes
 @auths.after_request

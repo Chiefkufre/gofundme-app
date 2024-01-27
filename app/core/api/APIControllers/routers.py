@@ -1,15 +1,7 @@
 import json
 
 import logging
-from flask import (
-    redirect,
-    abort,
-    Blueprint,
-    url_for,
-    request,
-    jsonify,
-    current_app
-)
+from flask import redirect, abort, Blueprint, url_for, request, jsonify, current_app
 from core.auth.jwt import jwt
 from flask_login import login_required
 from flask_jwt_extended import jwt_required, get_jwt_identity
@@ -29,14 +21,15 @@ from core.utils.helpers import (
 
 api = Blueprint("api", __name__)
 
-# ////////////////////////////// Campaigns Routes /////////////////////////////////////// 
+
+# ////////////////////////////// Campaigns Routes ///////////////////////////////////////
 @api.get("/campaigns/")
 def retrieve_campaign():
     """Return all campaign in db
 
-       Args: None
+    Args: None
 
-       rType: json(Dict)
+    rType: json(Dict)
     """
     response_data = handle_get_request(Campaign, False)
     return jsonify(response_data)
@@ -48,9 +41,9 @@ def retrieve_campaign():
 def create_campaign():
     """Create a single unit of campaign in db
 
-       Args: Send json payLoad
+    Args: Send json payLoad
 
-       rType: json(List[Dict])
+    rType: json(List[Dict])
     """
     json_data = request.get_json()
     _clData = _clean_data(json_data)
@@ -64,42 +57,48 @@ def create_campaign():
 def get_campaign_by_id(id) -> dict:
     identity = get_jwt_identity()
     item = get_item_data(Campaign, id)
-    if identity['id'] != item['user_id']:
+    if identity["id"] != item["user_id"]:
         item = {"msg": "You have not created any campaign yet"}
     return jsonify(item)
+
 
 @api.post("/campaigns/<int:id>/status")
 @login_required
 @jwt_required()
 def toggle_campaign_status(id):
-    status = request.get_json()['status']
+    status = request.get_json()["status"]
     item = _get_item(Campaign, id)
     if item:
         item.activate(status)
-        current_app.logger.info(f" Campaign - '{item.serialize()['title']}' is {status}")
+        current_app.logger.info(
+            f" Campaign - '{item.serialize()['title']}' is {status}"
+        )
     return jsonify(item.serialize())
+
 
 @api.post("/campaigns/<int:id>/publish")
 @login_required
 @jwt_required()
 def publish_campaign(id):
-    status = request.get_json()['is_publish']
-    message = '';
+    status = request.get_json()["is_publish"]
+    message = ""
     item = _get_item(Campaign, id)
     if item:
-
         current_status = item.publish(status)
         if current_status == True:
             message = "Campaign has been publish"
-            current_app.logger.info(f"Campaign - {item.serialize()['title']} has been publish")
+            current_app.logger.info(
+                f"Campaign - {item.serialize()['title']} has been publish"
+            )
         else:
             message = "Campaign is now unpublish"
-            current_app.logger.info(f" Campaign - {item.serialize()['title']} has been unpublish")
+            current_app.logger.info(
+                f" Campaign - {item.serialize()['title']} has been unpublish"
+            )
 
         obj = item.serialize()
-        obj['message'] = message;
+        obj["message"] = message
     return jsonify(obj)
-
 
 
 @api.patch("/campaigns/<int:id>/")
@@ -110,6 +109,7 @@ def update_campaign(id: int) -> tuple:
     item = handle_patch_request(data, id, Campaign)
     return jsonify(item)
 
+
 @api.delete("/campaigns/<int:id>/")
 @login_required
 @jwt_required()
@@ -119,30 +119,30 @@ def delete_campaign_by_id(id: int) -> tuple:
     return jsonify(item)
 
 
-# ////////////////////////////// Donations Routes /////////////////////////////////////// 
+# ////////////////////////////// Donations Routes ///////////////////////////////////////
 @api.post("/campaigns/<int:id>/donation")
 def make_donation(id):
     """ "Process Donation creation
 
     Args:
         argument -- campaign_id
-    
+
     rType: successful | Error response
     """
 
     data = request.get_json()
 
-    donated_amount = request.get_json()['amount']
+    donated_amount = request.get_json()["amount"]
     # user_id = data.get('user_id')
 
     # Validate the donation amount
     if donated_amount <= 0.0:
         return jsonify({"error": "Invalid donation amount"}), 400
-    
+
     try:
         # Check if campaign exists
-        campaign = _get_item(Campaign, id) 
-        
+        campaign = _get_item(Campaign, id)
+
         if campaign is None:
             return jsonify({"error": "Campaign not found"}), 404
 
@@ -152,23 +152,23 @@ def make_donation(id):
 
         # Create a new donation record
         # clean_data = _clean_data(data)
-        response_data, status_code = handle_create_request(Donation, data, is_json=True);
+        response_data, status_code = handle_create_request(Donation, data, is_json=True)
         if status_code != 201:
-            return jsonify("Unable to add donation", "error");
-    
+            return jsonify("Unable to add donation", "error")
+
         return jsonify({"message": "Donation successful"}), 201
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
 
-@api.get('/campaigns/donation/<int:campaign_id>/')
+@api.get("/campaigns/donation/<int:campaign_id>/")
 def get_donations_from_campaign(campaign_id):
     """Fetch all donations to a campaign
 
-       Args:
-         id - campaign id
-       
-       rType: dict
+    Args:
+      id - campaign id
+
+    rType: dict
     """
     campaign = _get_item(Campaign, campaign_id)
 
@@ -186,19 +186,20 @@ def get_donations_from_campaign(campaign_id):
     return jsonify({"donations": donation_details})
 
 
-@api.delete('/campaigns/donation/<int:id>/delete')
+@api.delete("/campaigns/donation/<int:id>/delete")
 @login_required
 @jwt_required()
 def delete_donation(id):
-    item = delete_item(Donation, id);
+    item = delete_item(Donation, id)
     return jsonify(item)
 
+
 # /////////////////////////////////////// Users Route /////////////////////
+
 
 @api.get("/users/")
 @login_required
 @jwt_required()
 def retrieve_users():
-    
     response_data = handle_get_request(User, True)
     return jsonify(response_data)
