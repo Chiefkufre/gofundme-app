@@ -1,6 +1,7 @@
 import flask
 import validators
-import os
+import datetime
+from datetime import timedelta, timezone
 
 from flask import (
     Blueprint,
@@ -14,7 +15,7 @@ from flask import (
     jsonify,
 )
 from flask_login import login_required, login_user, logout_user, current_user
-from flask_jwt_extended import create_access_token, set_access_cookies, jwt_required, get_jwt_identity
+from flask_jwt_extended import create_access_token, set_access_cookies, jwt_required, get_jwt_identity, unset_jwt_cookies, get_jwt
 from werkzeug.security import check_password_hash, generate_password_hash, gen_salt
 from core.models import User
 from core.utils.validators import PlatformValidator
@@ -54,16 +55,17 @@ def register_user():
         if email_error:
             return email_error
 
-        # Regenerate hasg password
-        hashed_password = generate_password_hash(request.get_json["password"])
+        # Regenerate hash password
+        hashed_password = generate_password_hash(request.get_json()["password"])
 
         # delete original password from request
-        if "password" in request.get_json():
+        if "password" in request.get_json() and "email" in request.get_json():
             del request.get_json()["password"]
+            del request.get_json()['email']
 
         # Add hash_password
         request.get_json()["password"] = hashed_password
-
+        request.get_json()['email'] = request_email.lower()
         # create user
         new_user = User(**request.get_json())
 
@@ -98,14 +100,16 @@ def signin_user():
     password = data["password"]
 
     user = User.query.filter(User.email == email).first()
-    check_password = check_password_hash(user.password, password)
 
     if user and check_password_hash(user.password, password):
-        # Login the user using Flask-Login (
+        # Login the user using Flask-Login 
         login_user(user, remember=True)
-
+        identity = {
+            "id" : user.id,
+            "email" : user.email
+        }
         # Create and return the access token in the headers
-        access_token = create_access_token(identity=user.serialize())
+        access_token = create_access_token(identity=identity)
         response = redirect(url_for("index.home"))
         set_access_cookies(response, access_token)
         return response, 200
@@ -113,25 +117,33 @@ def signin_user():
     else:
         return jsonify({"message": "incorrect login detaila"}), 403
 
-
-@auths.route('/refresh_token', methods=['POST'])
-@jwt_required(refresh=True)
-def refresh():
-    """
-    Refresh the lifetime of the access token by returning a new one
-    """
-    current_user = get_jwt_identity()
-    # Create a new access token
-    new_access_token = create_access_token(identity=current_user)
-    # Set the new access token in the response cookies
-    response = jsonify(access_token=new_access_token)
-    set_access_cookies(response, new_access_token)
-    return response, 200
-
-
 # Logout control center
-@auths.route("/logout")
+@auths.get("/logout")
 @login_required
 def logout():
     logout_user()
-    return
+    response = jsonify({"msg": "logout successful"})
+    unset_jwt_cookies(response)
+    return response
+
+@auths.route("/refresh_token", methods=["POST"])
+@jwt_required(refresh=True)
+def refresh():
+    identity = get_jwt_identity()
+    access_token = create_access_token(identity=identity)
+    return jsonify(msg = "token refresh",
+            access_token=access_token)
+
+# Refresh access token every 30 minutes
+@auths.after_request
+def refresh_expiring_jwts(response):
+    try:
+        exp_timestamp = get_jwt()["exp"]
+        now = datetime.now(timezone.utc)
+        target_timestamp = datetime.timestamp(now + timedelta(minutes=30))
+        if target_timestamp > exp_timestamp:
+            access_token = create_access_token(identity=get_jwt_identity())
+            set_access_cookies(response, access_token)
+        return response
+    except (RuntimeError, KeyError):
+        return response
