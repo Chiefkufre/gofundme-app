@@ -30,10 +30,12 @@ class PlatformValidator:
     def validate_json_request(self, json_data):
         """Validates required fields in a JSON request."""
         errors = {}
-        for field in self.required_fields:
-            if field not in json_data:
-                errors[field] = f"Field '{field}' is required."
-            return errors
+        if self.create:
+            for field in self.required_fields:
+                if field not in json_data:
+                    errors[field] = f"Field '{field}' is required."
+                return errors
+        
 
     def validate_form_request(self, form_data):
         """Validates required fields in a form request."""
