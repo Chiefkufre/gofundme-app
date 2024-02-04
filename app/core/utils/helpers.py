@@ -108,6 +108,7 @@ def handle_get_request(model, status) -> dict:
     }
 
 
+
 def handle_create_request(model, data, is_json) -> dict:
     response_data = {}
 
@@ -123,6 +124,7 @@ def handle_create_request(model, data, is_json) -> dict:
         item = model(**data)
         item.insert()
         response_data["message"] = f"{model.__name__} created successfully"
+        current_app.logger.info(f" Campaign - '{item.serialize()['title']}' has been created")
         response_data["item"] = item.serialize()
         status_code = 201  # Created
     except Exception as e:
@@ -203,17 +205,20 @@ def delete_item(model, id):
 
 
 def _clean_data(data: dict) -> dict:
-    """ "Clean requested data before passing submit
+    """Clean requested data before passing submit
 
     Args:
         data: request data information
 
-    returns:
-        cleaned data in python dictionary
+    Returns:
+        Cleaned data in a Python dictionary
     """
     clean_data = {}
     for key, item in data.items():
-        clean_data[key] = item.strip().lower()
-        pass
+        if isinstance(item, str):
+            clean_data[key] = item.strip().lower()
+        else:
+            clean_data[key] = item
 
     return clean_data
+

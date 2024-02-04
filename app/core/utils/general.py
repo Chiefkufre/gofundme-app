@@ -9,7 +9,6 @@ def paginate(query, page=1, per_page=10):
     pages = int(ceil(total / float(per_page)))
     start = (page - 1) * per_page
     end = start + per_page
-
     items = [item.serialize() for item in query.slice(start, end)]
 
     prev_url = None

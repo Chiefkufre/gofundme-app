@@ -1,7 +1,6 @@
 import flask
 import validators
-import datetime
-from datetime import timedelta, timezone
+from datetime import timedelta, timezone, datetime
 
 from flask import (
     Blueprint,
@@ -25,6 +24,7 @@ from flask_jwt_extended import (
 )
 from werkzeug.security import check_password_hash, generate_password_hash, gen_salt
 from core.models import User
+from core.utils.helpers import handle_get_request, handle_patch_request, get_item_data, _get_item
 from core.utils.validators import PlatformValidator
 
 auths = Blueprint("auths", __name__)
@@ -100,7 +100,7 @@ def register_user():
 
 # function to handle posting to login route
 @auths.post("/login")
-def signin_user():
+def sign_in_user():
     data = request.get_json()
 
     email = data["email"]
@@ -114,7 +114,7 @@ def signin_user():
         identity = {"id": user.id, "email": user.email}
         # Create and return the access token in the headers
         access_token = create_access_token(identity=identity)
-        response = redirect(url_for("index.home"))
+        response = jsonify({"msg": "login sucessful"})
         set_access_cookies(response, access_token)
         return response, 200
 
@@ -131,6 +131,31 @@ def logout():
     unset_jwt_cookies(response)
     return response
 
+
+# /////////// User Controlller /////////
+@auths.get("/users/")
+@login_required
+@jwt_required()
+def retrieve_users():
+    response_data = handle_get_request(User, True)
+    return jsonify(response_data)
+
+@auths.get("/users/<int:id>")
+@login_required
+@jwt_required()
+def get_user_by_id(id):
+    user = User.query.get_or_404(id)
+    return jsonify(user.serialize())
+
+@auths.patch('/users/<int:id>')
+@login_required
+@jwt_required()
+def update_user_detail(id):
+    data = request.get_json()
+    user = _get_item(User, id)
+    if user:
+        response = handle_patch_request(data, id, User)
+    return jsonify(response)
 
 @auths.route("/refresh_token", methods=["POST"])
 @jwt_required(refresh=True)

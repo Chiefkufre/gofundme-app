@@ -3,7 +3,7 @@ import json
 import logging
 from flask import redirect, abort, Blueprint, url_for, request, jsonify, current_app
 from core.auth.jwt import jwt
-from flask_login import login_required
+from flask_login import login_required, current_user
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from core.models import User, Campaign, Donation, Message
 from core.utils.proj.tasks import activate_campaign
@@ -24,6 +24,7 @@ api = Blueprint("api", __name__)
 
 # ////////////////////////////// Campaigns Routes ///////////////////////////////////////
 @api.get("/campaigns/")
+@jwt_required()
 def retrieve_campaign():
     """Return all campaign in db
 
@@ -31,9 +32,10 @@ def retrieve_campaign():
 
     rType: json(Dict)
     """
+    print(current_user)
     response_data = handle_get_request(Campaign, False)
     return jsonify(response_data)
-
+ 
 
 @api.post("/campaigns/create")
 @login_required
@@ -47,12 +49,13 @@ def create_campaign():
     """
     json_data = request.get_json()
     _clData = _clean_data(json_data)
+    _clData['user_id'] = get_jwt_identity()['id']
     response_data, status_code = handle_create_request(Campaign, _clData, is_json=True)
-    current_app.logger.info(f" Campaign - '{response_data['title']}' has been created")
     return response_data, status_code
 
 
 @api.get("/campaigns/<int:id>/")
+@login_required
 @jwt_required()
 def get_campaign_by_id(id) -> dict:
     identity = get_jwt_identity()
@@ -62,7 +65,7 @@ def get_campaign_by_id(id) -> dict:
     return jsonify(item)
 
 
-@api.post("/campaigns/<int:id>/status")
+@api.patch("/campaigns/<int:id>/status")
 @login_required
 @jwt_required()
 def toggle_campaign_status(id):
@@ -197,9 +200,3 @@ def delete_donation(id):
 # /////////////////////////////////////// Users Route /////////////////////
 
 
-@api.get("/users/")
-@login_required
-@jwt_required()
-def retrieve_users():
-    response_data = handle_get_request(User, True)
-    return jsonify(response_data)

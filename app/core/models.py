@@ -6,6 +6,15 @@ from core.database.database import db
 
 # Database ORM
 
+from enum import Enum
+
+class Role(Enum):
+    SUPER_ADMIN = "super_admin"
+    ADMIN = 'admin'
+    USER = 'user'
+    MODERATOR = 'moderator'
+    # Add more roles as needed
+
 
 class UpdateFromDataMixin:
     def update_from_data(self, data):
@@ -25,7 +34,7 @@ class UpdateFromDataMixin:
         self.update_from_data(request_data)
 
 
-class PerformCRUD:
+class CrudMixin:
     def insert(self):
         db.session.add(self)
         db.session.commit()
@@ -46,7 +55,7 @@ class PerformCRUD:
         db.session.commit()
 
 
-class User(db.Model, UpdateFromDataMixin, PerformCRUD):
+class User(db.Model, UpdateFromDataMixin, CrudMixin):
     __tablename__ = "users"
 
     id = db.Column(db.Integer, primary_key=True)
@@ -62,18 +71,37 @@ class User(db.Model, UpdateFromDataMixin, PerformCRUD):
     user_status = db.Column(db.String(20), default="pending")
     campaigns = db.relationship("Campaign", backref="user", lazy=True)
     donations = db.relationship("Donation", backref="user", lazy=True)
-    is_active = db.Column(Boolean, default=True)
     email_verify = db.Column(Boolean, default=False)
+    role = db.Column(db.String(50), nullable=False, default="user")
+    is_active = db.Column(Boolean, default=False)
 
+
+    @staticmethod
     def is_authenticated(self):
-        return self.email_verify
-
-    def is_active(self):
         return self.is_active
 
+        # return self.email_verify
+
+    @staticmethod
+    def _is_active(self):
+        return self.is_active
+    
+    @staticmethod
     def is_anonymous(self):
         return False
-
+    
+    @staticmethod
+    def is_admin(self):
+        return self.role == "admin"
+    
+    @staticmethod
+    def is_superAmin(self):
+        return self.role == "super_admin"
+    
+    @staticmethod
+    def is_user(self):
+        return self.role == "user"
+    
     def get_id(self):
         # Retrieve the list of fields from the class attribute
         return self.id
@@ -89,6 +117,7 @@ class User(db.Model, UpdateFromDataMixin, PerformCRUD):
             "donations": [donate.serialize() for donate in self.donations],
             "created_at": self.created_at.strftime("%Y-%m-%d"),
             "isActive": self.is_active,
+            "role": self.role,
         }
 
     fields = [
@@ -106,13 +135,19 @@ class User(db.Model, UpdateFromDataMixin, PerformCRUD):
         "is_active",
     ]
 
+    required = [ ]
+   
     @classmethod
     def get_fields(cls):
         # Retrieve the list of fields from the class attribute
         return cls.fields
+   
+    @classmethod
+    def required_fields(cls):
+        return cls.required
 
 
-class Campaign(db.Model, UpdateFromDataMixin, PerformCRUD):
+class Campaign(db.Model, UpdateFromDataMixin, CrudMixin):
     __tablename__ = "campaigns"
 
     id = db.Column(db.Integer, primary_key=True)
@@ -186,7 +221,7 @@ class Campaign(db.Model, UpdateFromDataMixin, PerformCRUD):
         return cls.required
 
 
-class Donation(db.Model, UpdateFromDataMixin, PerformCRUD):
+class Donation(db.Model, UpdateFromDataMixin, CrudMixin):
     __tablename__ = "donations"
 
     id = db.Column(db.Integer, primary_key=True)
@@ -239,7 +274,7 @@ class Donation(db.Model, UpdateFromDataMixin, PerformCRUD):
 
 
 # database structure for contact messages
-class Message(db.Model, PerformCRUD):
+class Message(db.Model, CrudMixin):
     __tablename__ = "messages"
 
     id = db.Column(db.Integer, primary_key=True, nullable=False)
