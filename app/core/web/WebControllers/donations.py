@@ -37,7 +37,7 @@ def make_donation(campaign_id):
     """
 
     data = request.form()
-    donated_amount = request.form("amount")
+    donated_amount = request.form('amount')
     # user_id = data.get('user_id')
 
     # Validate the donation amount
@@ -56,11 +56,9 @@ def make_donation(campaign_id):
 
         # Create a new donation record
         clean_data = _clean_data(data)
-        response_data, status_code = handle_create_request(
-            Donation, clean_data, is_json=False
-        )
+        response_data, status_code = handle_create_request(Donation, clean_data, is_json=False);
         if status_code != 201:
-            return flash("Unable to add donation", "error")
+            return flash("Unable to add donation", "error");
         # Return a successful response
         return jsonify({"message": "Donation successful"}), 201
     except:
@@ -69,6 +67,7 @@ def make_donation(campaign_id):
 
 @don.get("donations/<int:campaign_id>/")
 def get_donations_by_campaign(campaign_id):
+    
     search = Campaign.query.filter(Campaign.id == campaign_id)
     campaign = search.first()
 

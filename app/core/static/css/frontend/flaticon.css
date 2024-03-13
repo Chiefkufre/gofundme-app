@@ -1,0 +1,44 @@
+	/*
+  	Flaticon icon font: Flaticon
+  	Creation date: 17/11/2020 17:03
+  	*/
+
+@font-face {
+  font-family: "Flaticon";
+  src: url("../fonts/Flaticon.eot");
+  src: url("../fonts/Flaticon-1.eot") format("embedded-opentype"),
+       url("../fonts/Flaticon.woff2") format("woff2"),
+       url("../fonts/Flaticon.woff") format("woff"),
+       url("../fonts/Flaticon.ttf") format("truetype"),
+       url("../fonts/Flaticon.svg") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+  @font-face {
+    font-family: "Flaticon";
+    src: url("../fonts/Flaticon.svg") format("svg");
+  }
+}
+
+[class^="flaticon-"]:before, [class*=" flaticon-"]:before,
+[class^="flaticon-"]:after, [class*=" flaticon-"]:after {   
+  font-family: Flaticon;
+  font-style: normal;
+}
+
+.flaticon-heart-1:before { content: "\f100"; }
+.flaticon-24-hours-support:before { content: "\f101"; }
+.flaticon-email:before { content: "\f102"; }
+.flaticon-dish:before { content: "\f103"; }
+.flaticon-open-book:before { content: "\f104"; }
+.flaticon-high-performance:before { content: "\f105"; }
+.flaticon-computer:before { content: "\f106"; }
+.flaticon-project-management:before { content: "\f107"; }
+.flaticon-stethoscope:before { content: "\f108"; }
+.flaticon-right-quote:before { content: "\f109"; }
+.flaticon-call:before { content: "\f10a"; }
+.flaticon-crowdfunding-1:before { content: "\f10b"; }
+.flaticon-investment:before { content: "\f10c"; }
+.flaticon-vector:before { content: "\f10d"; }

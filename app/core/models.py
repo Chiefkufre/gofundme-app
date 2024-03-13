@@ -74,7 +74,7 @@ class User(db.Model, UpdateFromDataMixin, CrudMixin):
     email_verify = db.Column(Boolean, default=False)
     role = db.Column(db.String(50), nullable=False, default="user")
     is_active = db.Column(Boolean, default=False)
-
+    # permission = db.Column(list, ["user", ])
 
     @staticmethod
     def is_authenticated(self):
@@ -155,14 +155,14 @@ class Campaign(db.Model, UpdateFromDataMixin, CrudMixin):
     description = db.Column(db.String(1000), nullable=False)
     goal = db.Column(db.Float, nullable=False)
     duration = db.Column(db.Integer, nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(
-        db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow
-    )
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     donations = db.relationship("Donation", backref="campaign", lazy=True)
     is_publish = db.Column(Boolean, default=False)
     is_active = db.Column(Boolean, default=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(
+        db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow
+    )
 
     def publish(self, state):
         if state != self.is_publish:
@@ -300,3 +300,24 @@ class Message(db.Model, CrudMixin):
     def get_fields(cls):
         # Retrieve the list of fields from the class attribute
         return cls.fields
+
+
+class Setting(db.Model, UpdateFromDataMixin, CrudMixin):
+    __tablename__ = "settings"
+
+    id = db.Column(db.Integer, primary_key=True, nullable=False)
+    app_name = db.Column(db.String, nullable=False)
+    created_at = db.Column(DateTime, default=datetime.now())
+    app_description = db.Column(db.String(1000), nullable=False)
+    site_address = db.Column(db.String, nullable=False)
+    admin_email = db.Column(db.String, nullable=False)
+    copyright = db.Column(db.String, nullable=False)
+    default_role = db.Column(db.String, default="member")
+    maintenance_mode = db.Column(Boolean, default=False)
+
+    # Smtp Email settings
+    smtp_email = db.Column(db.String, nullable=True)
+    smtp_host = db.Column(db.String, nullable=True)
+    smtp_password = db.Column(db.String, nullable=True)
+    smtp_encryption = db.Column(db.String, nullable=True)
+    smtp_port = db.Column(db.String, nullable=True)

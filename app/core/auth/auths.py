@@ -9,6 +9,7 @@ from flask import (
     abort,
     Blueprint,
     flash,
+    render_template,
     request,
     url_for,
     jsonify,
@@ -97,6 +98,9 @@ def register_user():
         return jsonify({"message": str(e)}), 400
         User.rollback()
 
+@auths.get('/login')
+def get_login_page():
+    return render_template('frontend/front/layout.html')
 
 # function to handle posting to login route
 @auths.post("/login")

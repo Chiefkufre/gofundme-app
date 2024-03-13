@@ -31,7 +31,7 @@ views = Blueprint("views", __name__)
 @views.get("/campaigns/")
 def listing():
     response_data = handle_get_request(Campaign, True)
-    return render_template("front/listing.html", data=response_data)
+    return render_template("frontend/front/listing.html", data=response_data)
 
 
 @views.get("/campaigns/create")
