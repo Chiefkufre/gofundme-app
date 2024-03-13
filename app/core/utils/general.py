@@ -29,3 +29,17 @@ def paginate(query, page=1, per_page=10):
             "next_url": next_url,
         },
     }
+
+def calculate_percentage(expected_donation:float, donated_amt:float)->float:
+    """function to calcualte the current donation percentage
+    
+    Args:
+        expected_donation->float: The amount expected.
+        donated_ant->float: The amount donated so far.
+
+    Returns: percentage_donation (percenatge | float)
+        
+     
+    """
+    donation_in_percentage = (donated_amt / expected_donation ) * 100
+    return donation_in_percentage
