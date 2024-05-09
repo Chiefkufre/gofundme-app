@@ -1,7 +1,8 @@
 # application pagination class
 
+import datetime
 from math import ceil
-from flask import request, url_for, render_template, jsonify
+from flask import request, url_for
 
 
 def paginate(query, page=1, per_page=10):
@@ -43,3 +44,18 @@ def calculate_percentage(expected_donation:float, donated_amt:float)->float:
     """
     donation_in_percentage = (donated_amt / expected_donation ) * 100
     return donation_in_percentage
+
+
+def generate_transaction_reference(merchant_id=None):
+    """This function helps generate transaction reference for each flutterwave tranaction
+        Args:
+         merchant_id(optional)
+    """
+
+    current_time = datetime.datetime.now()
+    timestamp = int(current_time.timestamp() * 1990)
+    common_identify : str = "akon"
+    if merchant_id:
+        return merchant_id + "-" + common_identify + "-" + str(timestamp)
+    else:
+        return "MC-" + "-" + common_identify + str(timestamp)

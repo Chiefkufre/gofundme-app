@@ -1,9 +1,5 @@
-{% extends frontend/front/layout %}
-
-{{content }}
-
-
-
+{% extends "frontend/front/layout.html" %}
+{% block content %} 
 <main>
     <!--page-title-area start-->
     <section class="page-title-area" style="background-image:url(assets/img/bg/page-title-bg.jpg);">
@@ -172,5 +168,4 @@
     </section>
     <!--cta-area end-->
 </main>
-
-{{ content }}
+{% endblock %} 

@@ -25,15 +25,19 @@ from flask_jwt_extended import (
 )
 from werkzeug.security import check_password_hash, generate_password_hash, gen_salt
 from core.models import User
-from core.utils.helpers import handle_get_request, handle_patch_request, get_item_data, _get_item
+from core.api.Repository.repository import handle_get_request, handle_patch_request, get_item_data, _get_item
 from core.utils.validators import PlatformValidator
+from core.utils.constants.constants import Routes
 
 auths = Blueprint("auths", __name__)
 
 validators = PlatformValidator(User)
 
+@auths.get(Routes.REGISTER)
+def registration_page():
+    return render_template('frontend/front/layout.html')
 
-@auths.post("/register")
+@auths.post(Routes.REGISTER)
 def register_user():
     """Register new User
 
@@ -98,12 +102,12 @@ def register_user():
         return jsonify({"message": str(e)}), 400
         User.rollback()
 
-@auths.get('/login')
+@auths.get(Routes.LOGIN)
 def get_login_page():
     return render_template('frontend/front/layout.html')
 
 # function to handle posting to login route
-@auths.post("/login")
+@auths.post(Routes.LOGIN)
 def sign_in_user():
     data = request.get_json()
 
@@ -127,7 +131,7 @@ def sign_in_user():
 
 
 # Logout control center
-@auths.get("/logout")
+@auths.get(Routes.LOGOUT)
 @login_required
 def logout():
     logout_user()
@@ -137,21 +141,21 @@ def logout():
 
 
 # /////////// User Controlller /////////
-@auths.get("/users/")
-@login_required
-@jwt_required()
-def retrieve_users():
-    response_data = handle_get_request(User, True)
-    return jsonify(response_data)
+# @auths.get("/users/")
+# @login_required
+# @jwt_required()
+# def retrieve_users():
+#     response_data = handle_get_request(User, True)
+#     return jsonify(response_data)
 
-@auths.get("/users/<int:id>")
+@auths.get(Routes.SINGLE_USER)
 @login_required
 @jwt_required()
 def get_user_by_id(id):
-    user = User.query.get_or_404(id)
+    user = get_item_data(User, id)
     return jsonify(user.serialize())
 
-@auths.patch('/users/<int:id>')
+@auths.patch(Routes.EDIT_USER)
 @login_required
 @jwt_required()
 def update_user_detail(id):

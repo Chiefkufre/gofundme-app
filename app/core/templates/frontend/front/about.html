@@ -1,9 +1,12 @@
+{% extends "frontend/front/layout.html" %}
+{% block content %} 
 <main>
-        
     <!--page-title-area start-->
-    <section class="page-title-area" style="background-image:url(assets/img/bg/page-title-bg.jpg);">
+    <section class="page-title-area" style="background-image:url({{ url_for('static', filename='img/bg/page-title-bg.jpg') }})">
         <div class="right-border-shape">
-            <img src="assets/img/shape/02.png" alt="">
+            <img src="{{ url_for('static', filename='img/shape/02.png') }}" alt="SparkStarter" />
+
+
         </div>
         <div class="container">
             <div class="row">
@@ -29,10 +32,11 @@
                 <div class="col-xl-5 col-lg-6 col-md-12">
                     <div class="about-img mb-50">
                         <div class="about-img__thumb wow fadeInUp2 animated" data-wow-delay='.1s'>
-                            <img src="assets/img/about/03.jpg" alt="">
+                            <img src="{{ url_for('static', filename='img/about/03.jpg') }}" alt="SparkStarter" />
                         </div>
                         <div class="about-img__style-text wow fadeInUp2 animated" data-wow-delay='.3s'>
-                            <img src="assets/img/about/02.png" alt="">
+                            <img src="{{ url_for('static', filename='img/about/02.png') }}" alt="SparkStarter" />
+                            <!-- <img src="assets/img/about/02.png" alt=""> -->
                         </div>
                         <div class="about-img__style-shape wow fadeInUp2 animated" data-wow-delay='.4s'>
                             <img src="assets/img/shape/07.png" alt="">
@@ -637,3 +641,4 @@
     </section>
     <!--cta-area end-->
 </main>
+{% endblock %} 

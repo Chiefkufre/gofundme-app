@@ -1,27 +1,7 @@
-<!-- listing.html -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Campaign Listing</title>
-</head>
-<body>
-    <div id="campaignList"></div>
 
-
-
-    {% assets "request_js" %}
-    <script src="{{ ASSET_URL }}"></script>
-
-{% endassets %}
-</body>
-</html>
-
-
-
+{% extends "frontend/front/layout.html" %}
+{% block content %} 
 <main>
-        
     <!--page-title-area start-->
     <section class="page-title-area" style="background-image:url(assets/img/bg/page-title-bg.jpg);">
         <div class="right-border-shape">
@@ -408,3 +388,4 @@
     </section>
     <!--cta-area end-->
 </main>
+{% endblock %}

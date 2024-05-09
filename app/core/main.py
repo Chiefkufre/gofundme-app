@@ -4,7 +4,7 @@ from flask_jwt_extended import JWTManager
 from flask_mail import Mail
 
 from core.models import User
-from core.utils.helpers import _get_item
+from core.api.Repository.repository import _get_item
 from core.utils.assets import configure_assets
 
 from core.conf.config import Logger, Config, DevConfig, ProdConfig, CeleryConfig
@@ -12,10 +12,10 @@ from core.conf.settings import settings
 from core.database.database import setup_db
 from core.utils.proj.celery import celery
 
-from core.api.APIControllers.routers import api
-from core.api.APIControllers.index import index
-from core.web.WebControllers.search import search
-from core.web.WebControllers.campaign import views
+from core.api.Controllers.routers import api
+from core.api.Controllers.index import index
+from core.api.Controllers.admin import admin
+
 
 
 from core.auth.auths import auths
@@ -46,10 +46,11 @@ def create_app_instance():
         g.user_id = "1"
 
     # registring routes
-    app.register_blueprint(views, url_prefix="/")
     app.register_blueprint(api, url_prefix="/api/{0}".format(APP_VERSION))
+    app.register_blueprint(admin, url_prefix="/api/{0}".format(APP_VERSION))
     app.register_blueprint(index, url_prefix="/api/{0}".format(APP_VERSION))
-    app.register_blueprint(auths, url_prefix="/{0}/auth".format(APP_VERSION))
-    app.register_blueprint(search, url_format="/{0}".format(APP_VERSION))
+    app.register_blueprint(auths, url_prefix="/api/{0}/auth".format(APP_VERSION))
 
     return app
+
+# /api/v1/auth/regsiter

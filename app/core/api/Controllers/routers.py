@@ -8,7 +8,8 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from core.models import User, Campaign, Donation, Message
 from core.utils.proj.tasks import activate_campaign
 from core.utils.general import paginate
-from core.utils.helpers import (
+from core.utils.constants.constants import Routes
+from core.api.Repository.repository import (
     handle_get_request,
     handle_create_request,
     handle_patch_request,
@@ -23,7 +24,7 @@ api = Blueprint("api", __name__)
 
 
 # ////////////////////////////// Campaigns Routes ///////////////////////////////////////
-@api.get("/campaigns/")
+@api.get(Routes.COMPAIGNS_ALL)
 @jwt_required()
 def retrieve_campaign():
     """Return all campaign in db
@@ -37,7 +38,7 @@ def retrieve_campaign():
     return jsonify(response_data)
  
 
-@api.post("/campaigns/create")
+@api.post(Routes.CAMPAIGN_CREATE)
 @login_required
 @jwt_required()
 def create_campaign():
@@ -54,7 +55,7 @@ def create_campaign():
     return response_data, status_code
 
 
-@api.get("/campaigns/<int:id>/")
+@api.get(Routes.CAMPAIGN_BY_ID)
 @login_required
 @jwt_required()
 def get_campaign_by_id(id) -> dict:
@@ -65,7 +66,7 @@ def get_campaign_by_id(id) -> dict:
     return jsonify(item)
 
 
-@api.patch("/campaigns/<int:id>/status")
+@api.patch(Routes.CAMPAIGN_STATUS)
 @login_required
 @jwt_required()
 def toggle_campaign_status(id):
@@ -79,7 +80,7 @@ def toggle_campaign_status(id):
     return jsonify(item.serialize())
 
 
-@api.post("/campaigns/<int:id>/publish")
+@api.post(Routes.CAMPAIGN_PUBLISH)
 @login_required
 @jwt_required()
 def publish_campaign(id):
@@ -104,7 +105,7 @@ def publish_campaign(id):
     return jsonify(obj)
 
 
-@api.patch("/campaigns/<int:id>/")
+@api.patch(Routes.CAMPAIGN_UPDATE)
 @login_required
 @jwt_required()
 def update_campaign(id: int) -> tuple:
@@ -113,7 +114,7 @@ def update_campaign(id: int) -> tuple:
     return jsonify(item)
 
 
-@api.delete("/campaigns/<int:id>/")
+@api.delete(Routes.CAMPAIGN_DELETE)
 @login_required
 @jwt_required()
 def delete_campaign_by_id(id: int) -> tuple:
@@ -123,7 +124,7 @@ def delete_campaign_by_id(id: int) -> tuple:
 
 
 # ////////////////////////////// Donations Routes ///////////////////////////////////////
-@api.post("/campaigns/<int:id>/donation")
+@api.post(Routes.CAMPAIGN_DONATION)
 def make_donation(id):
     """ "Process Donation creation
 
@@ -164,7 +165,7 @@ def make_donation(id):
         return jsonify({"error": str(e)}), 400
 
 
-@api.get("/campaigns/donation/<int:campaign_id>/")
+@api.get(Routes.CAMPAIGN_DONATION_FETCH)
 def get_donations_from_campaign(campaign_id):
     """Fetch all donations to a campaign
 
@@ -189,13 +190,12 @@ def get_donations_from_campaign(campaign_id):
     return jsonify({"donations": donation_details})
 
 
-@api.delete("/campaigns/donation/<int:id>/delete")
+@api.delete(Routes.CAMPAIGN_DONATION_DELETE)
 @login_required
 @jwt_required()
 def delete_donation(id):
     item = delete_item(Donation, id)
     return jsonify(item)
-
 
 # /////////////////////////////////////// Users Route /////////////////////
 
