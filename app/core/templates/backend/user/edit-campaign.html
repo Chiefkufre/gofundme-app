@@ -1,0 +1,106 @@
+{% extends "backend/user/dashboard.html" %}
+{% block title %} create {% endblock %}
+{% block content %} 
+<div class="nk-content ">
+    <div class="container-fluid">
+       <div class="nk-content-inner">
+          <div class="nk-content-body">
+             <div class="nk-block-head nk-block-head-sm">
+                <div class="nk-block-between">
+                   <div class="nk-block-head-content">
+                      <h3 class="nk-block-title page-title">Edit Campaigns</h3>
+                   </div>
+                   {% with messages = get_flashed_messages() %}
+                            {% if messages %}
+                            {% for message in messages %}
+                            <div class="flash-message">
+                                <button class="close-btn">&times;</button>
+                                <span>{{ message }}</span>
+                            </div>
+                            {% endfor %}
+                            {% endif %}
+                            {% endwith %}
+                </div>
+             </div>
+             <div class="nk-block">
+                <div class="card card-bordered">
+                   <div class="card-inner">
+                      <form action="{{ url_for('web.update_campaign', id=campaign.id) }}" method="post" enctype="multipart/form-data" class="row gy-4">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                        <input type="hidden" name="_method" value="PATCH">
+                         <div class="col-md-6 col-lg-8 col-xxl-8">
+                            <div class="form-group"><label class="form-label" for="title">Campaign Title</label><input type="text" class="form-control" name="title" id="title" placeholder="Give your Campaign a memorable title" required=required value="{{campaign.title}}"></div>
+                         </div>
+                         
+                         <div class="col-md-6 col-lg-4 col-xxl-3">
+                           <div class="form-group"><label class="form-label" for="goal">Expected Amount</label><input type="text" class="form-control" name="goal" id="goal" placeholder="How much are you looking to raise?" required=required value="{{campaign.goal}}"></div>
+                         </div>
+                         <div class="col-md-6 col-lg-4 col-xxl-3">
+                            <div class="form-group"><label class="form-label" for="type">What are you raising for?</label><input type="text" class="form-control" name="type" id="type" placeholder="What are you raising for? Ex. Emergency" required=required value="{{campaign.type}}"></div>
+                         </div>
+
+                         <!-- <div class="col-md-6 col-lg-4 col-xxl-3">
+                            <div class="form-group">
+                               <label class="form-label">Add Campaign Image</label>
+                               <div class="form-control-wrap">
+                                  <div class="form-file"><input type="file" multiple="" class="form-file-input" name="file" id="file" required=required ><label class="form-file-label" for="file">Choose file</label></div>
+                               </div>
+                            </div>
+                         </div> -->
+                         <div class="col-md-6 col-lg-4 col-xxl-3">
+                            <div class="form-group">
+                               <label class="form-label">Deadline</label>
+                               <div class="form-control-wrap">
+                                  <div class="form-icon form-icon-right"><em class="icon ni ni-calendar"></em></div>
+                                  <input type="text" name="duration" id="duration" class="form-control date-picker" data-date-format="yyyy-mm-dd" placeholder="yyyy-mm-dd" required=required value="{{campaign.duration}}">
+                               </div>
+                            </div>
+                         </div>
+
+                         
+                        <!-- Display current image with edit icon -->
+                        <div class="col-md-12 col-lg-12 col-xxl-12 text-center">
+                            <div id="current-image-container" class="image-container">
+                                <img id="current-image" src="{{ url_for('web.uploaded_file', filename=campaign.image_url) }}" alt="Current Image">
+                                <div class="edit-icon" onclick="triggerFileInput()"><em class="icon ni ni-edit"></em></div>
+                            </div>
+                        </div>
+
+                        <!-- Hidden file input for new image -->
+                        <div class="" style="display: none;">
+                            <input  type="file" name="file" id="file" accept="image/*"  onchange="previewImage(event)">
+                        </div>
+
+                        
+                        <!-- Image preview -->
+                        <div class="col-md-12 col-lg-12 col-xxl-12" style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
+                            <div id="new-image-container" class="image-container" style="display: none; max-width: 400px;">
+                                <img id="new-image-preview" class="image-preview">
+                                <div class="edit-icon" id="new-image-edit-icon" onclick="triggerFileInput()">✎</div>
+                            </div>
+                        </div>
+                         
+                         <div class="col-md-12">
+                            <div class="form-group">
+                               <label class="form-label" for="default-textarea">Detail Campaign Description</label>
+                               <div class="form-control-wrap"><textarea  required="required" class="form-control no-resize"  id="default-textarea" name="description">{{campaign.description}}</textarea></div>
+                            </div> 
+                         </div>
+
+                         <input type="hidden" name="image_url" value="{{campaign.image_url}}">
+
+                         <input type="hidden" name="originalTime" value="{{campaign.duration}}">
+
+                         <div class="col-sm-12">
+                            <div class="form-group"><button type="submit" class="btn btn-warning">Update Campaign</button></div>
+                         </div>
+
+                        </form>
+                   </div>
+                </div>
+             </div>
+          </div>
+       </div>
+    </div>
+ </div>
+{% endblock %} 
