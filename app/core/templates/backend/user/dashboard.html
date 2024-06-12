@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en" class="js">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="author" content="RimsLab" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="SparkStarter - A new and creative way to raise fund for creative stuff" />
+        <link rel="shortcut icon" href="{{ url_for('static', filename='img/backend/favicon.png') }}" />
+        <title>{% block title %} dashboard | SparkStarter {% endblock %}</title>
+        <!-- <link rel="stylesheet" href="assets/css/dashlite.css?ver=3.1.3" />
+        <link id="skin-default" rel="stylesheet" href="assets/css/theme.css" /> -->
+
+        {% assets "backend_css" %}
+        <link rel="stylesheet" href="{{ ASSET_URL }}">
+        {% endassets %}
+
+        <style>
+            .image-container {
+                position: relative;
+                display: inline-block;
+                text-align: center;
+            }
+    
+            .image-container img {
+                width: 300px;
+                height: auto;
+            }
+    
+            .edit-icon {
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                background-color: rgba(0, 0, 0, 0.5);
+                color: white;
+                padding: 5px;
+                border-radius: 50%;
+                cursor: pointer;
+            }
+
+            
+    
+            .image-preview {
+                width: 300px; 
+                height: auto; 
+                margin-top: 10px; 
+                display: none;
+            }
+        </style>
+    </head>
+    <body class="nk-body bg-lighter npc-general has-sidebar">
+        <div class="nk-app-root">
+            <div class="nk-main">
+                <div class="nk-sidebar nk-sidebar-fixed is-dark" data-content="sidebarMenu">
+                    <div class="nk-sidebar-element nk-sidebar-head">
+                        <div class="nk-menu-trigger">
+                            <a href="{{ url_for('user.user_dashboard') }}" class="nk-nav-toggle nk-quick-nav-icon d-xl-none" data-target="sidebarMenu"><em class="icon ni ni-arrow-left"></em></a>
+                            <a href="{{ url_for('user.user_dashboard') }}" class="nk-nav-compact nk-quick-nav-icon d-none d-xl-inline-flex" data-target="sidebarMenu"><em class="icon ni ni-menu"></em></a>
+                        </div>
+                        <div class="nk-sidebar-brand">
+                            <a href="{{ url_for('user.user_dashboard') }}" class="logo-link nk-sidebar-logo">
+                                <!-- <img class="logo-light logo-img" src="{{ url_for('static', filename='img/backend/logo.png') }}" srcset="{{ url_for('static', filename='img/backend/logo2x.png') }} 2x" alt="logo" />
+                                <img class="logo-dark logo-img" src="{{ url_for('static', filename='img/backend/logo-dark.png') }}" srcset="{{ url_for('static', filename='img/backend/logo-dark2x.png') }} 2x" alt="logo-dark" /> -->
+                            </a>
+                        </div>
+                    </div>
+                    <div class="nk-sidebar-element nk-sidebar-body">
+                        <div class="nk-sidebar-content">
+                            <div class="nk-sidebar-menu" data-simplebar="">
+                                <ul class="nk-menu">
+                                    <li class="nk-menu-heading"><h6 class="overline-title text-primary-alt">Dashboards</h6></li>
+                                    
+                                    <li class="nk-menu-item">
+                                        <a href="{{ url_for('user.user_dashboard') }}" class="nk-menu-link">
+                                            <span class="nk-menu-icon"><em class="icon ni ni-home"></em></span><span class="nk-menu-text">Home</span>
+                                        </a>
+                                       
+                                    </li>
+                                    <li class="nk-menu-item has-sub">
+                                        <a href="#" class="nk-menu-link nk-menu-toggle">
+                                            <span class="nk-menu-icon"><em class="icon ni ni-tile-thumb"></em></span><span class="nk-menu-text">Campaigns</span>
+                                        </a>
+                                        <ul class="nk-menu-sub">
+                                            <li class="nk-menu-item">
+                                                <a href="{{ url_for('user.user_campaigns') }}" class="nk-menu-link"><span class="nk-menu-text">All campaigns</span></a>
+                                                <li class="nk-menu-item">
+                                                    <a href="{{ url_for('user.user_campaigns_list') }}" class="nk-menu-link"><span class="nk-menu-text">view campaigns List</span></a>
+                                                </li>
+                                                <a href="{{ url_for('user.user_create_campaign') }}" class="nk-menu-link"><span class="nk-menu-text">create campaign</span></a>
+                                            </li>
+                                            <li class="nk-menu-item">
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="nk-menu-item has-sub">
+                                        <a href="#" class="nk-menu-link nk-menu-toggle">
+                                            <span class="nk-menu-icon"><em class="icon ni ni-tranx"></em></span><span class="nk-menu-text">Donations</span>
+                                        </a>
+                                        <ul class="nk-menu-sub">
+                                            <li class="nk-menu-item">
+                                                <a href="{{ url_for('user.user_donation_history') }}" class="nk-menu-link"><span class="nk-menu-text">donation history</span></a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="nk-menu-item has-sub">
+                                        <a href="{{ url_for('user.user_messages') }}" class="nk-menu-link">
+                                            <span class="nk-menu-icon"><em class="icon ni ni-notice"></em></span><span class="nk-menu-text">Messages</span>
+                                        </a>
+                                       
+                                    </li>
+                                    <li class="nk-menu-item has-sub">
+                                        <a href="#" class="nk-menu-link nk-menu-toggle">
+                                            <span class="nk-menu-icon"><em class="icon ni ni-file-docs"></em></span><span class="nk-menu-text">Invoice</span>
+                                        </a>
+                                        <ul class="nk-menu-sub">
+                                            <li class="nk-menu-item">
+                                                <a href="{{ url_for('user.user_invoices') }}" class="nk-menu-link"><span class="nk-menu-text">Invoice List</span></a>
+                                            </li>
+                                            <li class="nk-menu-item">
+                                                <a href="{{ url_for('user.user_invoice') }}" class="nk-menu-link"><span class="nk-menu-text">Invoice Details</span></a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    
+                                    <li class="nk-menu-item has-sub">
+                                        <a href="#" class="nk-menu-link nk-menu-toggle">
+                                            <span class="nk-menu-icon"><em class="icon ni  ni-setting-alt "></em></span><span class="nk-menu-text">Settings</span>
+                                        </a>
+                                        <ul class="nk-menu-sub">
+                                            <li class="nk-menu-item">
+                                                <a href="{{ url_for('user.user_profile', name=user.name, id=user.id, section='user_personal_details') }}" class="nk-menu-link"><em class="icon ni ni-users"></em><span class="nk-menu-text">Profile Setting</span></a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    
+                                </ul>
+
+                                <!-- Logout -->
+                            <li class="nk-menu-item">
+                                <a href="{{ url_for('auths.logout') }}" class="nk-menu-link">
+                                    <span class="nk-menu-icon"><em class="icon ni ni-signout"></em></span><span class="nk-menu-text">Logout</span>
+                                </a>
+                            </li>
+                            </div>
+
+                            
+                            
+                        </div>
+                    </div>
+                </div>
+                <div class="nk-wrap">
+                    <div class="nk-header nk-header-fixed is-light">
+                        <div class="container-fluid">
+                            <div class="nk-header-wrap">
+                                <div class="nk-menu-trigger d-xl-none ms-n1">
+                                    <a href="#" class="nk-nav-toggle nk-quick-nav-icon" data-target="sidebarMenu"><em class="icon ni ni-menu"></em></a>
+                                </div>
+                                <div class="nk-header-brand d-xl-none">
+                                    <a href="index.html" class="logo-link">
+                                        <!-- <img class="logo-light logo-img" src="{{ url_for('static', filename='img/backend/logo.png') }}" srcset="{{ url_for('static', filename='img/backend/logo2x.png') }} 2x" alt="logo" />
+                                        <img class="logo-dark logo-img" src="{{ url_for('static', filename='img/backend/logo-dark.png') }}" srcset="{{ url_for('static', filename='img/backend/logo-dark2x.png') }} 2x" alt="logo-dark" /> -->
+                                    </a>
+                                </div>
+                                <div class="nk-header-news d-none d-xl-block">
+                                    <div class="nk-news-list">
+                                        <a class="nk-news-item" href="#">
+                                            <div class="nk-news-icon"><em class="icon ni ni-card-view"></em></div>
+                                            <div class="nk-news-text">
+                                                <p>Contribute to meaningful experience? <span> A overview of how much you have done</span></p>
+                                                <em class="icon ni ni-external"></em>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="nk-header-tools">
+                                    <ul class="nk-quick-nav">
+                                       
+                                        <li class="dropdown user-dropdown">
+                                            <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown">
+                                                <div class="user-toggle">
+                                                    <div class="user-avatar sm"><em class="icon ni ni-user-alt"></em></div>
+                                                    <div class="user-info d-none d-md-block">
+                                                        <div class="user-status">User</div>
+                                                        <div class="user-name dropdown-indicator">{{user.name}}</div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                            <div class="dropdown-menu dropdown-menu-md dropdown-menu-end dropdown-menu-s1">
+                                                <div class="dropdown-inner user-card-wrap bg-lighter d-none d-md-block">
+                                                    <div class="user-card">
+                                                        <div class="user-avatar"><span>{{user.name[0]}}</span></div>
+                                                        <div class="user-info"><span class="lead-text">{{user.name}}</span><span class="sub-text">{{user.email}}</span></div>
+                                                    </div>
+                                                </div>
+                                                <div class="dropdown-inner">
+                                                    <ul class="link-list">
+                                                        <li>
+                                                            <a href="{{ url_for('user.user_profile', name=user.name, id=user.id, section='user_personal_details') }}"><em class="icon ni ni-user-alt"></em><span>View Profile</span></a>
+                                                        </li>
+                                            
+                                                        <li>
+                                                            <a href="{{ url_for('user.user_profile', name=user.name, id=user.id, section='user_login_activity') }}"><em class="icon ni ni-activity-alt"></em><span>Login Activity</span></a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                                <div class="dropdown-inner">
+                                                    <ul class="link-list">
+                                                        <li>
+                                                            <a href="{{ url_for('auths.logout') }}"><em class="icon ni ni-signout"></em><span>Sign out</span></a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li class="dropdown notification-dropdown me-n1">
+                                            <a href="#" class="dropdown-toggle nk-quick-nav-icon" data-bs-toggle="dropdown">
+                                                <div class="icon-status icon-status-info"><em class="icon ni ni-bell"></em></div>
+                                            </a>
+                                            <div class="dropdown-menu dropdown-menu-xl dropdown-menu-end dropdown-menu-s1">
+                                                <div class="dropdown-head"><span class="sub-title nk-dropdown-title">Notifications</span><a href="#">Mark All as Read</a></div>
+                                                <div class="dropdown-body">
+                                                    <div class="nk-notification">
+                                                        
+                                                        
+                                                        
+                                                        <!-- Loop notifications -->
+                                                        {% for notification in notifications %}
+                                                        <div class="nk-notification-item dropdown-inner">
+                                                            <div class="nk-notification-icon"><em class="icon icon-circle bg-warning-dim ni ni-curve-down-right"></em></div>
+                                                            <div class="nk-notification-content">
+                                                                <div class="nk-notification-text"><span><a href="{{ url_for('web.get_campaign_by_id', id=notification.activity_id) }}">{{ notification.message }}</a></span></div>
+                                                                <div class="nk-notification-time">{{ notification.date }}</div>
+                                                            </div>
+                                                            <div><a href="{{ url_for('web.delete_notification', id=notification.id)}}" class="link-cross me-sm-n1"><em class="icon ni ni-cross"></a></em></div>
+                                                        </div>
+                                                        {% endfor %}
+                                                        <!-- end notification loop -->
+                                                    </div>
+                                                </div>
+                                                <div class="dropdown-foot center"><a href="#">View All</a></div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+               
+
+                        <!--Content starts heree  -->
+                        {% block content %}  {% endblock %}
+
+                    <div class="nk-footer">
+                        <div class="container-fluid">
+                            <div class="nk-footer-wrap">
+                                <div class="nk-footer-copyright">&copy; 2024 SparkStarter | RimsLab </div>
+                               
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+
+        <!-- Setting button -->
+        <ul class="nk-sticky-toolbar">
+            <li class="demo-settings">
+                <a class="toggle tipinfo" data-target="settingPanel" href="#" title="Demo Settings"><em class="icon ni ni-setting-alt"></em></a>
+            </li>
+           
+        </ul>
+        <div class="nk-demo-panel toggle-slide toggle-slide-right" data-content="settingPanel" data-toggle-overlay="true" data-toggle-body="true" data-toggle-screen="any">
+            <div class="nk-demo-head">
+                <h6 class="mb-0">Preview Settings</h6>
+                <a class="nk-demo-close toggle btn btn-icon btn-trigger revarse mr-n2" data-target="settingPanel" href="#"><em class="icon ni ni-cross"></em></a>
+            </div>
+            <div class="nk-opt-panel" data-simplebar="">
+                <div class="nk-opt-set">
+                    <div class="nk-opt-set-title">Direction Change</div>
+                    <div class="nk-opt-list col-2x">
+                        <div class="nk-opt-item only-text active" data-key="dir" data-update="ltr">
+                            <span class="nk-opt-item-bg"><span class="nk-opt-item-name">LTR Mode</span></span>
+                        </div>
+                        <div class="nk-opt-item only-text" data-key="dir" data-update="rtl">
+                            <span class="nk-opt-item-bg"><span class="nk-opt-item-name">RTL Mode</span></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="nk-opt-set">
+                    <div class="nk-opt-set-title">Main UI Style</div>
+                    <div class="nk-opt-list col-2x">
+                        <div class="nk-opt-item only-text active" data-key="style" data-update="ui-default">
+                            <span class="nk-opt-item-bg"><span class="nk-opt-item-name">Default</span></span>
+                        </div>
+                        <div class="nk-opt-item only-text" data-key="style" data-update="ui-clean">
+                            <span class="nk-opt-item-bg"><span class="nk-opt-item-name">Clean</span></span>
+                        </div>
+                        <div class="nk-opt-item only-text" data-key="style" data-update="ui-shady">
+                            <span class="nk-opt-item-bg"><span class="nk-opt-item-name">Shady</span></span>
+                        </div>
+                        <div class="nk-opt-item only-text" data-key="style" data-update="ui-softy">
+                            <span class="nk-opt-item-bg"><span class="nk-opt-item-name">Softy</span></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="nk-opt-set nk-opt-set-aside">
+                    <div class="nk-opt-set-title">Sidebar Style</div>
+                    <div class="nk-opt-list col-4x">
+                        <div class="nk-opt-item" data-key="aside" data-update="is-light">
+                            <span class="nk-opt-item-bg is-light"><span class="bg-lighter"></span></span><span class="nk-opt-item-name">White</span>
+                        </div>
+                        <div class="nk-opt-item" data-key="aside" data-update="is-default">
+                            <span class="nk-opt-item-bg is-light"><span class="bg-light"></span></span><span class="nk-opt-item-name">Light</span>
+                        </div>
+                        <div class="nk-opt-item active" data-key="aside" data-update="is-dark">
+                            <span class="nk-opt-item-bg"><span class="bg-dark"></span></span><span class="nk-opt-item-name">Dark</span>
+                        </div>
+                        <div class="nk-opt-item" data-key="aside" data-update="is-theme">
+                            <span class="nk-opt-item-bg"><span class="bg-theme"></span></span><span class="nk-opt-item-name">Theme</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="nk-opt-set nk-opt-set-header">
+                    <div class="nk-opt-set-title">Header Style</div>
+                    <div class="nk-opt-list col-4x">
+                        <div class="nk-opt-item active" data-key="header" data-update="is-light">
+                            <span class="nk-opt-item-bg is-light"><span class="bg-lighter"></span></span><span class="nk-opt-item-name">White</span>
+                        </div>
+                        <div class="nk-opt-item" data-key="header" data-update="is-default">
+                            <span class="nk-opt-item-bg is-light"><span class="bg-light"></span></span><span class="nk-opt-item-name">Light</span>
+                        </div>
+                        <div class="nk-opt-item" data-key="header" data-update="is-dark">
+                            <span class="nk-opt-item-bg"><span class="bg-dark"></span></span><span class="nk-opt-item-name">Dark</span>
+                        </div>
+                        <div class="nk-opt-item" data-key="header" data-update="is-theme">
+                            <span class="nk-opt-item-bg"><span class="bg-theme"></span></span><span class="nk-opt-item-name">Theme</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="nk-opt-set nk-opt-set-skin">
+                    <div class="nk-opt-set-title">Primary Skin</div>
+                    <div class="nk-opt-list">
+                        <div class="nk-opt-item active" data-key="skin" data-update="default">
+                            <span class="nk-opt-item-bg"><span class="skin-default"></span></span><span class="nk-opt-item-name">Default</span>
+                        </div>
+                        <div class="nk-opt-item" data-key="skin" data-update="blue">
+                            <span class="nk-opt-item-bg"><span class="skin-blue"></span></span><span class="nk-opt-item-name">Blue</span>
+                        </div>
+                        <div class="nk-opt-item" data-key="skin" data-update="egyptian">
+                            <span class="nk-opt-item-bg"><span class="skin-egyptian"></span></span><span class="nk-opt-item-name">Egyptian</span>
+                        </div>
+                        <div class="nk-opt-item" data-key="skin" data-update="purple">
+                            <span class="nk-opt-item-bg"><span class="skin-purple"></span></span><span class="nk-opt-item-name">Purple</span>
+                        </div>
+                        <div class="nk-opt-item" data-key="skin" data-update="green">
+                            <span class="nk-opt-item-bg"><span class="skin-green"></span></span><span class="nk-opt-item-name">Green</span>
+                        </div>
+                        <div class="nk-opt-item" data-key="skin" data-update="red">
+                            <span class="nk-opt-item-bg"><span class="skin-red"></span></span><span class="nk-opt-item-name">Red</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="nk-opt-set">
+                    <div class="nk-opt-set-title">Skin Mode</div>
+                    <div class="nk-opt-list col-2x">
+                        <div class="nk-opt-item active" data-key="mode" data-update="light-mode">
+                            <span class="nk-opt-item-bg is-light"><span class="theme-light"></span></span><span class="nk-opt-item-name">Light Skin</span>
+                        </div>
+                        <div class="nk-opt-item" data-key="mode" data-update="dark-mode">
+                            <span class="nk-opt-item-bg"><span class="theme-dark"></span></span><span class="nk-opt-item-name">Dark Skin</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="nk-opt-reset"><a href="#" class="reset-opt-setting">Reset Setting</a></div>
+            </div>
+        </div>
+
+        {% assets "backend_js" %}
+    <script src="{{ ASSET_URL }}"></script>
+    {% endassets %}
+    <script>
+        function triggerFileInput() {
+            document.getElementById('file').click();
+        }
+
+        function previewImage(event) {
+            const input = event.target;
+            const preview = document.getElementById('new-image-preview');
+            const currentImageContainer = document.getElementById('current-image-container');
+            const newImageContainer = document.getElementById('new-image-container');
+            
+
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                    currentImageContainer.style.display = 'none';
+                    newImageContainer.style.display = 'block';
+                }
+                reader.readAsDataURL(input.files[0]);
+            } else {
+                preview.src = '';
+                preview.style.display = 'none';
+                currentImageContainer.style.display = 'block';
+                newImageContainer.style.display = 'none';
+            }
+        }
+    </script>
+    </body>
+</html>
