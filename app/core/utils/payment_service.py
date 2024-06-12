@@ -4,11 +4,12 @@ import aiohttp
 import asyncio
 from core.conf.settings import settings
 from core.utils.general import generate_transaction_reference
+
 # from rave_python import Rave
 
 
-
 BASE_URL = settings.BASE_URL
+
 
 class PaymentGateway(ABC):
     @abstractmethod
@@ -32,48 +33,47 @@ class PaypalGateway(PaymentGateway):
 
 
 class FlutterwaveGateway(PaymentGateway):
-
     def __init__(self, api_key, secret_key):
         # Initialize Flutterwave API client with credentials
         pass
 
-       
-    async def charge(amount, currency, customer_id:str, customer_mac, customer_email, customer_pn):
+    async def charge(
+        amount, currency, customer_id: str, customer_mac, customer_email, customer_pn
+    ):
         """Async function for making payment request to flutterwave payment enpoint
-            Args:
-             Takes all payment parameters.
+        Args:
+         Takes all payment parameters.
         """
         try:
             async with aiohttp.ClientSession() as session:
                 async with session.post(
-                        "https://api.flutterwave.com/v3/payments",
-                        headers={
-                            "Authorization": "Bearer: your_access_token_here",
+                    "https://api.flutterwave.com/v3/payments",
+                    headers={
+                        "Authorization": "Bearer: your_access_token_here",
+                    },
+                    data={
+                        "tx_ref": generate_transaction_reference(customer_id),
+                        "amount": amount,
+                        "currency": currency,
+                        "redirect_url": "fffff",
+                        "meta": {
+                            "consumer_id": customer_id,
+                            "consumer_mac": customer_mac,
                         },
-                        data={
-                            "tx_ref": generate_transaction_reference(customer_id),
-                            "amount": amount,
-                            "currency": currency,
-                            "redirect_url": "fffff",
-                            "meta":{
-                                 "consumer_id": customer_id,
-                                "consumer_mac": customer_mac
-                            },
-                             "customer": {
-                                "email": customer_email,
-                                "phonenumber": customer_pn,
-                            },
-                             "customizations": {
-                                "title": settings.SITE_NAME,
-                                "logo": "http://www.piedpiper.com/app/themes/joystick-v27/images/logo.png"
-                            },
-
-                        }
-                        ) as response:
+                        "customer": {
+                            "email": customer_email,
+                            "phonenumber": customer_pn,
+                        },
+                        "customizations": {
+                            "title": settings.SITE_NAME,
+                            "logo": "http://www.piedpiper.com/app/themes/joystick-v27/images/logo.png",
+                        },
+                    },
+                ) as response:
                     data = await response.json()
                 return data  # Return response data
         except Exception as e:
-            return {"error": str(e)}  
+            return {"error": str(e)}
 
 
 class StripeGateway(PaymentGateway):

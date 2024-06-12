@@ -22,7 +22,9 @@ docs/_build/
 *.vscode
 .ipynb_checkpoints
 .ipynb
-
+upload/*
+# app/core/upload/*
+app/core/static/.*
 # Coverage reports
 htmlcov/
 .coverage

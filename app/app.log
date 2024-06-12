@@ -1,11 +1,66 @@
-2024-01-25 15:49:28,048 - core.main - DEBUG - Campaign False
-2024-01-25 15:54:19,700 - core.main - DEBUG - man girls and or  to man is now publish
-2024-01-25 15:55:17,743 - core.main - DEBUG -  Campaign - man girls and or  to man is now unpublish
-2024-01-27 01:36:43,341 - core.main - CRITICAL - Fail to create User Email is already registered to another account
-2024-01-28 09:35:30,062 - core.main - CRITICAL - Error on create - {'title': "Field 'title' is required in the form."}
-2024-01-28 09:45:52,018 - core.main - CRITICAL - Error on create | Exception - 'decription' is an invalid keyword argument for Campaign
-2024-01-28 09:47:06,122 - core.main - CRITICAL - Error on create | Exception - 'decription' is an invalid keyword argument for Campaign
-2024-01-28 11:17:06,787 - core.main - INFO -  Campaign - 'sex for thought and though for food' has been created
-2024-02-04 09:29:46,383 - core.main - CRITICAL - Error on patch | - {'title': "Field 'title' is required."}
-2024-02-04 09:36:56,803 - core.main - INFO -  Campaign - 'man for thought and though for food' has been created
-2024-02-04 10:00:58,750 - core.main - INFO -  Campaign - 'food for thought and though for food' is True
+2024-06-07 12:10:04,413 - core.main - INFO - Donation created successfully
+2024-06-07 12:11:01,666 - core.main - INFO - Donation created successfully
+2024-06-07 12:11:16,150 - core.main - INFO - Donation created successfully
+2024-06-07 12:11:35,345 - core.main - INFO - Donation created successfully
+2024-06-07 12:16:53,102 - core.main - INFO - Donation created successfully
+2024-06-07 13:06:18,972 - core.main - WARNING - Notification deleted successfully
+2024-06-07 13:08:37,258 - core.main - WARNING - Notification deleted successfully
+2024-06-07 13:08:37,498 - core.main - WARNING - Notification deleted successfully
+2024-06-07 13:08:42,013 - core.main - WARNING - Notification deleted successfully
+2024-06-07 13:08:44,917 - core.main - WARNING - Notification deleted successfully
+2024-06-07 13:08:47,160 - core.main - WARNING - Notification deleted successfully
+2024-06-07 13:08:50,005 - core.main - WARNING - Notification deleted successfully
+2024-06-07 13:08:52,700 - core.main - WARNING - Notification deleted successfully
+2024-06-07 13:08:55,212 - core.main - WARNING - Notification deleted successfully
+2024-06-07 13:08:59,986 - core.main - WARNING - Notification deleted successfully
+2024-06-07 13:09:26,679 - core.main - WARNING - Notification deleted successfully
+2024-06-07 13:09:29,818 - core.main - WARNING - Notification deleted successfully
+2024-06-07 13:09:32,313 - core.main - WARNING - Notification deleted successfully
+2024-06-07 13:09:35,160 - core.main - WARNING - Notification deleted successfully
+2024-06-07 13:09:40,201 - core.main - WARNING - Notification deleted successfully
+2024-06-07 13:09:43,370 - core.main - WARNING - Notification deleted successfully
+2024-06-07 13:10:07,578 - core.main - INFO - Donation created successfully
+2024-06-07 13:17:26,212 - core.main - INFO - Donation created successfully
+2024-06-08 09:39:57,474 - core.main - CRITICAL - Error on read | Exception - Failed to get User. 'User' object has no attribute 'donations'
+2024-06-08 09:41:27,468 - core.main - CRITICAL - Error on read | Exception - Failed to get User. 'User' object has no attribute 'donations'
+2024-06-08 09:44:26,266 - core.main - CRITICAL - Error on read | Exception - Failed to get User. 'User' object has no attribute 'donations'
+2024-06-08 11:04:56,259 - core.main - INFO - Campaign created successfully
+2024-06-08 11:04:56,287 - core.main - CRITICAL - Error on create | Exception - Failed to create Campaign. 'Campaign' object has no attribute 'notifications'
+2024-06-08 11:09:14,454 - core.main - INFO - Successfully updated campaign.
+2024-06-08 11:37:46,117 - core.main - INFO - Donation created successfully
+2024-06-08 11:41:08,539 - core.main - CRITICAL - Error on read | Exception - Failed to get Campaign. 'Donation' object has no attribute 'user'
+2024-06-08 11:44:02,751 - core.main - CRITICAL - Error on read | Exception - Failed to get Campaign. 'Donation' object has no attribute 'user'
+2024-06-08 11:57:35,004 - core.main - INFO - Donation created successfully
+2024-06-08 15:26:23,602 - core.main - INFO - Donation created successfully
+2024-06-08 19:25:27,272 - core.main - INFO - Donation created successfully
+2024-06-08 20:06:24,538 - core.main - INFO - Donation created successfully
+2024-06-09 08:09:58,055 - core.main - INFO - Donation created successfully
+2024-06-09 08:36:08,551 - core.main - INFO - Donation created successfully
+2024-06-09 08:36:26,585 - core.main - INFO - Donation created successfully
+2024-06-09 08:36:53,064 - core.main - INFO - Donation created successfully
+2024-06-09 09:57:18,766 - core.main - INFO - Donation created successfully
+2024-06-09 11:09:34,214 - core.main - INFO - Donation created successfully
+2024-06-09 11:28:34,779 - core.main - INFO - Donation created successfully
+2024-06-09 11:31:18,620 - core.main - INFO - Campaign created successfully
+2024-06-09 11:33:51,930 - core.main - INFO - Campaign created successfully
+2024-06-09 11:35:14,366 - core.main - WARNING - Campaign deleted successfully
+2024-06-09 11:39:44,381 - core.main - INFO - Donation created successfully
+2024-06-09 11:40:42,099 - core.main - INFO - Donation created successfully
+2024-06-09 11:45:40,406 - core.main - INFO - Donation created successfully
+2024-06-11 02:43:56,183 - core.main - INFO - Donation created successfully
+2024-06-11 02:44:48,458 - core.main - INFO - Donation created successfully
+2024-06-11 02:48:57,171 - core.main - INFO - Donation created successfully
+2024-06-11 11:16:10,270 - core.main - INFO - Donation created successfully
+2024-06-11 11:57:54,155 - core.main - WARNING - Notification deleted successfully
+2024-06-11 13:36:09,465 - core.main - INFO - Donation created successfully
+2024-06-11 14:08:30,920 - core.main - INFO - Campaign - This approach allows your application to gracefully handle has been unpublish
+2024-06-11 14:10:56,421 - core.main - INFO - Campaign - This approach allows your application to gracefully handle has been publish
+2024-06-11 14:11:55,068 - core.main - INFO - Campaign - This approach allows your application to gracefully handle has been publish
+2024-06-11 14:21:08,163 - core.main - INFO - Donation created successfully
+2024-06-11 14:22:35,050 - core.main - WARNING - Notification deleted successfully
+2024-06-11 14:35:45,110 - core.main - INFO - Campaign - This approach allows your application to gracefully handle has been unpublish
+2024-06-11 14:49:14,150 - core.main - INFO - Campaign - This approach allows your application to gracefully handle has been publish
+2024-06-11 15:13:38,546 - core.main - INFO - Campaign created successfully
+2024-06-11 15:14:16,127 - core.main - INFO - Donation created successfully
+2024-06-11 16:07:52,393 - core.main - WARNING - Campaign deleted successfully
+2024-06-11 16:26:09,535 - core.main - WARNING - Notification deleted successfully
