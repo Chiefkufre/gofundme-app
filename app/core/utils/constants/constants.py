@@ -1,36 +1,35 @@
-
-
 class Routes:
 
-    """AUTHENTICATION ROUTES """
+    """AUTHENTICATION ROUTES"""
 
-    LOGIN = '/login'
-    REGISTER = '/register'
+    LOGIN = "/login"
+    REGISTER = "/register"
     LOGOUT = "/logout"
-    SINGLE_USER = "/users/<int:id>"
-    EDIT_USER = '/users/<int:id>/edit'
+    SINGLE_USER = "/user/<id>"
+    EDIT_USER = "/user/<id>/edit"
 
-
-    
     """ADMIN ROUTES """
 
-    ADMIN_USERS = 'admin/users'
-    ADMIN_LOGIN =  'admin/worfhijdnd/login'
-    ADMIN_DASHBOARD = 'admin/dashbord'
-
+    ADMIN_USERS = "/users"
+    ADMIN_LOGIN = "/worfhijdnd/login"
+    ADMIN_DASHBOARD = "/dashbord"
 
     """DOCUMENTATION ROUTES """
     DOC = "/doc"
     TEST = "/test"
 
+    """INDEX ROUTES"""
+    ABOUT = "/about"
+    CONTACT = "/contact"
+
     """APP ROUTES"""
-    COMPAIGNS_ALL = "/campaigns/"
+    COMPAIGNS_ALL = "/campaigns"
     CAMPAIGN_CREATE = "/campaigns/create"
-    CAMPAIGN_BY_ID = "/campaigns/<int:id>/"
-    CAMPAIGN_STATUS = "/campaigns/<int:id>/status"
-    CAMPAIGN_PUBLISH = "/campaigns/<int:id>/publish"
-    CAMPAIGN_UPDATE  = "/campaigns/<int:id>/update"
-    CAMPAIGN_DELETE = "/campaigns/<int:id>/delete"
-    CAMPAIGN_DONATION = "/campaigns/<int:id>/donation"
-    CAMPAIGN_DONATION_FETCH = "/campaigns/donation/<int:campaign_id>/"
-    CAMPAIGN_DONATION_DELETE = "/campaigns/donation/<int:id>/delete"
+    CAMPAIGN_BY_ID = "/campaigns/<id>/"
+    CAMPAIGN_STATUS = "/campaigns/<id>/status"
+    CAMPAIGN_PUBLISH = "/campaigns/<id>/publish"
+    CAMPAIGN_UPDATE = "/campaigns/<id>/update"
+    CAMPAIGN_DELETE = "/campaigns/<id>/delete"
+    CAMPAIGN_DONATION = "/campaigns/<uuid:id>/donation"
+    CAMPAIGN_DONATION_FETCH = "/campaigns/donation/<uuid:campaign_id>"
+    CAMPAIGN_DONATION_DELETE = "/campaigns/donation/<id>/delete"
