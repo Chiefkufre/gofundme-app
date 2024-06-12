@@ -1,0 +1,193 @@
+{% extends "backend/user/dashboard.html" %}
+{% block title %} dashboard {% endblock %}
+{% block content %} 
+
+<div class="nk-content ">
+    <div class="container-fluid">
+       <div class="nk-content-inner">
+          <div class="nk-content-body">
+             <div class="nk-block-head nk-block-head-sm">
+                <div class="nk-block-between">
+                   <div class="nk-block-head-content">
+                      <h3 class="nk-block-title page-title">Your Campaigns</h3>
+                      <div class="nk-block-des text-soft">
+                        {% if  total_campaigns > 1 %}
+                         <p>You have a total of {{ total_campaigns }} campaigns.</p>
+                        {% endif %}
+                        {% if  total_campaigns == 1 %}
+                         <p>You have a total of {{ total_campaigns }} campaign.</p>
+                        {% endif %}
+                      </div>
+                   </div>
+                   <div class="nk-block-head-content">
+                      <div class="toggle-wrap nk-block-tools-toggle">
+                         <a href="#" class="btn btn-icon btn-trigger toggle-expand me-n1" data-target="pageMenu"><em class="icon ni ni-menu-alt-r"></em></a>
+                         <div class="toggle-expand-content" data-content="pageMenu">
+                            <ul class="nk-block-tools g-3">
+                              {% if  total_campaigns > 10 %}
+                               <li>
+                                  <div class="drodown">
+                                     <a href="#" class="dropdown-toggle btn btn-white btn-dim btn-outline-light" data-bs-toggle="dropdown"><em class="d-none d-sm-inline icon ni ni-filter-alt"></em><span>Filtered By</span><em class="dd-indc icon ni ni-chevron-right"></em></a>
+                                     <div class="dropdown-menu dropdown-menu-end">
+                                        <ul class="link-list-opt no-bdr">
+                                           <li><a href="#"><span>Open</span></a></li>
+                                           <li><a href="#"><span>Closed</span></a></li>
+                                           <li><a href="#"><span>Onhold</span></a></li>
+                                        </ul>
+                                     </div>
+                                  </div>
+                               </li>
+                               {% endif %}
+                               <li class="nk-block-tools-opt d-none d-sm-block"><a href="{{ url_for('user.user_create_campaign') }}" class="btn btn-warning"><em class="icon ni ni-plus"></em><span>Create  Campaign</span></a></li>
+                               <li class="nk-block-tools-opt d-block d-sm-none"><a href="{{ url_for('user.user_create_campaign') }}" class="btn btn-icon btn-warning"><em class="icon ni ni-plus"></em></a></li>
+                            </ul>
+                         </div>
+                      </div>
+                   </div>
+                </div>
+             </div>
+             <div class="nk-block">
+                <div class="card card-bordered card-stretch">
+                   <div class="card-inner-group">
+                      <div class="card-inner p-0">
+                         <table class="nk-tb-list nk-tb-ulist">
+                            <thead>
+                               <tr class="nk-tb-item nk-tb-head">
+                                  <th class="nk-tb-col nk-tb-col-check">
+                                     <div class="custom-control custom-control-sm custom-checkbox notext"><input type="checkbox" class="custom-control-input" id="pid-all"><label class="custom-control-label" for="pid-all"></label></div>
+                                  </th>
+                                  <th class="nk-tb-col"><span class="sub-text">Campaign Name</span></th>
+                                  <th class="nk-tb-col tb-col-xxl"><span class="sub-text">Client</span></th>
+                                  <th class="nk-tb-col tb-col-lg"><span class="sub-text">creator</span></th>
+                                  <th class="nk-tb-col tb-col-xxl"><span class="sub-text">Status</span></th>
+                                  <th class="nk-tb-col tb-col-md"><span class="sub-text">Progress</span></th>
+                                  <th class="nk-tb-col tb-col-mb"><span class="sub-text">Deadline</span></th>
+                                  <th class="nk-tb-col nk-tb-col-tools text-end">
+                                     <div class="dropdown">
+                                        <a href="#" class="btn btn-xs btn-trigger btn-icon dropdown-toggle me-n1" data-bs-toggle="dropdown" data-offset="0,5"><em class="icon ni ni-more-h"></em></a>
+                                        <div class="dropdown-menu dropdown-menu-end">
+                                           <ul class="link-list-opt no-bdr">
+                                              <li><a href="#"><em class="icon ni ni-check-round-cut"></em><span>Mark As Done</span></a></li>
+                                              <li><a href="#"><em class="icon ni ni-archive"></em><span>Mark As Archive</span></a></li>
+                                              <li><a href="#"><em class="icon ni ni-trash"></em><span>Remove campaign/span></a></li>
+                                           </ul>
+                                        </div>
+                                     </div>
+                                  </th>
+                               </tr>
+                            </thead>
+                            <tbody>
+                              {% for item in data %}
+                               <tr class="nk-tb-item">
+                                  <td class="nk-tb-col nk-tb-col-check">
+                                     <div class="custom-control custom-control-sm custom-checkbox notext"><input type="checkbox" class="custom-control-input" id="pid-01"><label class="custom-control-label" for="pid-01"></label></div>
+                                  </td>
+                                  <td class="nk-tb-col">
+                                   
+                                     <a href="{{ url_for('web.get_campaign_by_id', id=item.id) }}" class="project-title">
+                                       {% if item.user.profile_picture %}
+                                       <div class="user-avatar sm bg-blue"><img src="{{ url_for('web.uploaded_file', filename=item.user.profile_picture) }}" alt=""></div>
+                                       {% endif %}
+                                        <div class="project-info">
+                                           <h6 class="title">{{ item.title }}</h6>
+                                        </div>
+                                     </a>
+                                  </td>
+                                  <!-- <td class="nk-tb-col tb-col-xxl"><span>Softnio</span></td> -->
+                                  <td class="nk-tb-col tb-col-lg"><span>{{ item.user.name }} </span></td>
+                                 
+                                  <td class="nk-tb-col tb-col-xxl"><span>Open</span></td>
+                                  <td class="nk-tb-col tb-col-md">
+                                     <div class="project-list-progress">
+                                        <div class="progress progress-pill progress-md bg-light">
+                                           <div class="progress-bar" data-progress="{{ item.percentage }}"></div>
+                                        </div>
+                                        <div class="project-progress-percent">{{ item.percentage }}%</div>
+                                     </div>
+
+                                  </td>
+                                  <td class="nk-tb-col tb-col-mb"><span class="badge badge-dim bg-warning"><em class="icon ni ni-clock"></em><span>{{ item.duration }} Left</span></span></td>
+                                  <td class="nk-tb-col nk-tb-col-tools">
+                                     <ul class="nk-tb-actions gx-1">
+                                        <li>
+                                           <div class="drodown">
+                                              <a href="#" class="dropdown-toggle btn btn-sm btn-icon btn-trigger" data-bs-toggle="dropdown"><em class="icon ni ni-more-h"></em></a>
+                                              <div class="dropdown-menu dropdown-menu-end">
+                                                 <ul class="link-list-opt no-bdr">
+                                                    <li><a href="{{ url_for('web.get_campaign_by_id', id=item.id) }}"><em class="icon ni ni-eye"></em><span>View campaign</span></a></li>
+                                                    <li><a href="{{ url_for('user.user_edit_campaign', id=item.id) }}"><em class="icon ni ni-edit"></em><span>Edit campaign</span></a></li>
+                                                    <li class="ms-3 mb-2 mt-1">
+                                                      {% if item.is_publish %}
+                                                         <form action="{{ url_for('user.publish_campaign', id=item.id) }}" method="post" style="display:inline;">
+                                                            <input type="hidden" name="is_publish" value="false">
+                                                            <button type="submit" style="background:none;border:none;color:#007bff;cursor:pointer;">
+                                                                  <em class="icon ni ni-check-round-cut"></em>
+                                                                  <span>Pause campaign</span>
+                                                            </button>
+                                                         </form>
+                                                      {% else %}
+                                                         <form action="{{ url_for('user.publish_campaign', id=item.id) }}" method="post" style="display:inline;">
+                                                            <input type="hidden" name="is_publish" value="true">
+                                                            <button type="submit" style="background:none;border:none;color:#007bff;cursor:pointer;">
+                                                                  <em class="icon ni ni-check-round-cut"></em>
+                                                                  <span>Publish campaign</span>
+                                                            </button>
+                                                         </form>
+                                                      {% endif %}
+
+
+                                                    <li class="ms-3">
+                                                      <form action="{{ url_for('user.delete_campaign_by_id', id=item.id) }}" method="post" style="display:inline;">
+                                                         <input type="hidden" name="_method" value="DELETE">
+                                                          <button type="submit" style="background:none;border:none;color:red;cursor:pointer;">
+                                                              <em class="icon ni ni-delete"></em>
+                                                              <span>Delete Campaign</span>
+                                                          </button>
+                                                      </form>
+                                                  </li>
+                                                 </ul>
+                                              </div>
+                                           </div>
+                                        </li>
+                                     </ul>
+                                  </td>
+                               </tr>
+                               {% endfor %}
+                            </tbody>
+                         </table>
+                      </div>
+                      
+                      <div class="card-inner">
+                         <div class="nk-block-between-md g-3">
+                            <div class="g">
+                               <ul class="pagination justify-content-center justify-content-md-start">
+                                 {% if pagination.prev_url %}
+                                    <li class="page-item"> <a  class="page-link" href="{{ pagination.prev_url }}">Previous</a></li>
+                                 {% endif %}
+                                 {% if pagination.next_url%}
+                                    <li class="page-item"><a class="page-link"href="{{ pagination.next_url }}">Next</a></li>
+                                 {% endif %}
+                                  
+                                  <!-- <li class="page-item"><span class="page-link"><em class="icon ni ni-more-h"></em></span></li> -->
+                                  
+                               </ul>
+                            </div>
+                            <div class="g">
+                               <div class="pagination-goto d-flex justify-content-center justify-content-md-start gx-3">
+                                 <div>Page</div>
+                                  <div>
+                                       {{ pagination.page }}
+                                  </div>
+                                  <div>OF {{ pagination.pages }}</div>
+                               </div>
+                            </div>
+                         </div>
+                      </div>
+                   </div>
+                </div>
+             </div>
+          </div>
+       </div>
+    </div>
+ </div>
+{% endblock %} 
