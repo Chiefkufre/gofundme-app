@@ -1,0 +1,33 @@
+        /* Flash message styling */
+.flash-message {
+    position: fixed;
+    top: 60px; /* Adjust the distance from the top */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: blue; 
+    color: #fff;
+    padding: 15px 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    display: none; /* Initially hidden */
+}
+
+.flash-message.show {
+    display: block; /* Show flash message */
+}
+
+.flash-message button.close-btn {
+    background: none;
+    border: none;
+    color: inherit;
+    font-size: 16px;
+    cursor: pointer;
+    position: absolute;
+    top: 5px;
+    right: 10px;
+}
+
+.flash-message span {
+    display: inline-block;
+    margin-right: 10px;
+}
