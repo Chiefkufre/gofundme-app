@@ -3,16 +3,15 @@ from flask_assets import Environment, Bundle
 
 bundles = {
     "doc_js": Bundle(
-        # "js/api.js", 
+        # "js/api.js",
         "js/api/jquery.min.js",
         "js/api/bootstrap.bundle.min.js",
         "js/api/highlight.min.js",
         "js/api/jquery.easing.min.js",
         "js/api/jquery.magnific-popup.min.js",
         "js/api/theme.js",
-        output="gen/doc.js"),
-
-
+        output="gen/doc.js",
+    ),
     "doc_css": Bundle(
         # "css/api.css",
         "css/api/bootstrap.min.css",
@@ -20,33 +19,27 @@ bundles = {
         "css/api/magnific-popup.min.css",
         "css/api/github.css",
         "css/api/stylesheet.css",
-        output="gen/doc.css"),
-
-
-
+        output="gen/doc.css",
+    ),
     "request_js": Bundle(
         "js/fetchRequest.js", "js/postRequest.js", output="gen/request.js"
     ),
-
     "frontend_css": Bundle(
-         "css/frontend/bootstrap.min.css", 
-        "css/frontend/owl.carousel.min.css", 
+        "css/frontend/bootstrap.min.css",
+        "css/frontend/owl.carousel.min.css",
         "css/frontend/animate.css",
-        "css/frontend/magnific-popup.css", 
+        "css/frontend/magnific-popup.css",
         "css/frontend/all.min.css",
-        "css/frontend/flaticon.css", 
+        "css/frontend/flaticon.css",
         "css/frontend/font.css",
         "css/frontend/themify-icons.css",
         "css/frontend/metisMenu.css",
         "css/frontend/nice-select.css",
         "css/frontend/slick.css",
         "css/frontend/main.css",
-        output="gen/frontend.css"
+        output="gen/frontend.css",
     ),
-
-   
-
-    "frontend_js": Bundle (
+    "frontend_js": Bundle(
         "js/frontend/vendor/jquery-1.12.4.min.js",
         "js/frontend/popper.min.js",
         "js/frontend/bootstrap.min.js",
@@ -67,16 +60,39 @@ bundles = {
         "js/frontend/tilt.jquery.js",
         "js/frontend/plugins.js",
         "js/frontend/main.js",
-        
-        output="gen/frontend.js"
+        output="gen/frontend.js",
     ),
+    "backend_js": Bundle(
+
+        "js/backend/flash-message.js",
+        "js/backend/bundle.js", 
+        "js/backend/scripts.js", 
+        # "js/backend/demo-settings.js", 
+        "js/backend/charts/gd-default.js", 
+
+        
+        output="gen/backend.js"),
+
+    "backend_css": Bundle(
+        # "css/backend.css", 
+        "css/backend/editors/quill.css", 
+        "css/backend/editors/summernote.css", 
+        "css/backend/editors/tinymce.css", 
+        "css/backend/libs/bootstrap-icons.css", 
+        "css/backend/libs/fontawesome-icons.css", 
+        "css/backend/libs/jstree.css", 
+        "css/backend/libs/themify-icons.css", 
+        "css/backend/dashlite.css", 
+        "css/backend/style-email.css", 
+        "css/backend/theme.css", 
+        "css/backend/flash-message.css",
     
-    "backend_js": Bundle("js/backend.js", output="gen/backend.js"),
-    "backend_css": Bundle("css/backend.css", output="gen/backend.css"),
+        output="gen/backend.css"),
 }
 
 
 def configure_assets(app):
     assets = Environment(app)
+    assets.load_path = ['core/static/']
     assets.register(bundles)
     return assets
