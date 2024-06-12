@@ -1,10 +1,10 @@
-from flask import Flask, g
-from flask_login import LoginManager
+from flask import Flask, g, redirect, url_for
+from flask_login import LoginManager, current_user
 from flask_jwt_extended import JWTManager
 from flask_mail import Mail
 
 from core.models import User
-from core.api.Repository.repository import _get_item
+from core.src.Repository.repository import _get_item
 from core.utils.assets import configure_assets
 
 from core.conf.config import Logger, Config, DevConfig, ProdConfig, CeleryConfig
@@ -12,13 +12,11 @@ from core.conf.settings import settings
 from core.database.database import setup_db
 from core.utils.proj.celery import celery
 
-from core.api.Controllers.routers import api
-from core.api.Controllers.index import index
-from core.api.Controllers.admin import admin
+from core.src.Controllers.webContoller import web
+from core.src.Controllers.adminController import admin
+from core.src.Controllers.userController import user
+from core.auth.authController import auths
 
-
-
-from core.auth.auths import auths
 
 APP_VERSION = settings.API_VERSION
 
@@ -34,7 +32,7 @@ def create_app_instance():
         setup_db(app)
         mail = Mail(app)
         configure_assets(app)
-        JWTManager(app)
+        jwt = JWTManager(app)
         login_manager = LoginManager(app)
 
         @login_manager.user_loader
@@ -43,14 +41,19 @@ def create_app_instance():
 
     @app.before_request
     def before_request():
-        g.user_id = "1"
+        g.user_id = current_user.get_id()
+    
+    @jwt.expired_token_loader
+    def my_expired_token_callback(jwt_header, jwt_payload):
+        return redirect(url_for('auths.get_login_page'))
 
     # registring routes
-    app.register_blueprint(api, url_prefix="/api/{0}".format(APP_VERSION))
-    app.register_blueprint(admin, url_prefix="/api/{0}".format(APP_VERSION))
-    app.register_blueprint(index, url_prefix="/api/{0}".format(APP_VERSION))
-    app.register_blueprint(auths, url_prefix="/api/{0}/auth".format(APP_VERSION))
+    app.register_blueprint(web, url_prefix="/")
+    app.register_blueprint(user, url_prefix="/user")
+    app.register_blueprint(admin, url_prefix="/admin")
+    app.register_blueprint(auths, url_prefix="/auth")
 
     return app
 
-# /api/v1/auth/regsiter
+
+# /api/v1/auth/register'
