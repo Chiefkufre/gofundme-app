@@ -2,13 +2,23 @@
 {% extends "frontend/front/layout.html" %}
 {% block content %} 
 <main>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-block alert-info fade in">
+          <a class="close" data-dismiss="alert">&times;</a>
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
     <!--slider-area start-->
     <div class="slider-area slider-area-02 pos-rel">
         <div class="right-border-shape">
-            <img src="assets/img/shape/02.png" alt="">
+            <img src="{{ url_for('static', filename='img/shape/02.png')}}" alt="">
         </div>
         <div class="slider-active">
-            <div class="single-slider slider-height-02 pos-rel d-flex align-items-center" style="background-image: url(assets/img/slider/slider1.jpg);">
+            <div class="single-slider slider-height-02 pos-rel d-flex align-items-center" style="background-image:url({{ url_for('static', filename='img/slider/slider1.jpg') }})">
                 <div class="container">
                     <div class="row">
                         <div class="col-xl-8">
@@ -28,7 +38,7 @@
                     </div>
                 </div>
             </div>
-            <div class="single-slider slider-height-02 pos-rel d-flex align-items-center" style="background-image: url(assets/img/slider/slider2.jpg);">
+            <div class="single-slider slider-height-02 pos-rel d-flex align-items-center" style="background-image:url({{ url_for('static', filename='img/slider/slider2.jpg') }})"></div>
                 <div class="container">
                     <div class="row">
                         <div class="col-xl-8">
@@ -58,13 +68,13 @@
                 <div class="col-xl-5 col-lg-6 col-md-12">
                     <div class="about-img mb-30 wow fadeInUp2 animated" data-wow-delay='.1s'>
                         <div class="about-img__thumb">
-                            <img src="assets/img/about/02.jpg" alt="">
+                            <img src="{{ url_for('static', filename='img/about/02.jpg')}}" alt="">
                         </div>
                         <div class="about-img__style-text">
-                            <img src="assets/img/about/02.png" alt="">
+                            <img src="{{ url_for('static', filename='img/about/02.png')}}" alt="">
                         </div>
                         <div class="about-img__style-dot d-none d-lg-inline-block">
-                            <img src="assets/img/shape/03.png" alt="">
+                            <img src="{{ url_for('static', filename='img/shape/03.png')}}" alt="">
                         </div>
                     </div>
                 </div>
@@ -123,7 +133,7 @@
                 <div class="col-xl-3 col-lg-6 col-md-6">
                     <div class="projects projects__03 pos-rel mb-30 wow fadeInUp2 animated" data-wow-delay='.1s'>
                         <div class="projects__thumb pos-rel">
-                            <img src="assets/img/project/08.jpg" alt="">
+                            <img src="{{ url_for('static', filename='img/project/08.jpg')}}" alt="">
                         </div>
                         <div class="projects__content white-bg">
                             <h4><a href="project-video.html">Reference Pico-Neo2
@@ -138,7 +148,7 @@
                             </div>
                             <div class="projects__content--manager">
                                 <ul class="project-manager">
-                                    <li><a href="#"><img src="assets/img/project/01.png" alt="">
+                                    <li><a href="#"><img src="{{ url_for('static', filename='img/project/01.png')}}" alt="">
                                             <span>Somalia</span></a></li>
                                     <li>
                                         <p class="time"><i class="far fa-clock"></i> 7 Days Left</p>
@@ -151,7 +161,7 @@
                 <div class="col-xl-3 col-lg-6 col-md-6">
                     <div class="projects projects__03 pos-rel mb-30 wow fadeInUp animated" data-wow-delay='.3s'>
                         <div class="projects__thumb pos-rel">
-                            <img src="assets/img/project/09.jpg" alt="">
+                            <img src="{{ url_for('static', filename='img/project/09.jpg')}}" alt="">
                         </div>
                         <div class="projects__content white-bg">
                             <h4><a href="project-video.html">Pimax-Vision-852x
@@ -166,7 +176,7 @@
                             </div>
                             <div class="projects__content--manager">
                                 <ul class="project-manager">
-                                    <li><a href="#"><img src="assets/img/project/01.png" alt="">
+                                    <li><a href="#"><img src="{{ url_for('static', filename='img/project/01.png')}}" alt="">
                                             <span>Somalia</span></a></li>
                                     <li>
                                         <p class="time"><i class="far fa-clock"></i> 7 Days Left</p>
@@ -179,7 +189,7 @@
                 <div class="col-xl-3 col-lg-6 col-md-6">
                     <div class="projects projects__03 pos-rel mb-30 wow fadeInUp2 animated" data-wow-delay='.5s'>
                         <div class="projects__thumb pos-rel">
-                            <img src="assets/img/project/10.jpg" alt="">
+                            <img src="{{ url_for('static', filename='img/project/10.jpg')}}" alt="">
                         </div>
                         <div class="projects__content white-bg">
                             <h4><a href="project-video.html">Reference Pico-Neo2
@@ -194,7 +204,7 @@
                             </div>
                             <div class="projects__content--manager">
                                 <ul class="project-manager">
-                                    <li><a href="#"><img src="assets/img/project/01.png" alt="">
+                                    <li><a href="#"><img src="{{ url_for('static', filename='img/project/01.png')}}" alt="">
                                             <span>Somalia</span></a></li>
                                     <li>
                                         <p class="time"><i class="far fa-clock"></i> 7 Days Left</p>
@@ -207,7 +217,7 @@
                 <div class="col-xl-3 col-lg-6 col-md-6">
                     <div class="projects projects__03 pos-rel mb-30 wow fadeInUp2 animated" data-wow-delay='.7s'>
                         <div class="projects__thumb pos-rel">
-                            <img src="assets/img/project/11.jpg" alt="">
+                            <img src="{{ url_for('static', filename='img/project/11.jpg')}}" alt="">
                         </div>
                         <div class="projects__content white-bg">
                             <h4><a href="project-video.html">Rapoo N24 Wired USB 
@@ -222,7 +232,7 @@
                             </div>
                             <div class="projects__content--manager">
                                 <ul class="project-manager">
-                                    <li><a href="#"><img src="assets/img/project/01.png" alt="">
+                                    <li><a href="#"><img src="{{ url_for('static', filename='img/project/01.png')}}" alt="">
                                             <span>Somalia</span></a></li>
                                     <li>
                                         <p class="time"><i class="far fa-clock"></i> 7 Days Left</p>
@@ -277,13 +287,13 @@
                                 <div class="col-xl-6 col-lg-6">
                                     <div class="goal-img-box pl-100">
                                         <div class="goal-img-one">
-                                            <img src="assets/img/goal/01.jpg" alt="">
+                                            <img src="{{ url_for('static', filename='img/goal/01.jpg')}}" alt="">
                                         </div>
                                         <div class="goal-img-two">
-                                            <img src="assets/img/goal/02.jpg" alt="">
+                                            <img src="{{ url_for('static', filename='img/goal/02.jpg')}}" alt="">
                                         </div>
                                         <div class="goal-img-three">
-                                            <img src="assets/img/shape/04.png" alt="">
+                                            <img src="{{ url_for('static', filename='img/shape/04.png')}}" alt="">
                                         </div>
                                     </div>
                                 </div>
@@ -313,13 +323,13 @@
                                 <div class="col-xl-6 col-lg-6">
                                     <div class="goal-img-box pl-100">
                                         <div class="goal-img-one">
-                                            <img src="assets/img/goal/01.jpg" alt="">
+                                            <img src="{{ url_for('static', filename='img/goal/01.jpg')}}" alt="">
                                         </div>
                                         <div class="goal-img-two">
-                                            <img src="assets/img/goal/02.jpg" alt="">
+                                            <img src="{{ url_for('static', filename='img/goal/02.jpg')}}" alt="">
                                         </div>
                                         <div class="goal-img-three">
-                                            <img src="assets/img/shape/04.png" alt="">
+                                            <img src="{{ url_for('static', filename='img/shape/04.png')}}" alt="">
                                         </div>
                                     </div>
                                 </div>
@@ -349,13 +359,13 @@
                                 <div class="col-xl-6 col-lg-6">
                                     <div class="goal-img-box pl-100">
                                         <div class="goal-img-one">
-                                            <img src="assets/img/goal/01.jpg" alt="">
+                                            <img src="{{ url_for('static', filename='img/goal/01.jpg')}}" alt="">
                                         </div>
                                         <div class="goal-img-two">
-                                            <img src="assets/img/goal/02.jpg" alt="">
+                                            <img src="{{ url_for('static', filename='img/goal/02.jpg')}}" alt="">
                                         </div>
                                         <div class="goal-img-three">
-                                            <img src="assets/img/shape/04.png" alt="">
+                                            <img src="{{ url_for('static', filename='img/shape/04.png')}}" alt="">
                                         </div>
                                     </div>
                                 </div>
@@ -367,7 +377,7 @@
         </div>
     </section>
     <!--cta-area start-->
-    <section class="cta-area cta-area-02 theme-bg2 pt-55 pb-25" style="background-image: url(assets/img/bg/05.png);">
+    <section class="cta-area cta-area-02 theme-bg2 pt-55 pb-25" style="background-image:url({{ url_for('static', filename='img/bg/05.png') }})"> 
         <div class="container">
             <div class="row align-items-md-center">
                 <div class="col-xl-9 col-lg-9 col-md-8">
@@ -407,7 +417,8 @@
                 <div class="col-xl-6 col-lg-6">
                     <div class="faq-content mb-30 wow fadeInUp2 animated" data-wow-delay='.1s'>
                         <div id="accordion">
-                            <div class="card card-bg mb-15" style="background-image:url(assets/img/bg/06.jpg)">
+                            <div class="card card-bg mb-15" style="background-image:url({{ url_for('static', filename='img/bg/06.jpg') }})">
+                            
                               <div class="card-header" id="headingOne">
                                 <h5 class="mb-0">
                                   <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
@@ -422,7 +433,9 @@
                                 </div>
                               </div>
                             </div>
-                            <div class="card card-bg mb-15" style="background-image:url(assets/img/bg/06.jpg)">
+                            <div class="card card-bg mb-15" 
+                            style="background-image:url({{ url_for('static', filename='img/bg/06.jpg') }})">
+                            
                               <div class="card-header" id="headingTwo">
                                 <h5 class="mb-0">
                                   <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
@@ -436,7 +449,9 @@
                                 </div>
                               </div>
                             </div>
-                            <div class="card card-bg mb-15" style="background-image:url(assets/img/bg/06.jpg)">
+                            <div class="card card-bg mb-15" 
+                            style="background-image:url({{ url_for('static', filename='img/bg/06.jpg') }})">
+                            
                               <div class="card-header" id="headingThree">
                                 <h5 class="mb-0">
                                   <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
@@ -450,7 +465,9 @@
                                 </div>
                               </div>
                             </div>
-                            <div class="card card-bg mb-15" style="background-image:url(assets/img/bg/06.jpg)">
+                            <div class="card card-bg mb-15" 
+                            style="background-image:url(assets/img/bg/06.jpg)">
+                            
                               <div class="card-header" id="headingFour">
                                 <h5 class="mb-0">
                                   <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
@@ -487,7 +504,7 @@
                 <div class="col-xl-4 col-lg-4">
                     <div class="projects projects-02 white-bg mb-30 wow fadeInUp2 animated" data-wow-delay='.1s'>
                         <div class="projects__thumb pos-rel">
-                            <img src="assets/img/project/05.jpg" alt="">
+                            <img src="{{ url_for('static', filename='img/project/05.jpg')}}" alt="">
                             <a href="#" class="new-tag">new</a>
                         </div>
                         <div class="projects__content">
@@ -503,7 +520,7 @@
                             </div>
                             <div class="projects__content--manager">
                                 <ul class="project-manager">
-                                    <li><a href="#"><img src="assets/img/project/01.png" alt="">
+                                    <li><a href="#"><img src="{{ url_for('static', filename='img/project/01.png')}}" alt="">
                                             <span>Somalia</span></a></li>
                                     <li>
                                         <p class="time"><i class="far fa-clock"></i> 7 Days Left</p>
@@ -516,7 +533,7 @@
                 <div class="col-xl-4 col-lg-4">
                     <div class="projects projects-02 white-bg mb-30 wow fadeInUp2 animated" data-wow-delay='.3s'>
                         <div class="projects__thumb pos-rel">
-                            <img src="assets/img/project/06.jpg" alt="">
+                            <img src="{{ url_for('static', filename='img/project/06.jpg')}}" alt="">
                             <a href="#" class="new-tag">new</a>
                         </div>
                         <div class="projects__content">
@@ -532,7 +549,7 @@
                             </div>
                             <div class="projects__content--manager">
                                 <ul class="project-manager">
-                                    <li><a href="#"><img src="assets/img/project/01.png" alt="">
+                                    <li><a href="#"><img src="{{ url_for('static', filename='img/project/01.png')}}" alt="">
                                             <span>Somalia</span></a></li>
                                     <li>
                                         <p class="time"><i class="far fa-clock"></i> 7 Days Left</p>
@@ -545,7 +562,7 @@
                 <div class="col-xl-4 col-lg-4">
                     <div class="projects projects-02 white-bg mb-30 wow fadeInUp2 animated" data-wow-delay='.5s'>
                         <div class="projects__thumb pos-rel">
-                            <img src="assets/img/project/07.jpg" alt="">
+                            <img src="{{ url_for('static', filename='img/project/07.jpg')}}" alt="">
                             <a href="#" class="new-tag">new</a>
                         </div>
                         <div class="projects__content">
@@ -561,7 +578,7 @@
                             </div>
                             <div class="projects__content--manager">
                                 <ul class="project-manager">
-                                    <li><a href="#"><img src="assets/img/project/01.png" alt="">
+                                    <li><a href="#"><img src="{{ url_for('static', filename='img/project/01.png')}}" alt="">
                                             <span>Somalia</span></a></li>
                                     <li>
                                         <p class="time"><i class="far fa-clock"></i> 7 Days Left</p>
@@ -576,7 +593,8 @@
     </section>
     <!--project-area end-->
     <!--donation-area start-->
-    <section class="donation-area pt-125 pb-100" style="background-image:url(assets/img/events/02.jpg)">
+    <section class="donation-area pt-125 pb-100"  style="background-image:url({{ url_for('static', filename='img/events/02.jpg') }})">
+    
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-xl-5 col-lg-8 col-md-8 col-sm-7">
@@ -607,13 +625,13 @@
                 <div class="col-xl-6 col-lg-5">
                     <div class="testimonial-img-box">
                         <div class="img-item wow d-none d-xl-inline-block fadeInUp2 animated" data-wow-delay='.3s'>
-                            <img src="assets/img/testimonial/01.jpg" alt="">
+                            <img src="{{ url_for('static', filename='img/testimonial/01.jpg')}}" alt="">
                         </div>
                         <div class="img-item-two wow fadeInUp2 animated" data-wow-delay='.5s'>
-                            <img src="assets/img/testimonial/03.png" alt="">
+                            <img src="{{ url_for('static', filename='img/testimonial/03.png')}}" alt="">
                         </div>
                         <div class="img-item-three wow fadeIn animated" data-wow-delay='.7s'>
-                            <img src="assets/img/shape/06.png" alt="">
+                            <img src="{{ url_for('static', filename='img/shape/06.png')}}" alt="">
                         </div>
                     </div>
                 </div>
@@ -627,7 +645,7 @@
                         <div class="testimonial-content d-sm-flex">
                             <div class="author-img pb-20 mr-40">
                                 <div class="author-avatar">
-                                    <img src="assets/img/testimonial/04.png" alt="">
+                                    <img src="{{ url_for('static', filename='img/testimonial/04.png')}}" alt="">
                                 </div>
                             </div>
                             <div class="testimonial-inner">
@@ -658,7 +676,7 @@
                         <div class="testimonial-content d-sm-flex">
                             <div class="author-img pb-20 mr-40">
                                 <div class="author-avatar">
-                                    <img src="assets/img/testimonial/04.png" alt="">
+                                    <img src="{{ url_for('static', filename='img/testimonial/04.png')}}" alt="">
                                 </div>
                             </div>
                             <div class="testimonial-inner">
@@ -732,14 +750,14 @@
             <div class="row">
                 <div class="col-xl-4 col-lg-4 col-md-6 wow fadeInUp2 animated" data-wow-delay='.1s'>
                     <div class="blogs blogs-02 white-bg mb-30">
-                        <div class="blogs__thumb pos-abl" style="background-image:url(assets/img/blog/03.jpg);">
+                        <div class="blogs__thumb pos-abl" style="background-image:url({{ url_for('static', filename='img/blog/03.jpg') }})">
                        </div>
                         <div class="blogs__content pos-rel">
                             <ul class="project-manager mb-20">
                                 <li>
                                     <a class="blog-tag" href="blog-details.html">Education</a>
                                 </li>
-                                <li><a href="#"><img src="assets/img/blog/03.png" alt="">
+                                <li><a href="#"><img src="{{ url_for('static', filename='img/blog/03.png')}}" alt="">
                                         <span>David Zon</span></a></li>
                             </ul>
                             <h4 class="mb-20"><a href="blog-details.html">How Make Cross-Browser Testing More Lambda.</a></h4>
@@ -753,14 +771,14 @@
                 </div>
                 <div class="col-xl-4 col-lg-4 col-md-6 wow fadeInUp2 animated" data-wow-delay='.3s'>
                     <div class="blogs blogs-02 white-bg mb-30">
-                        <div class="blogs__thumb pos-abl" style="background-image:url(assets/img/blog/03.jpg);">
+                        <div class="blogs__thumb pos-abl" style="background-image:url({{ url_for('static', filename='img/blog/03.jpg') }})">
                        </div>
                         <div class="blogs__content pos-rel">
                             <ul class="project-manager mb-20">
                                 <li>
                                     <a class="blog-tag" href="blog-details.html">Education</a>
                                 </li>
-                                <li><a href="#"><img src="assets/img/blog/03.png" alt="">
+                                <li><a href="#"><img src="{{ url_for('static', filename='img/blog/03.png')}}" alt="">
                                         <span>David Zon</span></a></li>
                             </ul>
                             <h4 class="mb-20"><a href="blog-details.html">Smashing Podcast Episode  Falbe Martin Michael</a></h4>
@@ -774,14 +792,14 @@
                 </div>
                 <div class="col-xl-4 col-lg-4 col-md-6 wow fadeInUp2 animated" data-wow-delay='.5s'>
                     <div class="blogs blogs-02 white-bg mb-30">
-                        <div class="blogs__thumb pos-abl" style="background-image:url(assets/img/blog/03.jpg);">
+                        <div class="blogs__thumb pos-abl" style="background-image:url({{ url_for('static', filename='img/blog/03.jpg') }})">
                        </div>
                         <div class="blogs__content pos-rel">
                             <ul class="project-manager mb-20">
                                 <li>
                                     <a class="blog-tag" href="blog-details.html">Education</a>
                                 </li>
-                                <li><a href="#"><img src="assets/img/blog/03.png" alt="">
+                                <li><a href="#"><img src="{{ url_for('static', filename='img/blog/03.png')}}" alt="">
                                         <span>David Zon</span></a></li>
                             </ul>
                             <h4 class="mb-20"><a href="blog-details.html">How Make Cross-Browser Testing More Lambda.</a></h4>
