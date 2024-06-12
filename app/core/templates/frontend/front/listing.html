@@ -1,28 +1,18 @@
 
 {% extends "frontend/front/layout.html" %}
+{% block title %}listing{% endblock %}
 {% block content %} 
 <main>
-    <!--page-title-area start-->
-    <section class="page-title-area" style="background-image:url(assets/img/bg/page-title-bg.jpg);">
-        <div class="right-border-shape">
-            <img src="assets/img/shape/02.png" alt="">
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-block alert-info fade in">
+          <a class="close" data-dismiss="alert">&times;</a>
+          {{ message }}
         </div>
-        <div class="container">
-            <div class="row">
-                <div class="col-xl-10 offset-xl-1">
-                    <div class="page-title-wrapper text-center">
-                        <h1 class="page-title wow fadeInUp2 animated" data-wow-delay='.1s'>Latest Project</h1>
-                        <div class="breadcrumb">
-                            <ul class="breadcrumb-list wow fadeInUp2 animated" data-wow-delay='.3s'>
-                                <li><a href="index.html">Home <i class="far fa-chevron-right"></i></a></li>
-                                <li><a class="active" href="#">Project 02</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
     <!--page-title-area area-->
     <!--feature-project-area start-->
     <section class="feature-project-area pt-125 pb-100">
@@ -40,7 +30,7 @@
                 <div class="col-xl-6 col-lg-6 col-md-12">
                     <div class="projects grey-bg d-sm-flex mb-30 wow fadeInUp2 animated" data-wow-delay='.1s'>
                         <div class="projects__thumb">
-                            <img src="assets/img/project/01.jpg" alt="">
+                            <img src="{{ url_for('static', filename='img/bg/01.jpg')}}" alt="">
                         </div>
                         <div class="projects__content">
                             <h4><a href="project-image.html">Reference Pico-Neo2
@@ -55,7 +45,7 @@
                             </div>
                             <div class="projects__content--manager">
                                 <ul class="project-manager">
-                                    <li><a href="#"><img src="assets/img/project/01.png" alt="">
+                                    <li><a href="#"><img src="{{ url_for('static', filename='img/bg/01.png')}}" alt="">
                                             <span>Somalia</span></a></li>
                                     <li>
                                         <p class="time"><i class="far fa-clock"></i> 7 Days Left</p>
@@ -68,7 +58,7 @@
                 <div class="col-xl-6 col-lg-6 col-md-12">
                     <div class="projects grey-bg d-sm-flex mb-30 wow fadeInUp2 animated" data-wow-delay='.3s'>
                         <div class="projects__thumb">
-                            <img src="assets/img/project/02.jpg" alt="">
+                            <img src="{{ url_for('static', filename='img/bg/02.jpg')}}" alt="">
                         </div>
                         <div class="projects__content">
                             <h4><a href="project-image.html">Pimax-Vision-852x
@@ -83,7 +73,8 @@
                             </div>
                             <div class="projects__content--manager">
                                 <ul class="project-manager">
-                                    <li><a href="#"><img src="assets/img/project/01.png" alt="">
+                                    <li><a href="#">
+                                        <img src="{{ url_for('static', filename='img/bg/01.png')}}" alt="">
                                             <span>Somalia</span></a></li>
                                     <li>
                                         <p class="time"><i class="far fa-clock"></i> 7 Days Left</p>
@@ -95,9 +86,7 @@
                 </div>
                 <div class="col-xl-6 col-lg-6 col-md-12">
                     <div class="projects grey-bg d-sm-flex mb-30 wow fadeInUp2 animated" data-wow-delay='.1s'>
-                        <div class="projects__thumb">
-                            <img src="assets/img/project/03.jpg" alt="">
-                        </div>
+                       
                         <div class="projects__content">
                             <h4><a href="project-image.html">Mobile UI Design For
                                     Beginners Part</a></h4>
@@ -111,8 +100,8 @@
                             </div>
                             <div class="projects__content--manager">
                                 <ul class="project-manager">
-                                    <li><a href="#"><img src="assets/img/project/01.png" alt="">
-                                            <span>Somalia</span></a></li>
+                                    <li><a href="#"><img src="{{ url_for('static', filename='img/bg/01.png')}}" alt="">
+                                            <span>Somalia</span></a></li> 
                                     <li>
                                         <p class="time"><i class="far fa-clock"></i> 7 Days Left</p>
                                     </li>
@@ -124,7 +113,7 @@
                 <div class="col-xl-6 col-lg-6 col-md-12">
                     <div class="projects grey-bg d-sm-flex mb-30 wow fadeInUp2 animated" data-wow-delay='.3s'>
                         <div class="projects__thumb">
-                            <img src="assets/img/project/04.jpg" alt="">
+                            <img src="{{ url_for('static', filename='img/bg/04.jpg')}}" alt="">
                         </div>
                         <div class="projects__content">
                             <h4><a href="project-image.html">Micrologic ML-522 BT
@@ -139,7 +128,7 @@
                             </div>
                             <div class="projects__content--manager">
                                 <ul class="project-manager">
-                                    <li><a href="#"><img src="assets/img/project/01.png" alt="">
+                                    <li><a href="#"><img src="{{ url_for('static', filename='img/bg/01.png')}}" alt="">
                                             <span>Somalia</span></a></li>
                                     <li>
                                         <p class="time"><i class="far fa-clock"></i> 7 Days Left</p>
@@ -153,29 +142,7 @@
         </div>
     </section>
     <!--feature-project-area end-->
-    <!--donation-area start-->
-    <section class="donation-area pt-125 pb-100" style="background-image:url(assets/img/events/01.jpg)">
-        <div class="container">
-            <div class="row">
-                <div class="col-xl-8 offset-xl-2">
-                    <div class="donation-wrapper">
-                        <div class="section-title white-title text-center mb-40 wow fadeInUp2 animated" data-wow-delay='.2s'>
-                            <h6 class="left-line pl-75 pr-75">Donate Now</h6>
-                            <h2>Raise Your Hand To The<br>
-                                <span>Right Place</span></h2>
-                        </div>
-                        <ul class="btn-list text-center mb-30 wow fadeInUp2 animated" data-wow-delay='.3s'>
-                            <li><a class="theme_btn theme_btn_bg" href="about.html" data-animation="fadeInLeft" data-delay=".7s">explore more <i class="far fa-arrow-right"></i></a>
-                            </li>
-                            <li><a class="theme_btn theme-border-btn" href="contact.html" data-animation="fadeInLeft" data-delay=".7s">donate now <i class="far fa-arrow-right"></i></a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <!--donation-area end-->
+
     <!--project-area start-->
     <section class="project-01-area pt-125 pb-100">
         <div class="container">
@@ -192,7 +159,7 @@
                 <div class="col-xl-4 col-lg-4 col-md-6">
                     <div class="projects projects-02 white-bg mb-30 wow fadeInUp2 animated" data-wow-delay='.1s'>
                         <div class="projects__thumb pos-rel">
-                            <img src="assets/img/project/05.jpg" alt="">
+                            <img src="{{ url_for('static', filename='img/project/05.jpg')}}" alt="">
                             <a href="#" class="new-tag">new</a>
                         </div>
                         <div class="projects__content">
@@ -208,7 +175,7 @@
                             </div>
                             <div class="projects__content--manager">
                                 <ul class="project-manager">
-                                    <li><a href="#"><img src="assets/img/project/01.png" alt="">
+                                    <li><a href="#"><img src="{{ url_for('static', filename='img/project/01.png')}}" alt="">
                                             <span>Somalia</span></a></li>
                                     <li>
                                         <p class="time"><i class="far fa-clock"></i> 7 Days Left</p>
@@ -221,7 +188,7 @@
                 <div class="col-xl-4 col-lg-4 col-md-6">
                     <div class="projects projects-02 white-bg mb-30 wow fadeInUp2 animated" data-wow-delay='.3s'>
                         <div class="projects__thumb pos-rel">
-                            <img src="assets/img/project/06.jpg" alt="">
+                            <img src="{{ url_for('static', filename='img/project/06.png')}}" alt="">
                         </div>
                         <div class="projects__content">
                             <h4><a href="project-gallery.html">Oculus Rift PC-Powered
@@ -236,7 +203,7 @@
                             </div>
                             <div class="projects__content--manager">
                                 <ul class="project-manager">
-                                    <li><a href="#"><img src="assets/img/project/01.png" alt="">
+                                    <li><a href="#"><img src="{{ url_for('static', filename='img/project/01.png')}}" alt="">
                                             <span>Somalia</span></a></li>
                                     <li>
                                         <p class="time"><i class="far fa-clock"></i> 7 Days Left</p>
@@ -249,7 +216,7 @@
                 <div class="col-xl-4 col-lg-4 col-md-6">
                     <div class="projects projects-02 white-bg mb-30 wow fadeInUp2 animated" data-wow-delay='.5s'>
                         <div class="projects__thumb pos-rel">
-                            <img src="assets/img/project/07.jpg" alt="">
+                            <img src="{{ url_for('static', filename='img/project/07.jpg')}}" alt="">
                             <a href="#" class="new-tag hot_tag">Hot</a>
                         </div>
                         <div class="projects__content">
@@ -265,7 +232,7 @@
                             </div>
                             <div class="projects__content--manager">
                                 <ul class="project-manager">
-                                    <li><a href="#"><img src="assets/img/project/01.png" alt="">
+                                    <li><a href="#"><img src="{{ url_for('static', filename='img/project/01.png')}}" alt="">
                                             <span>Somalia</span></a></li>
                                     <li>
                                         <p class="time"><i class="far fa-clock"></i> 7 Days Left</p>
@@ -278,7 +245,7 @@
                 <div class="col-xl-4 col-lg-4 col-md-6">
                     <div class="projects projects-02 white-bg mb-30 wow fadeInUp2 animated" data-wow-delay='.1s'>
                         <div class="projects__thumb pos-rel">
-                            <img src="assets/img/project/13.jpg" alt="">
+                            <img src="{{ url_for('static', filename='img/project/01.png')}}" alt="">
                             <a href="#" class="new-tag">new</a>
                         </div>
                         <div class="projects__content">
@@ -294,7 +261,7 @@
                             </div>
                             <div class="projects__content--manager">
                                 <ul class="project-manager">
-                                    <li><a href="#"><img src="assets/img/project/01.png" alt="">
+                                    <li><a href="#"><img src="{{ url_for('static', filename='img/project/01.png')}}" alt="">
                                             <span>Somalia</span></a></li>
                                     <li>
                                         <p class="time"><i class="far fa-clock"></i> 7 Days Left</p>
@@ -307,7 +274,7 @@
                 <div class="col-xl-4 col-lg-4 col-md-6">
                     <div class="projects projects-02 white-bg mb-30 wow fadeInUp2 animated" data-wow-delay='.3s'>
                         <div class="projects__thumb pos-rel">
-                            <img src="assets/img/project/14.jpg" alt="">
+                            <img src="{{ url_for('static', filename='img/project/01.png')}}" alt="">
                         </div>
                         <div class="projects__content">
                             <h4><a href="project-gallery.html">Oculus Rift PC-Powered
@@ -322,7 +289,7 @@
                             </div>
                             <div class="projects__content--manager">
                                 <ul class="project-manager">
-                                    <li><a href="#"><img src="assets/img/project/01.png" alt="">
+                                    <li><a href="#"><img src="{{ url_for('static', filename='img/project/01.png')}}" alt="">
                                             <span>Somalia</span></a></li>
                                     <li>
                                         <p class="time"><i class="far fa-clock"></i> 7 Days Left</p>
@@ -335,7 +302,7 @@
                 <div class="col-xl-4 col-lg-4 col-md-6">
                     <div class="projects projects-02 white-bg mb-30 wow fadeInUp2 animated" data-wow-delay='.5s'>
                         <div class="projects__thumb pos-rel">
-                            <img src="assets/img/project/15.jpg" alt="">
+                            <img src="{{ url_for('static', filename='img/project/01.png')}}" alt="">
                             <a href="#" class="new-tag hot_tag">Hot</a>
                         </div>
                         <div class="projects__content">
@@ -351,7 +318,7 @@
                             </div>
                             <div class="projects__content--manager">
                                 <ul class="project-manager">
-                                    <li><a href="#"><img src="assets/img/project/01.png" alt="">
+                                    <li><a href="#"><img src="{{ url_for('static', filename='img/project/01.png')}}" alt="">
                                             <span>Somalia</span></a></li>
                                     <li>
                                         <p class="time"><i class="far fa-clock"></i> 7 Days Left</p>
