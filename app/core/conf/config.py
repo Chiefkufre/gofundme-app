@@ -95,14 +95,20 @@ class Config(MailConfig):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     STATIC_FOLDER: Path = BASE_DIR / "static"
     TEMPLATES_FOLDER: Path = BASE_DIR / "templates"
+    UPLOAD_FOLDER  : Path = BASE_DIR / "upload/profile"
+    CAMPAIGN_FOLDER  : Path = BASE_DIR / "upload/campaigns"
+    ALLOWED_EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp']
 
     SQLALCHEMY_DATABASE_URI = create_db_url(DB_TYPE)
     # f"postgresql://kufre:password@localhost/gofundme"
     #
     JWT_SECRET_KEY = settings.JWT_SECRET_KEY
+    JWT_ACCESS_COOKIE_NAME = 'access_token_cookie'
     JWT_TOKEN_LOCATION = ["cookies"]
     JWT_COOKIE_SECURE = False
+    JWT_COOKIE_CSRF_PROTECT = False  
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=1)
+    COOKIE_DOMAIN = "http://127.0.0.1:5000/"
 
 
 class ProdConfig(Config):
