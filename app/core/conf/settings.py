@@ -20,11 +20,12 @@ class Settings:
     MAIL_USE_TLS: bool = config("MAIL_USE_TLS")
     MAIL_USE_SSL: bool = config("MAIL_USE_SSL")
 
-    FLUTTERWAVE_API_KEY : str = config("FLUTTERWAVE_API_KEY")
+    FLUTTERWAVE_API_KEY: str = config("FLUTTERWAVE_API_KEY")
     API_VERSION: str = config("API_VERSION")
 
-    BASE_URL : str = config("BASE_URL")
+    BASE_URL: str = config("BASE_URL")
 
     SITE_NAME: str = "SparkStarter"
+
 
 settings = Settings()
