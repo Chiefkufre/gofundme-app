@@ -1,0 +1,421 @@
+{% extends "backend/user/dashboard.html" %}
+{% block title %} dashboard {% endblock %}
+{% block content %} 
+<!-- content starts -->
+<div class="nk-content">
+    <div class="container-fluid">
+        <div class="nk-content-inner">
+            <div class="nk-content-body">
+                <div class="nk-block-head nk-block-head-sm">
+                    <div class="nk-block-between">
+                        <div class="nk-block-head-content">
+                            <h3 class="nk-block-title page-title">Hi {{user.name.split(' ')[-1]}}!</h3>
+                            <div class="nk-block-des text-soft"><p>Welcome to your dashboard.</p></div>
+                        </div>
+                        <div class="nk-block-head-content">
+                            <div class="toggle-wrap nk-block-tools-toggle">
+                                <a href="#" class="btn btn-icon btn-trigger toggle-expand me-n1" data-target="pageMenu"><em class="icon ni ni-more-v"></em></a>
+                                <div class="toggle-expand-content" data-content="pageMenu">
+                                    <ul class="nk-block-tools g-3">
+                                        <li>
+                                            <div class="dropdown">
+                                                <a href="#" class="dropdown-toggle btn btn-white btn-dim btn-outline-light" data-bs-toggle="dropdown">
+                                                    <em class="d-none d-sm-inline icon ni ni-calender-date"></em><span><span class="d-none d-md-inline">Last</span> 30 Days</span>
+                                                    <em class="dd-indc icon ni ni-chevron-right"></em>
+                                                </a>
+                                                <div class="dropdown-menu dropdown-menu-end">
+                                                    <ul class="link-list-opt no-bdr">
+                                                        <li>
+                                                            <a href="#"><span>Last 30 Days</span></a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="#"><span>Last 6 Months</span></a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="#"><span>Last 1 Years</span></a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li class="nk-block-tools-opt">
+                                            <a href="#" class="btn btn-primary"><em class="icon ni ni-reports"></em><span>Reports</span></a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="nk-block">
+                    <div class="row g-gs">
+                        <div class="col-xxl-6">
+                            <div class="row g-gs">
+                                <div class="col-lg-6 col-xxl-12">
+                                    <div class="card card-bordered">
+                                        <div class="card-inner">
+                                            <div class="card-title-group align-start mb-2">
+                                                <div class="card-title">
+                                                    <h6 class="title">Total Campaigns Revenue</h6>
+                                                    <p>In last 30 days revenue from donors.</p>
+                                                </div>
+                                                <div class="card-tools"><em class="card-hint icon ni ni-help-fill" data-bs-toggle="tooltip" data-bs-placement="left" title="Total Campaigns Revenue"></em></div>
+                                            </div>
+                                            <div class="align-end gy-3 gx-5 flex-wrap flex-md-nowrap flex-lg-wrap flex-xxl-nowrap">
+                                                {% set weekly_perc_changes =  weekly_percentage_changes.popitem()[1] | round(2) %}
+
+                                                <div class="nk-sale-data-group flex-md-nowrap g-4">
+                                                    <div class="nk-sale-data">
+                                                        <span class="amount">{{ "{:,.2f}".format(monthly_totals.popitem()[1] | round(2)) }}</span>
+                                                            <span class="change {{monthlyArrowDirectionClass}}"><em class="icon ni {{ monthlyArrowIcon}}"></em>{{ monthly_percentage_changes.popitem()[1] | round(2) }}%</span>
+                                                        </span>
+                                                        <span class="sub-title">This Month</span>
+                                                    </div>
+                                                    <div class="nk-sale-data"> 
+                                                        <span class="amount">{{ "{:,.2f}".format(weekly_totals.popitem()[1] | round(2)) }}</span>
+                                                            <span class="change {{weeklyArrowDirectionClass}}"><em class="icon ni {{weeklyArrowIcon}}"></em>{{ weekly_perc_changes}}%</span>
+                                                        </span>
+                                                        <span class="sub-title">This Week</span>
+                                                    </div>
+                                                </div>
+                                                
+                                                <!-- Restudy and add chart -->
+                                                <div class="nk-sales-ck sales-revenue"><canvas class="sales-bar-chart" id="salesRevenue"></canvas></div>
+                                            
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-xxl-12">
+                                    <div class="row g-gs">
+                                        <div class="col-sm-6 col-lg-12 col-xxl-6">
+                                            <div class="card card-bordered">
+                                                <div class="card-inner">
+                                                    <div class="card-title-group align-start mb-2">
+                                                        <div class="card-title"><h6 class="title">Total Donation Today</h6></div>
+                                                        <div class="card-tools"><em class="card-hint icon ni ni-help-fill" data-bs-toggle="tooltip" data-bs-placement="left" title="Total donation today"></em></div>
+                                                    </div>
+                                                    <div class="align-end flex-sm-wrap g-4 flex-md-nowrap">
+                                                        <div class="nk-sale-data">
+                                                            <span class="amount">{{ "{:,.2f}".format(daily_totals.popitem()[1] | round(2)) }}</span>
+                                                            <span class="sub-title">
+                                                                <span class="change {{dailyArrowDirectionClass}}"><em class="icon ni {{dailyArrowIcon}}"></em>{{ daily_percentage_changes.popitem()[1] | round(2) }}%</span>since yesterday
+                                                            </span>
+                                                        </div> 
+                                                        
+                                                        <!-- Restudy and add chart -->
+                                                        <!-- <div class="nk-sales-ck"><canvas class="sales-bar-chart" id="activeSubscription"></canvas></div> -->
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6 col-lg-12 col-xxl-6">
+                                            <div class="card card-bordered">
+                                                <div class="card-inner">
+                                                    <div class="card-title-group align-start mb-2">
+                                                        <div class="card-title"><h6 class="title">Avg Donation this week </h6></div>
+                                                        <div class="card-tools"><em class="card-hint icon ni ni-help-fill" data-bs-toggle="tooltip" data-bs-placement="left" title="weekly Avg. Donation"></em></div>
+                                                    </div>
+                                                    <div class="align-end flex-sm-wrap g-4 flex-md-nowrap">
+                                                        <div class="nk-sale-data">
+                                                            <span class="amount">{{ "{:,.2f}".format( weekly_averages.popitem()[1] | round(2)) }}</span>
+                                                                <span class="sub-title">
+                                                                    <span class="change  {{weeklyArrowDirectionClass}}"><em class="icon ni {{weeklyArrowIcon}}"></em>{{ weekly_perc_changes }}%</span>since last week
+                                                                </span>
+                                                        </div>
+
+                                                        <!-- <div class="nk-sales-ck"><canvas class="sales-bar-chart" id="totalSubscription"></canvas></div> -->
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-xxl-8">
+                            <div class="card card-bordered card-full">
+                                <div class="card-inner">
+                                    <div class="card-title-group">
+                                        <div class="card-title">
+                                            <h6 class="title"><span class="me-2">Latest  Donation History</span></h6>
+                                        </div>
+                                        <div class="card-tools">
+                                            <ul class="card-tools-nav">
+                                                <li>
+                                                    <!-- <a href="#"><span>Paid</span></a> -->
+                                                </li>
+                                                <li>
+                                                    <!-- <a href="#"><span>Pending</span></a> -->
+                                                </li>
+                                                <li class="active">
+                                                    <a href="{{ url_for('user.user_donation_history') }}" class="link d-none d-sm-inline">See All</a>
+                                                    <!-- <a href="#"><span>See all</span></a> -->
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-inner p-0 border-top">
+                                    <div class="nk-tb-list nk-tb-orders">
+                                        <div class="nk-tb-item nk-tb-head">
+                                            <div class="nk-tb-col"><span>Trx No.</span></div>
+                                            <div class="nk-tb-col tb-col-sm"><span>Donor</span></div>
+                                            <div class="nk-tb-col tb-col-md"><span>Date</span></div>
+                                            <div class="nk-tb-col tb-col-lg"><span>Ref</span></div>
+                                            <div class="nk-tb-col"><span>Amount</span></div>
+                                            <div class="nk-tb-col"><span class="d-none d-sm-inline">Status</span></div>
+                                            <div class="nk-tb-col"><span>&nbsp;</span></div>
+                                        </div>
+                                        
+                                        <!-- Loop donations starts -->
+                                        {% for donation in donations_received %}
+                                        <div class="nk-tb-item">
+                                            <div class="nk-tb-col">
+                                                <span class="tb-lead"><a href="#">#95850</a></span>
+                                            </div>
+                                            <div class="nk-tb-col tb-col-sm">
+                                                <div class="user-card">
+                                                    <div class="user-avatar user-avatar-sm bg-azure"><span>DE</span></div>
+                                                    <div class="user-name"><span class="tb-lead">{{donation.name}}</span></div>
+                                                </div>
+                                            </div>
+                                            <div class="nk-tb-col tb-col-md"><span class="tb-sub">{{donation.time}}</span></div>
+                                            <div class="nk-tb-col tb-col-lg"><span class="tb-sub text-primary">{{donation.ref_id}}</span></div>
+                                            <div class="nk-tb-col">
+                                                <span class="tb-sub tb-amount"><span>{{donation.amount}}</span></span>
+                                            </div>
+                                            <div class="nk-tb-col"><span class="badge badge-dot badge-dot-xs bg-danger">Canceled</span></div>
+                                            <div class="nk-tb-col nk-tb-col-action">
+                                                <div class="dropdown">
+                                                    <a class="text-soft dropdown-toggle btn btn-icon btn-trigger" data-bs-toggle="dropdown"><em class="icon ni ni-more-h"></em></a>
+                                                    <div class="dropdown-menu dropdown-menu-end dropdown-menu-xs">
+                                                        <ul class="link-list-plain">
+                                                            <li><a  href="{{ url_for('web.get_campaign_by_id', id=donation.campaign_id) }}">View</a></li>
+                                                            <!-- <li><a href="#">Remove</a></li> -->
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                        </div>
+                                        {% endfor %}
+                                        <!-- Loop donations end -->
+                                        
+                                    </div>
+                                </div>
+                                <div class="card-inner-sm border-top text-center d-sm-none"><a href="#" class="btn btn-link btn-block">See History</a></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-xxl-4">
+                            <div class="card card-bordered card-full">
+                                <div class="card-inner border-bottom">
+                                    <div class="card-title-group">
+                                        <div class="card-title"><h6 class="title"> Active Campaigns</h6></div>
+                                        <div class="card-tools">
+                                            <ul class="card-tools-nav">
+                                                <!-- <li>
+                                                    <a href="#"><span>Cancel</span></a>
+                                                </li> -->
+                                                <li class="active">
+                                                    <a href="{{ url_for('user.user_campaigns') }}"><span>See all</span></a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <ul class="nk-activity">
+
+                                    <!-- Loop starts -->
+                                    
+                                    {% if active_campaign['total'] < 1 %}
+                                    <li class="nk-activity-item">
+                                        <div class="nk-activity-data">
+                                            <div class="label">No active campaign yet</div>
+                                            <div class="nk-block-tools-opt d-block"><a href="{{ url_for('user.user_create_campaign') }}" class="btn btn-icon btn-warning"><em class="icon ni ni-plus"></em></a></div>
+                                        </div>
+                                    </li>
+                                    {% else%}
+                                    {% for campaigns in active_campaign['campaigns'] %}
+                                    <li class="nk-activity-item">
+                                        <div class="nk-activity-media user-avatar bg-success">
+                                            <img src="{{ url_for('web.uploaded_file', filename=campaigns.image_url) }}" alt="" />
+                                        </div>
+                                        <div class="nk-activity-data">
+                                            <div class="label">{{ campaigns.title }}</div>
+                                            <span class="time">{{ campaigns.time }}</span>
+                                        </div>
+                                    </li>
+                                    {% endfor %}
+                                    {% endif %}
+                                    
+                                    <!-- Loop end -->
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-xxl-4">
+                            <div class="card card-bordered card-full">
+                                <div class="card-inner-group">
+                                    <div class="card-inner">
+                                        <div class="card-title-group">
+                                            <div class="card-title"><h6 class="title">Paused | Inactive Campaigns</h6></div>
+                                            <div class="card-tools"><a href="{{ url_for('user.user_campaigns') }}" class="link">View All</a></div>
+                                        </div>
+                                    </div>
+
+                                    <!-- LOOP STARTS -->
+                                    <div class="card-inner card-inner-md">
+                                        {% if inactive_campaign['total'] < 1 %}
+                                        <div class="user-card">
+                                            <div class="user-info"><span class="lead-text">No inactive or Paused Campaign</span><span class="sub-text"></span></div>
+                                            <!-- <div class="user-action">
+                                                <div class="drodown">
+                                                    <a href="#" class="dropdown-toggle btn btn-icon btn-trigger me-n1" data-bs-toggle="dropdown" aria-expanded="false"><em class="icon ni ni-more-h"></em></a>
+                                                </div>
+                                            </div> -->
+                                        </div>
+                                        {% else%}
+                                        {% for campaigns in inactive_campaign['campaigns'] %}
+                                        <div class="user-card">
+                                            <!-- <div class="user-avatar bg-primary-dim"><span>AB</span></div> -->
+                                            <div class="nk-activity-media user-avatar bg-primary-dim">
+                                                <img src="{{ url_for('web.uploaded_file', filename=campaigns.image_url) }}" alt="" />
+                                            </div>
+                                            <div class="user-info"><span class="lead-text">{{ campaigns.title }}</span><span class="sub-text"></span></div>
+                                            <div class="user-action">
+                                                <div class="drodown">
+                                                    <a href="#" class="dropdown-toggle btn btn-icon btn-trigger mecampaigns-n1" data-bs-toggle="dropdown" aria-expanded="false"><em class="icon ni ni-more-h"></em></a>
+                                                    <div class="dropdown-menu dropdown-menu-end">
+                                                        <ul class="link-list-opt no-bdr">
+                                                            <li><a href="{{ url_for('web.get_campaign_by_id', id=campaigns.id) }}"><em class="icon ni ni-eye"></em><span>View campaign</span></a></li>
+                                                            <li><a href="{{ url_for('user.user_edit_campaign', id=campaigns.id) }}"><em class="icon ni ni-edit"></em><span>Edit campaign</span></a></li>
+                                                            <li class="ms-3 mb-2 mt-1">
+                                                              {% if campaigns.is_publish %}
+                                                                 <form action="{{ url_for('user.publish_campaign', id=campaigns.id) }}" method="post" style="display:inline;">
+                                                                    <input type="hidden" name="is_publish" value="false">
+                                                                    <button type="submit" style="background:none;border:none;color:#007bff;cursor:pointer;">
+                                                                          <em class="icon ni ni-check-round-cut"></em>
+                                                                          <span>Pause campaign</span>
+                                                                    </button>
+                                                                 </form>
+                                                              {% else %}
+                                                                 <form action="{{ url_for('user.publish_campaign', id=campaigns.id) }}" method="post" style="display:inline;">
+                                                                    <input type="hidden" name="is_publish" value="true">
+                                                                    <button type="submit" style="background:none;border:none;color:#007bff;cursor:pointer;">
+                                                                          <em class="icon ni ni-check-round-cut"></em>
+                                                                          <span>Publish campaign</span>
+                                                                    </button>
+                                                                 </form>
+                                                              {% endif %}
+                  
+                  
+                                                            <li class="ms-3">
+                                                              <form action="{{ url_for('user.delete_campaign_by_id', id=campaigns.id) }}" method="post" style="display:inline;">
+                                                                 <input type="hidden" name="_method" value="DELETE">
+                                                                  <button type="submit" style="background:none;border:none;color:red;cursor:pointer;">
+                                                                      <em class="icon ni ni-delete"></em>
+                                                                      <span>Delete Campaign</span>
+                                                                  </button>
+                                                              </form>
+                                                          </li>
+                                                         </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    
+                                    {% endfor %}
+                                    {% endif %}
+                                    </div>
+                                    
+
+                                    <!-- lOOP ENDS -->
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-xxl-4">
+                            <div class="card card-bordered h-100">
+                                <div class="card-inner border-bottom">
+                                    <div class="card-title-group">
+                                        <div class="card-title"><h6 class="title">SuccessFul Campaigns</h6></div>
+                                        <div class="card-tools"><a href="#" class="link"></a></div>
+                                    </div>
+                                </div>
+                                <ul class="nk-support">
+
+                                    {% if successful_campaigns['total'] < 1 %}
+                                    <div class="title"><span>None Yet. Don't Give. Keep sharing</span></div>
+                                        <img src="{{ url_for('static', filename='img/backend/hustle.jpg') }}" alt="" style="border-radius: 12px;"/>
+                                        <!-- <div class="nk-support-content">
+                                            <div class="title"><span>Vincent Lopez</span><span class="badge badge-dot badge-dot-xs bg-warning ms-1">Pending</span></div>
+                                            <p>None Yet</p>
+                                            
+                                        </div> -->
+                                   
+                                    {% else%}
+                                    {% for campaigns in successful_campaigns['campaigns'] %}
+                                    <li class="nk-support-item">
+                                        <div class="user-avatar bg-white">
+                                            <img src="{{ url_for('web.uploaded_file', filename=campaigns.image_url) }}" alt="" />
+                                        </div>
+                                        <div class="nk-support-content">
+                                            <div class="title"><span>{{campaigns.status}}</span><span class="badge badge-dot badge-dot-xs bg-success ms-1">SuccessFul</span></div>
+                                            <p><a href="{{ url_for('web.get_campaign_by_id', id=campaigns.id) }}">{{campaigns.title}}</a></p>
+                                            <span style="color:black;"><span style="color:#007bff">Raised: </span>{{ "{:,.2f}".format(campaigns.raise) }}</span>
+                                        </div>
+                                    </li>
+                                    {% endfor %}
+                                    {% endif %}
+
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-xxl-4">
+                            <div class="card card-bordered h-100">
+                                <div class="card-inner border-bottom">
+                                    <div class="card-title-group">
+                                        <div class="card-title"><h6 class="title">Notifications</h6></div>
+                                        <!-- <div class="card-tools"><a href="#" class="link">View All</a></div> -->
+                                    </div>
+                                </div>
+                                <div class="card-inner">
+                                    <div class="timeline">
+                                        <h6 class="timeline-head"> {{current_month_year}}</h6>
+                                        <ul class="timeline-list">
+                                            {%for notification in notifications %}
+                                            <li class="timeline-item">
+                                                <div class="timeline-status bg-primary is-outline"></div>
+                                                <div class="timeline-date">{{notification.month}} <em class="icon ni ni-alarm-alt"></em></div>
+                                                <div class="timeline-data">
+                                                  <div style="display: flex; flex-direction: row;">
+                                                    <h6 class="timeline-title" style="flex-grow: 1;">{{notification.type}}</h6>
+                                                    <div style="flex-shrink: 0;" class="link-cross me-sm-n1">
+                                                        <a href="{{ url_for('web.delete_notification', id=notification.id)}}">
+                                                      <em class="icon ni ni-delete"></em></a>
+                                                    </div>
+                                                  </div>
+                                                  <div class="timeline-des">
+                                                    <p>{{notification.message}}</p>
+                                                    <span class="time">{{notification.date}}</span>
+                                                  </div>
+                                                </div>
+                                              </li>
+                                              
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- conttent ends -->
+{% endblock %} 
