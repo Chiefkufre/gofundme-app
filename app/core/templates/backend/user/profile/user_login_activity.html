@@ -1,0 +1,84 @@
+{% extends "backend/user/profile/user_profile_layout.html" %}
+{% block card %} 
+<div class="card-inner card-inner-lg">
+    <div class="nk-block-head nk-block-head-lg">
+       <div class="nk-block-between">
+          <div class="nk-block-head-content">
+             <h4 class="nk-block-title">Login Activity</h4>
+             <div class="nk-block-des">
+                <p>Here is your last 20 login activities log. <span class="text-soft"><em class="icon ni ni-info"></em></span></p>
+             </div>
+          </div>
+          <div class="nk-block-head-content align-self-start d-lg-none"><a href="#" class="toggle btn btn-icon btn-trigger mt-n1" data-target="userAside"><em class="icon ni ni-menu-alt-r"></em></a></div>
+       </div>
+    </div>
+    <div class="nk-block card card-bordered">
+       <table class="table table-ulogs">
+          <thead class="table-light">
+             <tr>
+                <th class="tb-col-os"><span class="overline-title">Browser <span class="d-sm-none">/ IP</span></span></th>
+                <th class="tb-col-ip"><span class="overline-title">IP</span></th>
+                <th class="tb-col-time"><span class="overline-title">Time</span></th>
+                <th class="tb-col-action"><span class="overline-title">&nbsp;</span></th>
+             </tr>
+          </thead>
+          <tbody>
+             <tr>
+                <td class="tb-col-os">Chrome on Window</td>
+                <td class="tb-col-ip"><span class="sub-text">192.149.122.128</span></td>
+                <td class="tb-col-time"><span class="sub-text">11:34 PM</span></td>
+                <td class="tb-col-action"></td>
+             </tr>
+             <tr>
+                <td class="tb-col-os">Mozilla on Window</td>
+                <td class="tb-col-ip"><span class="sub-text">86.188.154.225</span></td>
+                <td class="tb-col-time"><span class="sub-text">Nov 20, 2019 <span class="d-none d-sm-inline-block">10:34 PM</span></span></td>
+                <td class="tb-col-action"><a href="#" class="link-cross me-sm-n1"><em class="icon ni ni-cross"></em></a></td>
+             </tr>
+             <tr>
+                <td class="tb-col-os">Chrome on iMac</td>
+                <td class="tb-col-ip"><span class="sub-text">192.149.122.128</span></td>
+                <td class="tb-col-time"><span class="sub-text">Nov 12, 2019 <span class="d-none d-sm-inline-block">08:56 PM</span></span></td>
+                <td class="tb-col-action"><a href="#" class="link-cross me-sm-n1"><em class="icon ni ni-cross"></em></a></td>
+             </tr>
+             <tr>
+                <td class="tb-col-os">Chrome on Window</td>
+                <td class="tb-col-ip"><span class="sub-text">192.149.122.128</span></td>
+                <td class="tb-col-time"><span class="sub-text">Nov 03, 2019 <span class="d-none d-sm-inline-block">04:29 PM</span></span></td>
+                <td class="tb-col-action"><a href="#" class="link-cross me-sm-n1"><em class="icon ni ni-cross"></em></a></td>
+             </tr>
+             <tr>
+                <td class="tb-col-os">Mozilla on Window</td>
+                <td class="tb-col-ip"><span class="sub-text">86.188.154.225</span></td>
+                <td class="tb-col-time"><span class="sub-text">Oct 29, 2019 <span class="d-none d-sm-inline-block">09:38 AM</span></span></td>
+                <td class="tb-col-action"><a href="#" class="link-cross me-sm-n1"><em class="icon ni ni-cross"></em></a></td>
+             </tr>
+             <tr>
+                <td class="tb-col-os">Chrome on iMac</td>
+                <td class="tb-col-ip"><span class="sub-text">192.149.122.128</span></td>
+                <td class="tb-col-time"><span class="sub-text">Oct 23, 2019 <span class="d-none d-sm-inline-block">04:16 PM</span></span></td>
+                <td class="tb-col-action"><a href="#" class="link-cross me-sm-n1"><em class="icon ni ni-cross"></em></a></td>
+             </tr>
+             <tr>
+                <td class="tb-col-os">Chrome on Window</td>
+                <td class="tb-col-ip"><span class="sub-text">192.149.122.128</span></td>
+                <td class="tb-col-time"><span class="sub-text">Oct 15, 2019 <span class="d-none d-sm-inline-block">11:41 PM</span></span></td>
+                <td class="tb-col-action"><a href="#" class="link-cross me-sm-n1"><em class="icon ni ni-cross"></em></a></td>
+             </tr>
+             <tr>
+                <td class="tb-col-os">Mozilla on Window</td>
+                <td class="tb-col-ip"><span class="sub-text">86.188.154.225</span></td>
+                <td class="tb-col-time"><span class="sub-text">Oct 13, 2019 <span class="d-none d-sm-inline-block">05:43 AM</span></span></td>
+                <td class="tb-col-action"><a href="#" class="link-cross me-sm-n1"><em class="icon ni ni-cross"></em></a></td>
+             </tr>
+             <tr>
+                <td class="tb-col-os">Chrome on iMac</td>
+                <td class="tb-col-ip"><span class="sub-text">192.149.122.128</span></td>
+                <td class="tb-col-time"><span class="sub-text">Oct 03, 2019 <span class="d-none d-sm-inline-block">04:12 AM</span></span></td>
+                <td class="tb-col-action"><a href="#" class="link-cross me-sm-n1"><em class="icon ni ni-cross"></em></a></td>
+             </tr>
+          </tbody>
+       </table>
+    </div>
+ </div>
+ {% endblock %}
