@@ -15,7 +15,7 @@ class PlatformValidator:
             raise ValueError("Title must be at least 10 characters long")
 
         if self.create and self.model.query.filter(self.model.title == title).first():
-            raise ValueError("Title already exists. Please rename.")
+            raise ValueError("Similar campaign Title already exists. Please make it unique.")
 
     def validate_user(self, user_id):
         """Validates user existence."""
@@ -34,8 +34,7 @@ class PlatformValidator:
             for field in self.required_fields:
                 if field not in json_data:
                     errors[field] = f"Field '{field}' is required."
-                return errors
-        
+                    raise ValueError(f"Field '{field}' is required.")
 
     def validate_form_request(self, form_data):
         """Validates required fields in a form request."""
@@ -43,8 +42,8 @@ class PlatformValidator:
         for field in self.required_fields:
             if field not in form_data:
                 errors[field] = f"Field '{field}' is required in the form."
-            return errors
-
+                raise ValueError(f"Field '{field}' is required in the form.")
+        
     @property
     def model_fields(self):
         return getattr(self.model, "get_fields", lambda: [])()
