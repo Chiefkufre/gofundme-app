@@ -1,0 +1,144 @@
+{% extends "backend/user/dashboard.html" %}
+{% block title %} dashboard {% endblock %}
+{% block content %} 
+
+<div class="nk-content ">
+    <div class="container-fluid">
+       <div class="nk-content-inner">
+          <div class="nk-content-body">
+            <div class="nk-block-head nk-block-head-sm">
+               <div class="nk-block-between">
+                  <div class="nk-block-head-content">
+                     <h3 class="nk-block-title page-title">Your Campaigns</h3>
+                     <div class="nk-block-des text-soft">
+                       {% if  total_campaigns > 1 %}
+                        <p>You have a total of {{ total_campaigns }} campaigns.</p>
+                       {% endif %}
+                       {% if  total_campaigns == 1 %}
+                        <p>You have a total of {{ total_campaigns }} campaign.</p>
+                       {% endif %}
+                     </div>
+                  </div>
+                  <div class="nk-block-head-content">
+                     <div class="toggle-wrap nk-block-tools-toggle">
+                        <a href="#" class="btn btn-icon btn-trigger toggle-expand me-n1" data-target="pageMenu"><em class="icon ni ni-menu-alt-r"></em></a>
+                        <div class="toggle-expand-content" data-content="pageMenu">
+                           <ul class="nk-block-tools g-3">
+                             {% if  total_campaigns > 10 %}
+                              <li>
+                                 <div class="drodown">
+                                    <a href="#" class="dropdown-toggle btn btn-white btn-dim btn-outline-light" data-bs-toggle="dropdown"><em class="d-none d-sm-inline icon ni ni-filter-alt"></em><span>Filtered By</span><em class="dd-indc icon ni ni-chevron-right"></em></a>
+                                    <div class="dropdown-menu dropdown-menu-end">
+                                       <ul class="link-list-opt no-bdr">
+                                          <li><a href="#"><span>Open</span></a></li>
+                                          <li><a href="#"><span>Closed</span></a></li>
+                                          <li><a href="#"><span>Onhold</span></a></li>
+                                       </ul>
+                                    </div>
+                                 </div>
+                              </li>
+                              {% endif %}
+                              <li class="nk-block-tools-opt d-none d-sm-block"><a href="{{ url_for('user.user_create_campaign') }}" class="btn btn-warning"><em class="icon ni ni-plus"></em><span>Create  Campaign</span></a></li>
+                              <li class="nk-block-tools-opt d-block d-sm-none"><a href="{{ url_for('user.user_create_campaign') }}" class="btn btn-icon btn-warning"><em class="icon ni ni-plus"></em></a></li>
+                           </ul>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+             <div class="nk-block">
+               
+                <div class="row g-gs">
+                  {% for item in data %}
+                   <div class="col-sm-6 col-lg-4 col-xxl-3">
+                      <div class="card card-bordered h-100">
+                         <div class="card-inner">
+                            <div class="project">
+                               <div class="project-head">
+                                  <a href="{{ url_for('web.get_campaign_by_id', id=item.id) }}" class="project-title">
+                                     <div class="user-avatar sq bg-purple"><span>{{ item.user.name[:3] }}</span></div>
+                                     <div class="project-info">
+                                        <h6 class="title">{{ item.title }}</h6>
+                                        <h6><span style="color: #007bff;">Left:</span> {{item.amount_left}}</h6>
+                                        <span class="sub-text">{{ item.user.name }}</span>
+                                     </div>
+                                  </a>
+                                  <div class="drodown">
+                                     <a href="#" class="dropdown-toggle btn btn-sm btn-icon btn-trigger mt-n1 me-n1" data-bs-toggle="dropdown"><em class="icon ni ni-more-h"></em></a>
+                                     <div class="dropdown-menu dropdown-menu-end">
+                                       <ul class="link-list-opt no-bdr">
+                                          <li><a href="{{ url_for('web.get_campaign_by_id', id=item.id) }}"><em class="icon ni ni-eye"></em><span>View campaign</span></a></li>
+                                          <li><a href="{{ url_for('user.user_edit_campaign', id=item.id) }}"><em class="icon ni ni-edit"></em><span>Edit campaign</span></a></li>
+                                          <li class="ms-3 mb-2 mt-1">
+                                            {% if item.is_publish %}
+                                               <form action="{{ url_for('user.publish_campaign', id=item.id) }}" method="post" style="display:inline;">
+                                                  <input type="hidden" name="is_publish" value="false">
+                                                  <button type="submit" style="background:none;border:none;color:#007bff;cursor:pointer;">
+                                                        <em class="icon ni ni-check-round-cut"></em>
+                                                        <span>Pause campaign</span>
+                                                  </button>
+                                               </form>
+                                            {% else %}
+                                               <form action="{{ url_for('user.publish_campaign', id=item.id) }}" method="post" style="display:inline;">
+                                                  <input type="hidden" name="is_publish" value="true">
+                                                  <button type="submit" style="background:none;border:none;color:#007bff;cursor:pointer;">
+                                                        <em class="icon ni ni-check-round-cut"></em>
+                                                        <span>Publish campaign</span>
+                                                  </button>
+                                               </form>
+                                            {% endif %}
+
+
+                                          <li class="ms-3">
+                                            <form action="{{ url_for('user.delete_campaign_by_id', id=item.id) }}" method="post" style="display:inline;">
+                                               <input type="hidden" name="_method" value="DELETE">
+                                                <button type="submit" style="background:none;border:none;color:red;cursor:pointer;">
+                                                    <em class="icon ni ni-delete"></em>
+                                                    <span>Delete Campaign</span>
+                                                </button>
+                                            </form>
+                                        </li>
+                                       </ul>
+                                     </div>
+                                  </div>
+                               </div>
+                               <div class="project-details">
+                                  <p>{{item.description[:100]}}...</p>
+                               </div>
+                               <div class="project-progress">
+                                  <div class="project-progress-details">
+                                    {% if item.total_donation > 1 %}
+                                     <div class="project-progress-task"><em class="icon ni ni-check-round-cut"></em><span>{{ item.total_donation }} donations</span></div>
+                                     {% else %}
+                                     <div class="project-progress-task"><em class="icon ni ni-check-round-cut"></em><span>{{ item.total_donation }} donation</span></div>
+                                     {% endif %}
+                                     <div class="project-progress-percent">{{ item.percentage }}%</div>
+                                  </div>
+                                  <div class="progress progress-pill progress-md bg-light">
+                                     <div class="progress-bar" data-progress="{{ item.percentage}}"></div>
+                                  </div>
+                               </div>
+                               <div class="project-meta">
+                                  <ul class="project-users g-1">
+                                    {% if item.user.profile_picture %}
+                                    <li>
+                                       <div class="user-avatar sm bg-blue"><img src="{{ url_for('web.uploaded_file', filename=item.user.profile_picture) }}" alt=""></div>
+                                       {% endif %}
+                                    </li>
+                                  </ul>
+                                  <span class="badge badge-dim bg-warning"><em class="icon ni ni-clock"></em><span>{{ item.duration }}</span></span>
+                               </div>
+                            </div>
+                         </div>
+                      </div>
+                   </div>
+                   {% endfor %}
+                  
+                </div>
+               
+             </div>
+          </div>
+       </div>
+    </div>
+ </div>
+{% endblock %} 
