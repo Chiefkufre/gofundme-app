@@ -6,7 +6,7 @@ from flask import ( Blueprint, current_app, flash,
 from core.utils.general import get_arrow_attributes
 from core.src.Repository.repository import ( 
     _get_item, calculate_dashboard_donation_data, delete_item, fetch_user_notifications, 
-    fetch_user_recent_donations, get_item_data, get_successful_campaigns, get_user_campaigns_by_status,
+    fetch_user_recent_donations, get_item_data, get_successful_campaigns, get_user_account_activity, get_user_campaigns_by_status,
       handle_get_request, handle_patch_request
         )
 from core.utils.constants.constants import Routes
@@ -34,6 +34,7 @@ def user_dashboard():
     weekly_totals = dashboard_data["weekly_totals"]
     monthly_totals = dashboard_data["monthly_totals"]
     
+    recent_daily_total = dashboard_data['recent_daily_total']
     daily_percentage_changes = dashboard_data["daily_percentage_changes"]
     weekly_percentage_changes = dashboard_data["weekly_percentage_changes"]
     monthly_percentage_changes = dashboard_data["monthly_percentage_changes"]
@@ -59,7 +60,8 @@ def user_dashboard():
     current_month_year = datetime.now().strftime("%B, %Y")
     return render_template('backend/user/index.html', 
                            user=user_data, notifications=notifications['data'], 
-                            daily_totals=daily_totals, 
+                            daily_totals=daily_totals,
+                            recent_daily_total=recent_daily_total, 
                             daily_percentage_changes=daily_percentage_changes,
                             daily_averages=daily_averages,
                             weekly_totals=weekly_totals, 
@@ -114,10 +116,13 @@ def user_create_campaign():
 @user.get('/dasboard/campaigns/<id>/edit')
 @login_required
 def user_edit_campaign(id):
+    page = request.args.get("page", default=1, type=int)
     user = current_user
     data = get_item_data(Campaign, id)
-    notifications = fetch_user_notifications(Notification, user.id)
-    return render_template('backend/user/edit-campaign.html', campaign=data, user=user, notifications=notifications['data'])
+    # notifications = fetch_user_notifications(Notification, user.id)
+    return render_template('backend/user/edit-campaign.html', campaign=data, user=user, 
+                        #    notifications=notifications['data']
+                           )
 
 @user.get('dashboard/donations/history')
 @login_required
@@ -139,9 +144,12 @@ def user_donation_history():
 @login_required
 def user_profile(name, id, section):
     user = _get_item(User, id)
+    activity = get_user_account_activity(user.id, user_info={"name": name, "id": id, "section": section})
     # notifications = fetch_user_notifications(Notification, user.id)
     return render_template(f'backend/user/profile/{section}.html', user=user,
-                            # notifications=notifications['data']
+                            # notifications=notifications['data'],
+                            activity = activity['activity'],
+
                             )
 
 
@@ -168,50 +176,54 @@ def user_messages():
 
 
 
-@user.post(Routes.CAMPAIGN_PUBLISH)
+@user.post('/campaigns/<id>/publish')
 @login_required
 @jwt_required()
 def publish_campaign(id):
     req = request.form.get("is_publish")
-    status = False
+    print(req)
+    
     if req == 'true':
         status = True
+    else:
+        status = False
     message = ""
+    success = False
+    
     try:
         item = _get_item(Campaign, id)
         if item:
-            res = item.publish(status)
-            if(res == True):
-                message = "Campaign has been publish"
-                current_app.logger.info(
-                    f"Campaign - {item.serialize()['title']} has been publish"
-                )
-                flash(message)
-            else:
-                message = "Campaign has been unpublish"
-                current_app.logger.info(
-                    f"Campaign - {item.serialize()['title']} has been unpublish"
-                )
-                flash(message)
+            item.publish(status)
+            message = "Campaign has been published" if status else "Campaign has been pause"
+            current_app.logger.info(
+                f"Campaign - {item.serialize()['title']} has been {'published' if status else 'Pause'}"
+            )
+            success = True
+           
     except Exception as e:
-        current_app.logger.info(
-            f" fail to update campaign now-{e}"
-        )
-        flash(message)
+        message = f"Failed to update campaign: {e}"
+        current_app.logger.error(message)
     
-    return redirect(url_for('user.user_campaigns_list'))
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return jsonify({'success': success, 'message': message, 'is_publish': status})
+    else:
+        # flash(message)
+        return redirect(url_for('user.user_campaigns_list'))
 
 
-@user.post('/campaigns/<id>/delete')
+@user.delete('/campaigns/<id>/delete')
 @login_required
 @jwt_required()
 def delete_campaign_by_id(id):
-    if request.form.get('_method') == 'DELETE':
+    try:
         response = delete_item(Campaign, id)
         message = response
-        flash(message)
-    else:
-        flash('method not allowed')
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return jsonify(success=True, message=message)
+    except Exception as e:
+        message = f"Error deleting campaign: {str(e)}"
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return jsonify(success=False, message=message)
     return redirect(url_for('user.user_campaigns_list'))
 
 
