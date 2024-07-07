@@ -5,17 +5,17 @@ import math
 from flask import request, url_for, current_app
 
 
-def paginate(query, page=None, per_page=None):
+def paginate(query, user_info: dict = None, page=None, per_page=None):
     """This function performs pagination on query dataset
 
     Args:
-        query: this db query
+        query: this db , 
         page: the current page number (optional)
         per_page: the number of item per page (optional)
     
     rturn: dictionary
     """
-      
+     
     total = query.count()
     pages = int(ceil(total / float(per_page)))
     start = (page - 1) * per_page
@@ -26,10 +26,18 @@ def paginate(query, page=None, per_page=None):
     
     prev_url = None
     next_url = None
+
     if page > 1:
-        prev_url = url_for(request.endpoint, page=page - 1)
+        if user_info:
+            prev_url = url_for(request.endpoint, page=page - 1, **user_info)
+        else:
+            prev_url = url_for(request.endpoint, page=page - 1)   
+
     if page < pages:
-        next_url = url_for(request.endpoint, page=page + 1)
+        if user_info:
+            next_url = url_for(request.endpoint, page=page + 1, **user_info)
+        else:
+            next_url = url_for(request.endpoint, page=page + 1) 
 
     return {
         "items": items,
