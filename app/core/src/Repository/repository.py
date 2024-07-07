@@ -4,7 +4,7 @@ from flask_login import current_user
 from flask_mail import Message
 from sqlalchemy import desc, asc, and_
 
-from core.models import Campaign, Donation, Notification, User
+from core.models import Campaign, Donation, LoginActivity, Notification, User
 from core.utils.general import calculate_average, calculate_percentage_changes, paginate, process_date_type, round_up_one_decimal_place
 from core.utils.validators import PlatformValidator
 from core.utils.general import paginate
@@ -270,14 +270,12 @@ def delete_item(model, id):
 
         item.delete()
         response_data["message"] = f"{model.__name__} deleted successfully"
-        flash(response_data["message"])
         current_app.logger.warning(f"{model.__name__} deleted successfully")
     except Exception as e:
         # item.rollback()
         response_data[
             "message"
         ] = f"{e}. Please try again. "
-        flash(response_data["message"])
         current_app.logger.critical("Error on delete | Exception - {0}".format(e))
     return response_data["message"]
 
@@ -300,14 +298,13 @@ def _clean_data(data: dict) -> dict:
 
     return clean_data
 
-def fetch_user_notifications(model, user_id):
+def fetch_user_notifications(model, user_id, **kwargs):
 
     # page = request.args.get("page", default=1, type=int)
     # per_page = request.args.get("per_page", default=10, type=int)
 
     query = model.query.filter_by(user_id = user_id).order_by(model.created_at.desc())
 
-    
     pagination_data = paginate(
         query, page=1, per_page=5
     )
@@ -447,6 +444,7 @@ def calculate_dashboard_donation_data(model, user_id):
     recent_weekly_total, preceding_weekly_total = get_totals_for_comparison(weekly_totals)
     recent_monthly_total, preceding_monthly_total = get_totals_for_comparison(monthly_totals)
 
+    print(recent_daily_total)
     def is_change_positive(current, previous):
         if previous is None:
             return True  
@@ -458,6 +456,7 @@ def calculate_dashboard_donation_data(model, user_id):
 
     return {
         "daily_totals": daily_totals,
+        "recent_daily_total": recent_daily_total,
         "weekly_totals": weekly_totals,
         "monthly_totals": monthly_totals,
         "daily_percentage_changes": daily_percentage_changes,
@@ -554,6 +553,7 @@ def get_user_campaigns_by_status(user_id, status=True, page=None, per_page=None,
 
 
 def get_successful_campaigns(user_id, page=None, per_page=None):
+    
     query = Campaign.query.filter_by(user_id = user_id).order_by(Campaign.created_at)
 
     pagination_data = paginate(query, page=page, per_page=per_page)
@@ -589,4 +589,29 @@ def get_successful_campaigns(user_id, page=None, per_page=None):
         "campaigns": successful_campaigns,
         "total": total_campaign,
         "pagination": pagination
+    }
+
+def get_user_account_activity(user_id, user_info: dict = None):
+    query =  LoginActivity.query.filter_by(user_id=user_id).order_by(LoginActivity.timestamp)
+
+    pagination_data = paginate(query, user_info, page=1, per_page=9)
+
+    activity_data = pagination_data['items']
+    pagination = pagination_data['pagination']
+
+    activity = [
+        
+        {
+            "browser": activity['browser'],
+            "os": activity['os'],
+            "ip_address": activity['ip_address'],
+            "time": activity['timestamp'],
+
+        }
+
+        for activity in activity_data
+    ]
+
+    return {
+        "activity": activity,
     }
