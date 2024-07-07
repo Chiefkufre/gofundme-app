@@ -64,3 +64,39 @@
 2024-06-11 15:14:16,127 - core.main - INFO - Donation created successfully
 2024-06-11 16:07:52,393 - core.main - WARNING - Campaign deleted successfully
 2024-06-11 16:26:09,535 - core.main - WARNING - Notification deleted successfully
+2024-06-12 17:28:41,092 - core.main - INFO - Donation created successfully
+2024-06-13 13:04:07,522 - core.main - INFO - Donation created successfully
+2024-06-13 13:06:55,894 - core.main - INFO - Donation created successfully
+2024-06-13 13:07:13,491 - core.main - WARNING - Notification deleted successfully
+2024-06-13 13:09:09,640 - core.main - INFO - Donation created successfully
+2024-06-14 03:30:02,548 - core.main - INFO - Campaign - This approach allows your application to gracefully handle has been unpublish
+2024-06-14 03:30:07,570 - core.main - INFO - Campaign - This approach allows your application to gracefully handle has been unpublish
+2024-06-14 03:30:25,003 - core.main - INFO - Campaign - This approach allows your application to gracefully handle has been publish
+2024-06-14 03:31:11,019 - core.main - INFO - Campaign - This approach allows your application to gracefully handle has been unpublish
+2024-06-14 03:37:02,513 - core.main - INFO - Campaign - This approach allows your application to gracefully handle has been publish
+2024-06-14 03:37:02,513 - core.main - INFO -  fail to update campaign now-'Request' object has no attribute 'is_xhr'
+2024-06-14 03:41:13,147 - core.main - INFO - Campaign - This approach allows your application to gracefully handle has been unpublish
+2024-06-14 03:41:13,147 - core.main - INFO -  fail to update campaign now-Object of type InstrumentedAttribute is not JSON serializable
+2024-06-14 03:41:49,100 - core.main - INFO - Campaign - This approach allows your application to gracefully handle has been publish
+2024-06-14 03:41:49,100 - core.main - INFO -  fail to update campaign now-Object of type InstrumentedAttribute is not JSON serializable
+2024-06-14 03:54:37,690 - core.main - INFO - Successfully updated campaign.
+2024-06-14 04:09:07,638 - core.main - ERROR - Failed to change status for campaign bb0e3ed9-9f7d-4b14-ae72-f1f8623fef20
+2024-06-14 04:09:30,238 - core.main - ERROR - Failed to change status for campaign bb0e3ed9-9f7d-4b14-ae72-f1f8623fef20
+2024-06-14 04:10:16,462 - core.main - ERROR - Failed to change status for campaign bb0e3ed9-9f7d-4b14-ae72-f1f8623fef20
+2024-06-14 04:10:27,972 - core.main - INFO - Campaign - This approach allows your application to gracefully handle has been published
+2024-06-14 04:10:36,635 - core.main - INFO - Campaign - This approach allows your application to gracefully handle has been published
+2024-06-14 04:10:41,595 - core.main - INFO - Campaign - This approach allows your application to gracefully handle has been published
+2024-06-14 04:11:14,553 - core.main - ERROR - Failed to change status for campaign bb0e3ed9-9f7d-4b14-ae72-f1f8623fef20
+2024-06-14 04:11:30,558 - core.main - INFO - Campaign - This approach allows your application to gracefully handle has been published
+2024-06-14 04:52:43,661 - core.main - ERROR - Failed to change status for campaign bb0e3ed9-9f7d-4b14-ae72-f1f8623fef20
+2024-06-14 04:52:49,986 - core.main - INFO - Campaign - This approach allows your application to gracefully handle has been published
+2024-06-14 04:53:14,426 - core.main - INFO - Campaign - This approach allows your application to gracefully handle has been published
+2024-06-14 04:53:32,285 - core.main - ERROR - Failed to change status for campaign bb0e3ed9-9f7d-4b14-ae72-f1f8623fef20
+2024-06-14 04:53:40,101 - core.main - ERROR - Failed to change status for campaign bb0e3ed9-9f7d-4b14-ae72-f1f8623fef20
+2024-06-14 04:56:53,940 - core.main - INFO - Campaign - This approach allows your application to gracefully handle has been published
+2024-06-14 04:58:21,507 - core.main - ERROR - Failed to change status for campaign bb0e3ed9-9f7d-4b14-ae72-f1f8623fef20
+2024-06-14 04:59:56,899 - core.main - INFO - Campaign - This approach allows your application to gracefully handle has been published
+2024-06-14 05:02:04,416 - core.main - ERROR - Failed to change status for campaign bb0e3ed9-9f7d-4b14-ae72-f1f8623fef20
+2024-06-14 05:02:09,817 - core.main - ERROR - Failed to change status for campaign bb0e3ed9-9f7d-4b14-ae72-f1f8623fef20
+2024-06-14 05:02:20,159 - core.main - ERROR - Failed to change status for campaign 4b261ec4-e665-4be3-8670-f190e9f987bd
+2024-06-14 05:02:29,273 - core.main - INFO - Campaign - A detailed list of all transactions, including dates, amounts, and statuses has been published

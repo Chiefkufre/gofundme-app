@@ -1,4 +1,5 @@
 from flask import flash, make_response
+from flask_mail import Message
 import validators
 from datetime import timedelta, timezone, datetime
 
@@ -25,14 +26,27 @@ from flask_jwt_extended import (
     get_jwt,
 )
 from werkzeug.security import check_password_hash, generate_password_hash, gen_salt
+from core.utils.ses_email_client import send_email
 from core.utils.general import get_device_info, get_ip
 from core.models import LoginActivity, User
 from core.utils.validators import PlatformValidator
 from core.utils.constants.constants import Routes
+from core.utils.extentions import mail
 
 auths = Blueprint("auths", __name__)
 
 validators = PlatformValidator(User)
+
+def send_mail():
+    subject = "Test Email"
+    body = "This is a test email from Flask using Amazon SES."
+    to_addresses = ["testpractical2000@gmail.com"]
+    from_address = "samuelkufrewillie@gmail.com"
+    response = send_email(subject, body, to_addresses, from_address)
+    if response:
+        return "Email sent successfully!"
+    else:
+        return "Failed to send email."
 
 
 @auths.get(Routes.REGISTER)
@@ -128,6 +142,9 @@ def sign_in_user():
         response = make_response(redirect(url_for('user.user_dashboard')))
         set_access_cookies(response, access_token)
 
+        response2 =send_email(subject="New Login", body="You have login successfully",
+                    to_addresses=['testpractical2000@gmail.com'], from_address="samuelkufrewillie@gmail.com")
+        print(response2)
         ip_address = get_ip()
         device_info = get_device_info()
 
@@ -145,6 +162,7 @@ def sign_in_user():
         )
 
         login_activity.insert()
+
         return response
     else:
         flash("incorrect email or password", "info")

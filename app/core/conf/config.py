@@ -110,6 +110,20 @@ class Config(MailConfig):
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=1)
     COOKIE_DOMAIN = "http://127.0.0.1:5000/"
 
+    # Email configuration
+
+    MAIL_SERVER = 'smtp.gmail.com'
+    MAIL_PORT = 587
+    MAIL_USERNAME = settings.MAIL_USERNAME
+    MAIL_PASSWORD = settings.MAIL_PASSWORD
+    MAIL_USE_TLS = False
+    MAIL_USE_SSL = True
+
+    AWS_SES_REGION = 'us-east-1'
+    AWS_SES_ACCESS_KEY = settings.AWS_SES_ACCESS_KEY
+    AWS_SES_SECRET_KEY = settings.AWS_SES_SECRET_KEY
+
+
 
 class ProdConfig(Config):
     FLASK_ENV = "production"

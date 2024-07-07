@@ -12,6 +12,7 @@ from core.utils.proj.tasks import activate_campaign
 from core.utils.general import allowed_file, calculate_time_interval, paginate
 from core.utils.constants.constants import Routes
 from core.src.Repository.repository import (
+    fetch_user_notifications,
     handle_get_request,
     handle_create_request,
     handle_patch_request,
@@ -92,7 +93,6 @@ def create_campaign():
 
     campaign_data["user_id"] = get_jwt_identity()["id"]
     response_data, status_code = handle_create_request(Campaign, campaign_data, is_json=True)
-    print(response_data)
     if status_code == 201:
         notification_data = {
             "user_id": campaign_data["user_id"],
@@ -112,7 +112,6 @@ def create_campaign():
 @login_required
 def get_campaign_by_id(id) -> dict:
     item = get_item_data(Campaign, id)
-    print(item)
     # if identity["id"] != item["user_id"]:
     #     item = {"msg": "You have not created any campaign yet"}
 
@@ -216,7 +215,6 @@ def make_donation(id):
     data = request.get_json()
 
     donated_amount = request.get_json()["amount"]
-    # user_id = data.get('user_id')
 
     # Validate the donation amount
     if donated_amount <= 0.0:
@@ -229,8 +227,8 @@ def make_donation(id):
         if campaign is None:
             return jsonify({"error": "Campaign not found"}), 404
 
-
-        data['recipient_id'] = campaign.user_id #this allows us to add the campaign owner identity of each donations
+ 
+        data['recipient_id'] = campaign.user_id #this allows us to tag the campaign owner identity of each donations
 
         response_data, status_code = handle_create_request(Donation, data, is_json=True)
         if status_code == 201:
@@ -284,12 +282,15 @@ def delete_donation(id):
     return jsonify(item)
 
 
-@web.get('notification/<id>/delete')
+@web.delete('notification/<id>/delete')
 def delete_notification(id):
+    user = current_user
     notification = delete_item(Notification, id)
-    flash("Notification delete")
-    return redirect(url_for('user.user_dashboard'))
-
+    current_app.logger.info(f"Notification {id} deleted successfully.")
+    
+    # fetch_user_notifications(Notification, user.id)
+    return jsonify({"success": True, "message": "Notification deleted"}), 200
+    
 @web.get(Routes.DOC)
 def doc():
     return render_template("web/doc.html")

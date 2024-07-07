@@ -45,6 +45,33 @@
                 margin-top: 10px; 
                 display: none;
             }
+
+            .loader {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.8);
+            z-index: 1000;
+        }
+
+        #toast-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1050;
+            width: 300px;
+        }
+
+        .toast {
+            margin-bottom: 10px;
+        }
+
+
         </style>
     </head>
     <body class="nk-body bg-lighter npc-general has-sidebar">
@@ -220,19 +247,32 @@
                                                 <div class="dropdown-body">
                                                     <div class="nk-notification">
                                                         
-                                                        
-                                                        
                                                         <!-- Loop notifications -->
-                                                        {% for notification in notifications %}
-                                                        <div class="nk-notification-item dropdown-inner">
-                                                            <div class="nk-notification-icon"><em class="icon icon-circle bg-warning-dim ni ni-curve-down-right"></em></div>
-                                                            <div class="nk-notification-content">
-                                                                <div class="nk-notification-text"><span><a href="{{ url_for('web.get_campaign_by_id', id=notification.activity_id) }}">{{ notification.message }}</a></span></div>
-                                                                <div class="nk-notification-time">{{ notification.date }}</div>
-                                                            </div>
-                                                            <div><a href="{{ url_for('web.delete_notification', id=notification.id)}}" class="link-cross me-sm-n1"><em class="icon ni ni-cross"></a></em></div>
+                                                        <div class="nk-notification-list">
+                                                            {% for notification in notifications %}
+                                                                <div class="nk-notification-item dropdown-inner">
+                                                                    <div class="nk-notification-icon">
+                                                                        <em class="icon icon-circle bg-warning-dim ni ni-curve-down-right"></em>
+                                                                    </div>
+                                                                    <div class="nk-notification-content">
+                                                                        <div class="nk-notification-text">
+                                                                            <span>
+                                                                                <a href="{{ url_for('web.get_campaign_by_id', id=notification.activity_id) }}">
+                                                                                    {{ notification.message }}
+                                                                                </a>
+                                                                            </span>
+                                                                        </div>
+                                                                        <div class="nk-notification-time">{{ notification.date }}</div>
+                                                                    </div>
+                                                                    <div>
+                                                                        <a href="#" class="link-cross delete-notification me-sm-n1" data-id="{{ notification.id }}">
+                                                                            <em class="icon ni ni-cross"></em>
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                            {% endfor %}
                                                         </div>
-                                                        {% endfor %}
+                                                        
                                                         <!-- end notification loop -->
                                                     </div>
                                                 </div>
@@ -374,7 +414,10 @@
                 <div class="nk-opt-reset"><a href="#" class="reset-opt-setting">Reset Setting</a></div>
             </div>
         </div>
-
+        <!-- Toast Container -->
+        <div id="toast-container" class="position-fixed bottom-0 end-0 p-3" style="z-index: 1100;">
+            <!-- Toasts will be dynamically added here -->
+        </div>
         {% assets "backend_js" %}
     <script src="{{ ASSET_URL }}"></script>
     {% endassets %}
@@ -407,5 +450,8 @@
             }
         }
     </script>
-    </body>
+    
+
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script> -->
+</body>
 </html>

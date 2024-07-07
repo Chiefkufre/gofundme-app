@@ -97,7 +97,7 @@
                                                     </div>
                                                     <div class="align-end flex-sm-wrap g-4 flex-md-nowrap">
                                                         <div class="nk-sale-data">
-                                                            <span class="amount">{{ "{:,.2f}".format(daily_totals.popitem()[1] | round(2)) }}</span>
+                                                            <span class="amount">{{ "{:,.2f}".format(recent_daily_total | round(2)) }}</span>
                                                             <span class="sub-title">
                                                                 <span class="change {{dailyArrowDirectionClass}}"><em class="icon ni {{dailyArrowIcon}}"></em>{{ daily_percentage_changes.popitem()[1] | round(2) }}%</span>since yesterday
                                                             </span>
@@ -279,7 +279,7 @@
                                         </div>
                                         {% else%}
                                         {% for campaigns in inactive_campaign['campaigns'] %}
-                                        <div class="user-card">
+                                        <div class="user-card campaign-item">
                                             <!-- <div class="user-avatar bg-primary-dim"><span>AB</span></div> -->
                                             <div class="nk-activity-media user-avatar bg-primary-dim">
                                                 <img src="{{ url_for('web.uploaded_file', filename=campaigns.image_url) }}" alt="" />
@@ -290,38 +290,37 @@
                                                     <a href="#" class="dropdown-toggle btn btn-icon btn-trigger mecampaigns-n1" data-bs-toggle="dropdown" aria-expanded="false"><em class="icon ni ni-more-h"></em></a>
                                                     <div class="dropdown-menu dropdown-menu-end">
                                                         <ul class="link-list-opt no-bdr">
-                                                            <li><a href="{{ url_for('web.get_campaign_by_id', id=campaigns.id) }}"><em class="icon ni ni-eye"></em><span>View campaign</span></a></li>
-                                                            <li><a href="{{ url_for('user.user_edit_campaign', id=campaigns.id) }}"><em class="icon ni ni-edit"></em><span>Edit campaign</span></a></li>
+                                                            <li>
+                                                                <a href="{{ url_for('web.get_campaign_by_id', id=campaigns.id) }}" class="view-campaign-link">
+                                                                    <em class="icon ni ni-eye"></em>
+                                                                    <span>View campaign</span>
+                                                                </a>
+                                                            </li>
+                                                            <li>
+                                                                <a href="{{ url_for('user.user_edit_campaign', id=campaigns.id) }}">
+                                                                    <em class="icon ni ni-edit"></em>
+                                                                    <span>Edit campaign</span>
+                                                                </a>
+                                                            </li>
                                                             <li class="ms-3 mb-2 mt-1">
-                                                              {% if campaigns.is_publish %}
-                                                                 <form action="{{ url_for('user.publish_campaign', id=campaigns.id) }}" method="post" style="display:inline;">
-                                                                    <input type="hidden" name="is_publish" value="false">
+                                                                <form action="{{ url_for('user.publish_campaign', id=campaigns.id) }}" method="post" class="publish-campaign-form" style="display:inline;">
+                                                                    <input type="hidden" name="is_publish" value="{{ 'false' if campaigns.is_publish else 'true' }}">
                                                                     <button type="submit" style="background:none;border:none;color:#007bff;cursor:pointer;">
-                                                                          <em class="icon ni ni-check-round-cut"></em>
-                                                                          <span>Pause campaign</span>
+                                                                      <em class="icon ni ni-check-round-cut"></em>
+                                                                        <span>{{ 'Pause campaign' if campaigns.is_publish else 'Publish campaign' }}</span>
                                                                     </button>
-                                                                 </form>
-                                                              {% else %}
-                                                                 <form action="{{ url_for('user.publish_campaign', id=campaigns.id) }}" method="post" style="display:inline;">
-                                                                    <input type="hidden" name="is_publish" value="true">
-                                                                    <button type="submit" style="background:none;border:none;color:#007bff;cursor:pointer;">
-                                                                          <em class="icon ni ni-check-round-cut"></em>
-                                                                          <span>Publish campaign</span>
+                                                                </form>
+                                                            </li>
+                                                            <li class="ms-3 mb-2 mt-1">
+                                                                <form action="{{ url_for('user.delete_campaign_by_id', id=campaigns.id) }}" method="delete" class="delete-campaign-form" style="display:inline;">
+                                                                    <input type="hidden" name="_method" value="DELETE">
+                                                                    <button type="submit" style="background:none;border:none;color:red;cursor:pointer;">
+                                                                        <em class="icon ni ni-delete"></em>
+                                                                        <span>Delete Campaign</span>
                                                                     </button>
-                                                                 </form>
-                                                              {% endif %}
-                  
-                  
-                                                            <li class="ms-3">
-                                                              <form action="{{ url_for('user.delete_campaign_by_id', id=campaigns.id) }}" method="post" style="display:inline;">
-                                                                 <input type="hidden" name="_method" value="DELETE">
-                                                                  <button type="submit" style="background:none;border:none;color:red;cursor:pointer;">
-                                                                      <em class="icon ni ni-delete"></em>
-                                                                      <span>Delete Campaign</span>
-                                                                  </button>
-                                                              </form>
-                                                          </li>
-                                                         </ul>
+                                                                </form>
+                                                            </li>
+                                                      </ul>
                                                     </div>
                                                 </div>
                                             </div>
@@ -387,15 +386,16 @@
                                         <h6 class="timeline-head"> {{current_month_year}}</h6>
                                         <ul class="timeline-list">
                                             {%for notification in notifications %}
-                                            <li class="timeline-item">
+                                            <li class="timeline-item nk-notification-item">
                                                 <div class="timeline-status bg-primary is-outline"></div>
                                                 <div class="timeline-date">{{notification.month}} <em class="icon ni ni-alarm-alt"></em></div>
                                                 <div class="timeline-data">
                                                   <div style="display: flex; flex-direction: row;">
                                                     <h6 class="timeline-title" style="flex-grow: 1;">{{notification.type}}</h6>
                                                     <div style="flex-shrink: 0;" class="link-cross me-sm-n1">
-                                                        <a href="{{ url_for('web.delete_notification', id=notification.id)}}">
-                                                      <em class="icon ni ni-delete"></em></a>
+                                                        <a href="#" class="link-cross delete-notification me-sm-n1" data-id="{{ notification.id }}">
+                                                            <em class="icon ni ni-cross"></em>
+                                                        </a>
                                                     </div>
                                                   </div>
                                                   <div class="timeline-des">

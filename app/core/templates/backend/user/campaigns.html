@@ -48,9 +48,10 @@
             </div>
              <div class="nk-block">
                
+               
                 <div class="row g-gs">
                   {% for item in data %}
-                   <div class="col-sm-6 col-lg-4 col-xxl-3">
+                   <div class="col-sm-6 col-lg-4 col-xxl-3 campaign-item">
                       <div class="card card-bordered h-100">
                          <div class="card-inner">
                             <div class="project">
@@ -67,37 +68,36 @@
                                      <a href="#" class="dropdown-toggle btn btn-sm btn-icon btn-trigger mt-n1 me-n1" data-bs-toggle="dropdown"><em class="icon ni ni-more-h"></em></a>
                                      <div class="dropdown-menu dropdown-menu-end">
                                        <ul class="link-list-opt no-bdr">
-                                          <li><a href="{{ url_for('web.get_campaign_by_id', id=item.id) }}"><em class="icon ni ni-eye"></em><span>View campaign</span></a></li>
-                                          <li><a href="{{ url_for('user.user_edit_campaign', id=item.id) }}"><em class="icon ni ni-edit"></em><span>Edit campaign</span></a></li>
-                                          <li class="ms-3 mb-2 mt-1">
-                                            {% if item.is_publish %}
-                                               <form action="{{ url_for('user.publish_campaign', id=item.id) }}" method="post" style="display:inline;">
-                                                  <input type="hidden" name="is_publish" value="false">
-                                                  <button type="submit" style="background:none;border:none;color:#007bff;cursor:pointer;">
-                                                        <em class="icon ni ni-check-round-cut"></em>
-                                                        <span>Pause campaign</span>
-                                                  </button>
-                                               </form>
-                                            {% else %}
-                                               <form action="{{ url_for('user.publish_campaign', id=item.id) }}" method="post" style="display:inline;">
-                                                  <input type="hidden" name="is_publish" value="true">
-                                                  <button type="submit" style="background:none;border:none;color:#007bff;cursor:pointer;">
-                                                        <em class="icon ni ni-check-round-cut"></em>
-                                                        <span>Publish campaign</span>
-                                                  </button>
-                                               </form>
-                                            {% endif %}
-
-
-                                          <li class="ms-3">
-                                            <form action="{{ url_for('user.delete_campaign_by_id', id=item.id) }}" method="post" style="display:inline;">
-                                               <input type="hidden" name="_method" value="DELETE">
-                                                <button type="submit" style="background:none;border:none;color:red;cursor:pointer;">
-                                                    <em class="icon ni ni-delete"></em>
-                                                    <span>Delete Campaign</span>
-                                                </button>
-                                            </form>
-                                        </li>
+                                             <li>
+                                                 <a href="{{ url_for('web.get_campaign_by_id', id=item.id) }}" class="view-campaign-link">
+                                                     <em class="icon ni ni-eye"></em>
+                                                     <span>View campaign</span>
+                                                 </a>
+                                             </li>
+                                             <li>
+                                                 <a href="{{ url_for('user.user_edit_campaign', id=item.id) }}">
+                                                     <em class="icon ni ni-edit"></em>
+                                                     <span>Edit campaign</span>
+                                                 </a>
+                                             </li>
+                                             <li class="ms-3 mb-2 mt-1">
+                                                 <form action="{{ url_for('user.publish_campaign', id=item.id) }}" method="post" class="publish-campaign-form" style="display:inline;">
+                                                     <input type="hidden" name="is_publish" value="{{ 'false' if item.is_publish else 'true' }}">
+                                                     <button type="submit" style="background:none;border:none;color:#007bff;cursor:pointer;">
+                                                       <em class="icon ni ni-check-round-cut"></em>
+                                                         <span>{{ 'Pause campaign' if item.is_publish else 'Publish campaign' }}</span>
+                                                     </button>
+                                                 </form>
+                                             </li>
+                                             <li class="ms-3 mb-2 mt-1">
+                                                 <form action="{{ url_for('user.delete_campaign_by_id', id=item.id) }}" method="delete" class="delete-campaign-form" style="display:inline;">
+                                                     <input type="hidden" name="_method" value="DELETE">
+                                                     <button type="submit" style="background:none;border:none;color:red;cursor:pointer;">
+                                                         <em class="icon ni ni-delete"></em>
+                                                         <span>Delete Campaign</span>
+                                                     </button>
+                                                 </form>
+                                             </li>
                                        </ul>
                                      </div>
                                   </div>

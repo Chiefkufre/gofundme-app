@@ -20,6 +20,10 @@ class Settings:
     MAIL_USE_TLS: bool = config("MAIL_USE_TLS")
     MAIL_USE_SSL: bool = config("MAIL_USE_SSL")
 
+  
+    AWS_SES_ACCESS_KEY : str = config("AWS_SES_ACCESS_KEY")
+    AWS_SES_SECRET_KEY : str = config("AWS_SES_SECRET_KEY")
+
     FLUTTERWAVE_API_KEY: str = config("FLUTTERWAVE_API_KEY")
     API_VERSION: str = config("API_VERSION")
 

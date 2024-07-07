@@ -69,6 +69,7 @@ bundles = {
         "js/backend/scripts.js", 
         # "js/backend/demo-settings.js", 
         "js/backend/charts/gd-default.js", 
+        "js/backend/test.js",
 
         
         output="gen/backend.js"),

@@ -17,9 +17,9 @@ from core.src.Controllers.adminController import admin
 from core.src.Controllers.userController import user
 from core.auth.authController import auths
 
+from core.utils.extentions import mail
 
 APP_VERSION = settings.API_VERSION
-
 
 # start application instance
 def create_app_instance():
@@ -30,7 +30,7 @@ def create_app_instance():
     # registring app_context
     with app.app_context():
         setup_db(app)
-        mail = Mail(app)
+        mail.init_app(app)
         configure_assets(app)
         jwt = JWTManager(app)
         login_manager = LoginManager(app)
